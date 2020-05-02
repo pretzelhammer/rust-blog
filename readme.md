@@ -1,4 +1,13 @@
-# testing 123
+# rust blog
+
+This is my Rust blog where I Rust post about my Rust thoughts.
+
+The following posts are in reverse chronological order:
+
+| date | title|
+|-|-|
+2020-05-?? | [Why blog?](./posts/why-blog.md)
+
 
 test test
 
