@@ -4,7 +4,7 @@ _May 9th, 2020 · 16 minute read · #rust_
 
 **Table of Contents**
 - [Intro](#Intro)
-- [TL;DR](#TL;DR)
+- [TL;DR](#TLDR)
 - [Practical Rust Resource Reviews](#Practical-Rust-Resource-Reviews)
     - [HackerRank](#HackerRank)
     - [Project Euler](#Project-Euler)
@@ -155,4 +155,4 @@ Things Exercism does right:
 
 ## Conclusion
 
-Same as the [TL;DR](#TL;DR) :)
+Same as the [TL;DR](#TLDR) :)
