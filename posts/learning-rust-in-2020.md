@@ -50,7 +50,7 @@ This is really strange because I was able to browse Rust solutions for the probl
 
 ### [Project Euler](https://projecteuler.net/archives)
 
-When I first started to learn programming back in 2012 I commonly heard _"If you wanna get up to speed quickly in a new programming language solve some Project Euler problems with it!"_ which was okay advice at the time since there were not many other alternatives but in my opinion Project Euler has very little to do with programming. Project Euler problems are more math problems than they are programming problems. Their challenge lies almost entirely in the mathematical reasoning required to reach the solution as the programming required is usually trivial. I would not recommend solving Project Euler problems as a way to learn Rust unless you're very mathematically included and have some nostalgia for the site.
+When I first started to learn programming back in 2012 I commonly heard _"If you wanna get up to speed quickly in a new programming language solve some Project Euler problems with it!"_ which was okay advice at the time since there were not many other alternatives but in my opinion Project Euler has very little to do with programming. Project Euler problems are more math problems than they are programming problems. Their challenge lies almost entirely in the mathematical reasoning required to reach the solution as the programming required is usually trivial. I would not recommend solving Project Euler problems as a way to learn Rust unless you're very mathematically inclined and have some nostalgia for the site.
 
 ### [LeetCode](https://leetcode.com/problemset/all/)
 
