@@ -1,4 +1,4 @@
-# pretzelhammer's rust blog
+# pretzelhammer's Rust blog 🦀
 
 I write educational content for Rust beginners and Rust advanced beginners.
 
