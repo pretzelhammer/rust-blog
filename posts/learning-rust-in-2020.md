@@ -164,3 +164,5 @@ Discuss this article on
 - [/r/learnrust subreddit](https://www.reddit.com/r/learnrust/comments/ggj8tf/learning_rust_in_2020/)
 - [Rust official forums](https://users.rust-lang.org/t/blog-post-learning-rust-in-2020/42373)
 - [Twitter](https://twitter.com/pretzelhammer/status/1259897499122360322)
+- [/r/rust subreddit](https://www.reddit.com/r/rust/comments/gie64f/learning_rust_in_2020/)
+- [Hackernews](https://news.ycombinator.com/item?id=23160975)
