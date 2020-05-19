@@ -20,7 +20,7 @@ If you have any feedback please feel welcome to [open an issue](https://github.c
 
 ## Translations
 
-If you wanna translate a blog post into another language that's awesome! Please feel free to fork this repo and promote your translations however you like.
+If you wanna translate a blog post into another language that's awesome! Please feel free to fork this repo and promote your translation however you like.
 
 ## Licensing
 

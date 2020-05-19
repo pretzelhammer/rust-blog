@@ -17,3 +17,12 @@ I'm a full-stack webdev by trade so I'm _super nitpicky_ when it comes to websit
 I was almost about to give up on my blog idea but that's when I ran across [Frank McSherry's blog](https://github.com/frankmcsherry/blog). Wow, how come I've never thought of doing that? You don't have to build, deploy, or render anything! You push the markdown files to github and people can just read them on github. It's disgustingly simple. I love it. For the first time ever I'm gonna focus on actually writing.
 
 One small final note: I plan to focus this blog entirely around Rust. Aside from this initial post I don't intend to use this blog to post about personal things.
+
+## Follow
+
+[Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
+
+## Further Reading
+
+- [Learning Rust in 2020](./learning-rust-in-2020.md)
+- [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
