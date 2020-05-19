@@ -60,7 +60,7 @@ When I first started learning Rust I understood that `i32`, `&i32`, and `&mut i3
 | | | | |
 |-|-|-|-|
 | **Type Variable** | `T` | `&T` | `&mut T` |
-| **Examples** | `i32`, `&i32`, `&mut i32`, `&&i32`, `&mut &mut i32`, ... | `&i32`, `&&i32`, `&&mut i32`, ... | `&mut i32`, `&mut &mut i32`, `&mut &i32` ... |
+| **Examples** | `i32`, `&i32`, `&mut i32`, `&&i32`, `&mut &mut i32`, ... | `&i32`, `&&i32`, `&&mut i32`, ... | `&mut i32`, `&mut &mut i32`, `&mut &i32`, ... |
 
 `T`, `&T`, and `&mut T` are all infinite sets, since it's possible to borrow a type ad-infinitum. `T` is a superset of both `&T` and `&mut T`. `&T` and `&mut T` are disjoint sets. Here's a couple examples which validate these concepts:
 
@@ -1061,7 +1061,7 @@ There's no real lesson or insight to be had here, it just is what it is.
 ## Discuss
 
 Discuss this article on
-- not posted anywhere yet
+- [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/gmrcrq/common_rust_lifetime_misconceptions/)
 
 
 
