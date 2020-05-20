@@ -462,10 +462,53 @@ Now that we look back on the previous version of our program it was obviously wr
 
 The Rust borrow checker only cares about the lifetime annotations in a program to the extent it can use them to statically verify the memory safety of the program. Rust will happily compile programs even if the lifetime annotations have semantic errors, and the consequence of this is that the program becomes unnecessarily restrictive.
 
+Here's a quick example that's the opposite of the previous example: Rust's lifetime elision rules happen to be semantically correct in this instance but we unintentionally write a very restrictive method with our own unnecessary explicit lifetime annotations.
+
+```rust
+#[derive(Debug)]
+struct NumRef<'a>(&'a i32);
+
+impl<'a> NumRef<'a> {
+    // my struct is generic over 'a so that means I need to annotate
+    // my self parameters with 'a too, right? (answer: no, not right)
+    fn some_method(&'a mut self) {}
+}
+
+fn main() {
+    let mut num_ref = NumRef(&5);
+    num_ref.some_method(); // mutably borrows num_ref for the rest of its lifetime
+    num_ref.some_method(); // compile error
+    println!("{:?}", num_ref); // also compile error
+}
+```
+
+If we have some struct generic over `'a` we almost never want to write a method with a `&'a mut self` receiver. What we're communicating to Rust is "this method will mutably borrow the struct for the entirety of the struct's lifetime". In practice this means Rust's borrow checker will only allow at most one call to `some_method` before the struct becomes permanently mutably borrowed and thus unusable. The use-cases for this are extremely rare but the code above is very easy for confused beginners to write and it compiles. The fix is to not add unnecessary explicit lifetime annotations and let Rust's lifetime elision rules handle it:
+
+```rust
+#[derive(Debug)]
+struct NumRef<'a>(&'a i32);
+
+impl<'a> NumRef<'a> {
+    // no more 'a on mut self
+    fn some_method(&mut self) {}
+
+    // above line desugars to
+    fn some_method_desugared<'b>(&'b mut self){}
+}
+
+fn main() {
+    let mut num_ref = NumRef(&5);
+    num_ref.some_method();
+    num_ref.some_method(); // compiles
+    println!("{:?}", num_ref); // compiles
+}
+```
+
 **Key Takeaways**
 - Rust's lifetime elision rules for functions are not always right for every situation
 - Rust does not know more about the semantics of your program than you do
-- Give your lifetime annotations descriptive names
+- give your lifetime annotations descriptive names
+- try to be mindful of where you place explicit lifetime annotations and why
 
 
 
@@ -1046,7 +1089,8 @@ There's no real lesson or insight to be had here, it just is what it is.
 - almost all Rust code is generic code and there's elided lifetime annotations everywhere
 - Rust's lifetime elision rules are not always right for every situation
 - Rust does not know more about the semantics of your program than you do
-- Give your lifetime annotations descriptive names
+- give your lifetime annotations descriptive names
+- try to be mindful of where you place explicit lifetime annotations and why
 - all trait objects have some inferred default lifetime bounds
 - Rust compiler error messages suggest fixes which will make your program compile which is not that same as fixes which will make you program compile _and_ best suit the requirements of your program
 - lifetimes are statically verified at compile-time
