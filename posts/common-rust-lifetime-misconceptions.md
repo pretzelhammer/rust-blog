@@ -43,10 +43,6 @@ In a nutshell: A variable's lifetime is how long the data it points to can be st
 
 ### 1) `T` only contains owned types
 
-**Misconception Corollaries**
-- owned types don't have lifetimes
-- `T: 'static` and `T: 'a` don't make any sense
-
 This misconception is more about generics than lifetimes but generics and lifetimes are tightly interwined in Rust so it's not possibly to talk about one without also talking about the other. Anyway:
 
 When I first started learning Rust I understood that `i32`, `&i32`, and `&mut i32` are different types. I also understood that some generic type variable `T` represents a set which contains all possible types. However, despite understanding both of these things separately, I wasn't able to understand them together. In my newbie Rust mind this is how I thought generics worked:
@@ -107,12 +103,9 @@ impl<T> Trait for &T {} // compiles
 impl<T> Trait for &mut T {} // compiles
 ```
 
-Hopefully this sheds new light on `T: 'static` and `T: 'a` as we now understand `T` can be a borrowed type, however even if it wasn't both `T: 'static` and `T: 'a` are still valid bounds on owned types because owned types have lifetimes as well! We'll explore that concept in more detail over the next 2 sections.
-
 **Key Takeaways**
 - `T` is a superset of both `&T` and `&mut T`
 - `&T` and `&mut T` are disjoint sets
-- owned types have lifetimes (more on this below)
 
 
 ### 2) if `T: 'static` then `T` must be valid for the entire program
@@ -942,6 +935,7 @@ struct Player {
 }
 
 fn start_game(player_a: PlayerID, player_b: PlayerID, server: &mut HashMap<PlayerID, Player>) {
+    // get players from server or create & insert new players if they don't yet exist
     let player_a: &Player = server.entry(player_a).or_default();
     let player_b: &Player = server.entry(player_b).or_default();
 
@@ -1077,7 +1071,6 @@ There's no real lesson or insight to be had here, it just is what it is.
 
 - `T` is a superset of both `&T` and `&mut T`
 - `&T` and `&mut T` are disjoint sets
-- owned types have lifetimes
 - `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_
 - if `T: 'static` then `T` can be a borrowed type with a `'static` lifetime _or_ an owned type
 - since `T: 'static` includes owned types that means `T`
