@@ -44,7 +44,8 @@ In a nutshell: A variable's lifetime is how long the data it points to can be st
 ### 1) `T` only contains owned types
 
 **Misconception Corollaries**
-- `T: 'static` and `T: 'a` don't make sense, owned types don't have lifetimes
+- owned types don't have lifetimes
+- `T: 'static` and `T: 'a` don't make any sense
 
 This misconception is more about generics than lifetimes but generics and lifetimes are tightly interwined in Rust so it's not possibly to talk about one without also talking about the other. Anyway:
 
@@ -96,7 +97,7 @@ error[E0119]: conflicting implementations of trait `Trait` for type `&mut _`:
   | ^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `&mut _`
 ```
 
-The compiler doesn't allow us to define an implementation of `Trait` for `&T` and `&mut T` since it would conflict with the implementation of `Trait` for `T` which already includes all of `&T` and `&mut T`. This sheds new light on `T: 'static` and `T: 'a` which now both make sense, since `T` could be a borrowed type and thus have a lifetime. The program below compiles as expected, since `&T` and `&mut T` are disjoint:
+The compiler doesn't allow us to define an implementation of `Trait` for `&T` and `&mut T` since it would conflict with the implementation of `Trait` for `T` which already includes all of `&T` and `&mut T`. The program below compiles as expected, since `&T` and `&mut T` are disjoint:
 
 ```rust
 trait Trait {}
@@ -106,10 +107,12 @@ impl<T> Trait for &T {} // compiles
 impl<T> Trait for &mut T {} // compiles
 ```
 
+Hopefully this sheds new light on `T: 'static` and `T: 'a` as we now understand `T` can be a borrowed type, however even if it wasn't both `T: 'static` and `T: 'a` are still valid bounds on owned types because owned types have lifetimes as well! We'll explore that concept in more detail over the next 2 sections.
+
 **Key Takeaways**
 - `T` is a superset of both `&T` and `&mut T`
 - `&T` and `&mut T` are disjoint sets
-
+- owned types have lifetimes (more on this below)
 
 
 ### 2) if `T: 'static` then `T` must be valid for the entire program
@@ -750,7 +753,7 @@ fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
 
 **Misconception Corollaries**
 - container types can swap references at run-time to change their lifetime
-- Rust borrow checker does code flow analysis
+- Rust borrow checker does control flow analysis
 
 This does not compile:
 
@@ -826,12 +829,12 @@ fn main() {
 }
 ```
 
-Lifetimes have to be statically verified at compile-time and the Rust borrow checker does zero code flow analysis, it assumes every block in an `if-else` statement is taken and every match arm in a `match` statement is taken and then it chooses the shortest possible lifetime for the variable. Once a variable is bounded by a lifetime it is bounded by that lifetime _forever_. The lifetime of a variable can only shrink, and all the shrinkage is computed at compile-time.
+Lifetimes have to be statically verified at compile-time and the Rust borrow checker does zero control flow analysis, it assumes every block in an `if-else` statement is taken and every match arm in a `match` statement is taken and then it chooses the shortest possible lifetime for the variable. Once a variable is bounded by a lifetime it is bounded by that lifetime _forever_. The lifetime of a variable can only shrink, and all the shrinkage is computed at compile-time.
 
 **Key Takeaways**
 - lifetimes are statically verified at compile-time
 - lifetimes cannot be changed, i.e. cannot grow or shrink, at run-time
-- Rust borrow checker does zero code flow analysis and will always choose the shortest possible lifetime for a variable assuming all conditional blocks are taken
+- Rust borrow checker does zero control flow analysis and will always choose the shortest possible lifetime for a variable assuming all conditional blocks are taken
 
 
 
@@ -1074,6 +1077,7 @@ There's no real lesson or insight to be had here, it just is what it is.
 
 - `T` is a superset of both `&T` and `&mut T`
 - `&T` and `&mut T` are disjoint sets
+- owned types have lifetimes
 - `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_
 - if `T: 'static` then `T` can be a borrowed type with a `'static` lifetime _or_ an owned type
 - since `T: 'static` includes owned types that means `T`
@@ -1095,7 +1099,7 @@ There's no real lesson or insight to be had here, it just is what it is.
 - Rust compiler error messages suggest fixes which will make your program compile which is not that same as fixes which will make you program compile _and_ best suit the requirements of your program
 - lifetimes are statically verified at compile-time
 - lifetimes cannot be changed, i.e. cannot grow or shrink, at run-time
-- Rust borrow checker does zero code flow analysis and will always choose the shortest possible lifetime for a variable assuming all conditional blocks are taken
+- Rust borrow checker does zero control flow analysis and will always choose the shortest possible lifetime for a variable assuming all conditional blocks are taken
 - try not to re-borrow mut refs as shared refs, or you're gonna have a bad time
 - re-borrowing a mut ref doesn't end its lifetime, even if the ref is dropped
 - every language has gotchas 🤷
