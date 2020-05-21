@@ -746,7 +746,7 @@ fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
 
 **Misconception Corollaries**
 - container types can swap references at run-time to change their lifetime
-- Rust borrow checker does control flow analysis
+- Rust borrow checker does advanced control flow analysis
 
 This does not compile:
 
@@ -822,12 +822,12 @@ fn main() {
 }
 ```
 
-Lifetimes have to be statically verified at compile-time and the Rust borrow checker does zero control flow analysis, it assumes every block in an `if-else` statement is taken and every match arm in a `match` statement is taken and then it chooses the shortest possible lifetime for the variable. Once a variable is bounded by a lifetime it is bounded by that lifetime _forever_. The lifetime of a variable can only shrink, and all the shrinkage is computed at compile-time.
+Lifetimes have to be statically verified at compile-time and the Rust borrow checker only does very basic control flow analysis, so it assumes every block in an `if-else` statement and every match arm in a `match` statement can be taken and then chooses the shortest possible lifetime for the variable. Once a variable is bounded by a lifetime it is bounded by that lifetime _forever_. The lifetime of a variable can only shrink, and all the shrinkage is determined at compile-time.
 
 **Key Takeaways**
 - lifetimes are statically verified at compile-time
-- lifetimes cannot be changed, i.e. cannot grow or shrink, at run-time
-- Rust borrow checker does zero control flow analysis and will always choose the shortest possible lifetime for a variable assuming all conditional blocks are taken
+- lifetimes cannot grow or shrink or change in any way at run-time
+- Rust borrow checker will always choose the shortest possible lifetime for a variable assuming all code paths can be taken
 
 
 
@@ -1091,8 +1091,8 @@ There's no real lesson or insight to be had here, it just is what it is.
 - all trait objects have some inferred default lifetime bounds
 - Rust compiler error messages suggest fixes which will make your program compile which is not that same as fixes which will make you program compile _and_ best suit the requirements of your program
 - lifetimes are statically verified at compile-time
-- lifetimes cannot be changed, i.e. cannot grow or shrink, at run-time
-- Rust borrow checker does zero control flow analysis and will always choose the shortest possible lifetime for a variable assuming all conditional blocks are taken
+- lifetimes cannot grow or shrink or change in any way at run-time
+- Rust borrow checker will always choose the shortest possible lifetime for a variable assuming all code paths can be taken
 - try not to re-borrow mut refs as shared refs, or you're gonna have a bad time
 - re-borrowing a mut ref doesn't end its lifetime, even if the ref is dropped
 - every language has gotchas 🤷
