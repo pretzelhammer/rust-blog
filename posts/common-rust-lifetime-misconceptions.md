@@ -1104,6 +1104,8 @@ There's no real lesson or insight to be had here, it just is what it is.
 Discuss this article on
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/gmrcrq/common_rust_lifetime_misconceptions/)
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-common-rust-lifetime-misconceptions/42950)
+- [Twitter](https://twitter.com/pretzelhammer/status/1263505856903163910)
+- [rust subreddit](https://www.reddit.com/r/rust/comments/golrsx/common_rust_lifetime_misconceptions/)
 
 
 
