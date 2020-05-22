@@ -283,7 +283,7 @@ fn get_str() -> &str;
 fn get_str<'a>() -> &'a str; // pointlessly generic, since 'a must equal 'static
 fn get_str() -> &'static str; // better, more explicit
 
-// illegal, can't determine output lifetime, mutiple inputs
+// illegal, can't determine output lifetime, multiple inputs
 fn overlap(s: &str, t: &str) -> &str;
 
 // explicit (but still partially elided) options include
