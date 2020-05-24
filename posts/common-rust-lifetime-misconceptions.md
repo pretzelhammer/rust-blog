@@ -280,8 +280,8 @@ fn trim<'a>(s: &'a str) -> &'a str;
 fn get_str() -> &str;
 
 // explicit options include
-fn get_str<'a>() -> &'a str; // pointlessly generic, since 'a must equal 'static
-fn get_str() -> &'static str; // better, more explicit
+fn get_str<'a>() -> &'a str; // generic version
+fn get_str() -> &'static str; // 'static version
 
 // illegal, can't determine output lifetime, multiple inputs
 fn overlap(s: &str, t: &str) -> &str;
