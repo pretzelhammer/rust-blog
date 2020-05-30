@@ -43,7 +43,7 @@ In a nutshell: A variable's lifetime is how long the data it points to can be st
 
 ### 1) `T` only contains owned types
 
-This misconception is more about generics than lifetimes but generics and lifetimes are tightly interwined in Rust so it's not possible to talk about one without also talking about the other. Anyway:
+This misconception is more about generics than lifetimes but generics and lifetimes are tightly intertwined in Rust so it's not possible to talk about one without also talking about the other. Anyway:
 
 When I first started learning Rust I understood that `i32`, `&i32`, and `&mut i32` are different types. I also understood that some generic type variable `T` represents a set which contains all possible types. However, despite understanding both of these things separately, I wasn't able to understand them together. In my newbie Rust mind this is how I thought generics worked:
 
