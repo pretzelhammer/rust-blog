@@ -115,15 +115,15 @@ impl<T> Trait for &mut T {} // 编译通过
 - `&T` 和 `&mut T` 是不相交的集合
 
 
-### 2) if `T: 'static` then `T` must be valid for the entire program
+### 2) 如果 `T: 'static` 那么 `T` 必须在整个程序运行中都是有效的
 
-**Misconception Corollaries**
-- `T: 'static` should be read as _"`T` has a `'static` lifetime"_
-- `&'static T` and `T: 'static` are the same thing
-- if `T: 'static` then `T` must be immutable
-- if `T: 'static` then `T` can only be created at compile time
+**误解推论**
+- `T: 'static` 应该被看作 _"`T` 拥有 `'static` 生命周期"_
+- `&'static T` 和 `T: 'static` 没有区别
+- 如果 `T: 'static` 那么 `T` 必须为不可变的
+- 如果 `T: 'static` 那么 `T` 只能在编译期创建
 
-Most Rust beginners get introduced to the `'static` lifetime for the first time in a code example that looks something like this:
+大部分Rust初学者是从类似下面这个代码示例中接触到 `'static` 生命周期的：
 
 ```rust
 fn main() {
@@ -133,12 +133,18 @@ fn main() {
 
 They get told that `"str literal"` is hardcoded into the compiled binary and it's loaded into read-only memory at run-time so it's immutable and valid for the entire program and that's what makes it `'static`. These concepts are further reinforced by the rules surrounding defining `static` variables using the `static` keyword.
 
+他们被告知 `"str literal"` 是硬编码在编译出来的二进制文件中的，
+并会在运行时被加载到只读内存，所以必须是不可变的且在整个程序的运行中都是有效的，
+这就是它成为 `'static` 的原因。
+这些观念又进一步被用 `static` 关键字来定义静态变量的规则所加强。
+
+
 ```rust
 static BYTES: [u8; 3] = [1, 2, 3];
 static mut MUT_BYTES: [u8; 3] = [1, 2, 3];
 
 fn main() {
-   MUT_BYTES[0] = 99; // compile error, mutating static is unsafe
+   MUT_BYTES[0] = 99; // 编译错误，修改静态变量是unsafe的
 
     unsafe {
         MUT_BYTES[0] = 99;
@@ -147,30 +153,42 @@ fn main() {
 }
 ```
 
-Regarding `static` variables
-- they can only be created at compile-time
-- they should be immutable, mutating them is unsafe
-- they're valid for the entire program
+认为静态变量
+- 只可以在编译期创建
+- 必须是不可变的，修改它们是unsafe的
+- 在整个程序的运行过程中都是有效的
 
-The `'static` lifetime was probably named after the default lifetime of `static` variables, right? So it makes sense that the `'static` lifetime has to follow all the same rules, right?
+`'static` 生命周期大概是以静态变量的默认生命周期命名的，对吧？
+那么有理由认为`'static`生命周期也应该遵守相同的规则，不是吗？
 
-Well yes, but a type _with_ a `'static` lifetime is different from a type _bounded by_ a `'static` lifetime. The latter can be dynamically allocated at run-time, can be safely and freely mutated, can be dropped, and can live for arbitrary durations.
+是的，但拥有`'static`生命周期的类型与`'static`约束的类型是不同的。
+后者能在运行时动态分配，可以安全地、自由地修改，可以被drop，
+还可以有任意长度的生命周期。
 
-It's important at this point to distinguish `&'static T` from `T: 'static`.
+在这个点，很重要的是要区分 `&'static T` 和 `T: 'static`。
 
-`&'static T` is an immutable reference to some `T` that can be safely held indefinitely long, including up until the end of the program. This is only possible if `T` itself is immutable and does not move _after the reference was created_. `T` does not need to be created at compile-time. It's possible to generate random dynamically allocated data at run-time and return `'static` references to it at the cost of leaking memory, e.g.
+`&'static T`是对某个`T`的不可变引用，这个引用可以被无限期地持有直到程序结束。
+这只可能发生在`T`本身不可变且不会在引用被创建后移动的情况下。
+`T`并不需要在编译期就被创建，因为我们可以在运行时动态生成随机数据，
+然后以内存泄漏为代价返回`'static`引用，例如：
+
 
 ```rust
 use rand;
 
-// generate random 'static str refs at run-time
+// 在运行时生成随机&'static str
 fn rand_str_generator() -> &'static str {
     let rand_string = rand::random::<u64>().to_string();
     Box::leak(rand_string.into_boxed_str())
 }
 ```
 
-`T: 'static` is some `T` that can be safely held indefinitely long, including up until the end of the program. `T: 'static` includes all `&'static T` however it also includes all owned types, like `String`, `Vec`, etc. The owner of some data is guaranted that data will never get invalidated as long as the owner holds onto it, therefore the owner can safely hold onto the data indefinitely long, including up until the end of the program. `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_ not _"`T` has a `'static` lifetime"_. A program to help illustrate these concepts:
+`T: 'static` 是指`T`可以被无限期安全地持有直到程序结束。
+`T: 'static`包括所有`&'static T`，此外还包括所有的所有权类型，比如`String`, `Vec`等。
+数据的所有者能够保证数据只要还被持有就不会失效，因此所有者可以无限期安全地持有该数据直到程序结束。
+`T: 'static`应该被看作“`T`受`'static`生命周期约束”而非“`T`有着`'static`生命周期”。
+这段代码能帮我们阐释这些概念：
+
 
 ```rust
 use rand;
@@ -183,36 +201,35 @@ fn main() {
     let mut strings: Vec<String> = Vec::new();
     for _ in 0..10 {
         if rand::random() {
-            // all the strings are randomly generated
-            // and dynamically allocated at run-time
+            // 所有字符串都是随机生成的
+            // 并且是在运行时动态申请的
             let string = rand::random::<u64>().to_string();
             strings.push(string);
         }
     }
 
-    // strings are owned types so they're bounded by 'static
+    // 这些字符串都是所有权类型，所以它们满足'static约束
     for mut string in strings {
-        // all the strings are mutable
+        // 这些字符串都是可以修改的
         string.push_str("a mutation");
-        // all the strings are droppable
-        drop_static(string); // compiles
+        // 这些字符串都是可以被drop的
+        drop_static(string); // 编译通过
     }
 
-    // all the strings have been invalidated before the end of the program
+    // 这些字符串都在程序结束之前失效
     println!("i am the end of the program");
 }
 ```
 
-**Key Takeaways**
-- `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_
-- if `T: 'static` then `T` can be a borrowed type with a `'static` lifetime _or_ an owned type
-- since `T: 'static` includes owned types that means `T`
-    - can be dynamically allocated at run-time
-    - does not have to be valid for the entire program
-    - can be safely and freely mutated
-    - can be dynamically dropped at run-time
-    - can have lifetimes of different durations
-
+**要点**
+- `T: 'static` 应该被看作 _“`T`受`'static`生命周期约束”_
+- 如果 `T: 'static` 那么`T`可以是有着`'static`生命周期的借用类型
+- 由于 `T: 'static` 包括了所有权类型，这意味着`T`
+    - 可以在运行时动态分配
+    - 不一定要在整个程序的运行过程中都有效
+    - 可以被安全地、自由地修改
+    - 可以在运行时被动态drop掉
+    - 可以有不同长度的生命周期
 
 
 ### 3) `&'a T` and `T: 'a` are the same thing
