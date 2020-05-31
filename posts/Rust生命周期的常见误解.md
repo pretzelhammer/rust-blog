@@ -131,8 +131,6 @@ fn main() {
 }
 ```
 
-They get told that `"str literal"` is hardcoded into the compiled binary and it's loaded into read-only memory at run-time so it's immutable and valid for the entire program and that's what makes it `'static`. These concepts are further reinforced by the rules surrounding defining `static` variables using the `static` keyword.
-
 他们被告知 `"str literal"` 是硬编码在编译出来的二进制文件中的，
 并会在运行时被加载到只读内存，所以必须是不可变的且在整个程序的运行中都是有效的，
 这就是它成为 `'static` 的原因。
