@@ -230,45 +230,47 @@ fn main() {
     - 可以有不同长度的生命周期
 
 
-### 3) `&'a T` and `T: 'a` are the same thing
+### 3) `&'a T` 和 `T: 'a` 是相同的
 
-This misconception is a generalized version of the one above.
+这个误解是上一个的泛化版本。
 
-`&'a T` requires and implies `T: 'a` since a reference to `T` of lifetime `'a` cannot be valid for `'a` if `T` itself is not valid for `'a`. For example, the Rust compiler will never allow the construction of the type `&'static Ref<'a, T>` because if `Ref` is only valid for `'a` we can't make a `'static` reference to it.
+`&'a T` 不光要求，同时也隐含着 `T: 'a`， 因为如果`T`本身都不能在`'a`内有效，
+那对`T`的有`'a`生命周期的引用也不可能是有效的。
+例如，Rust编译器从来不会允许创建`&'static Ref<'a, T>`这个类型，因为如果`Ref`只在`'a`内有效，我们不可能弄出一个对它的`'static`的引用。
 
-`T: 'a` includes all `&'a T` but the reverse is not true.
+`T: 'a`包括了所有`&'a T`，但反过来不对。
 
 ```rust
-// only takes ref types bounded by 'a
+// 只接受以'a约束的引用类型
 fn t_ref<'a, T: 'a>(t: &'a T) {}
 
-// takes any types bounded by 'a
+// 接受所有以'a约束的类型
 fn t_bound<'a, T: 'a>(t: T) {}
 
-// owned type which contains a reference
+// 包含引用的所有权类型
 struct Ref<'a, T: 'a>(&'a T);
 
 fn main() {
     let string = String::from("string");
 
-    t_bound(&string); // compiles
-    t_bound(Ref(&string)); // compiles
-    t_bound(&Ref(&string)); // compiles
+    t_bound(&string); // 编译通过
+    t_bound(Ref(&string)); // 编译通过
+    t_bound(&Ref(&string)); // 编译通过
 
-    t_ref(&string); // compiles
-    t_ref(Ref(&string)); // compile error, expected ref, found struct
-    t_ref(&Ref(&string)); // compiles
+    t_ref(&string); // 编译通过
+    t_ref(Ref(&string)); // 编译错误, 期待接收一个引用，但收到一个结构体
+    t_ref(&Ref(&string)); // 编译通过
 
-    // string var is bounded by 'static which is bounded by 'a
-    t_bound(string); // compiles
+    // string变量是以'static约束的，也满足'a约束
+    t_bound(string); // 编译通过
 }
 ```
 
-**Key Takeaways**
-- `T: 'a` is more general and more flexible than `&'a T`
-- `T: 'a` accepts owned types, owned types which contain references, and references
-- `&'a T` only accepts references
-- if `T: 'static` then `T: 'a` since `'static` >= `'a` for all `'a`
+**要点**
+- `T: 'a` 比起 `&'a T`更泛化也更灵活
+- `T: 'a` 接受所有权类型、包含引用的所有权类型以及引用
+- `&'a T` 只接受引用
+- 如果 `T: 'static` 那么 `T: 'a`, 因为对于所有`'a`都有`'static` >= `'a`
 
 
 
