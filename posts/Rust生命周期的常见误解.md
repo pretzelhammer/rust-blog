@@ -274,76 +274,78 @@ fn main() {
 
 
 
-### 4) my code isn't generic and doesn't have lifetimes
+### 4) 我的代码没用到泛型，也不含生命周期
 
-**Misconception Corollaries**
-- it's possible to avoid using generics and lifetimes
+**误解推论**
+- 避免使用泛型和生命周期是可能的
 
-This comforting misconception is kept alive thanks to Rust's lifetime elision rules, which allow you to omit lifetime annotations in functions because the Rust borrow checker will infer them following these rules:
-- every input ref to a function gets a distinct lifetime
-- if there's exactly one input lifetime it gets applied to all output refs
-- if there's multiple input lifetimes but one of them is `&self` or `&mut self` then the lifetime of `self` is applied to all output refs
-- otherwise output lifetimes have to be made explicit
+这种安慰性的误解的存在是由于Rust的生命周期省略规则，
+这些规则让你能够在函数中省略掉生命周期记号，
+因为Rust的借用检查器能根据以下规则将它们推导出来：
+- 每个传入的引用都会有一个单独的生命周期
+- 如果只有一个传入的生命周期，那么它将被应用到所有输出的引用上
+- 如果有多个传入的生命周期，但其中一个是`&self`或者`&mut self`，那么这个生命周期将会被应用到所有输出的引用上
+- 除此之外的输出的生命周期都必须显示标注出来
 
-That's a lot to take in so lets look at some examples:
+
+如果一时间难以想明白这么多东西，那让我们来看一些例子：
 
 ```rust
-// elided
+// 省略
 fn print(s: &str);
 
-// expanded
+// 展开
 fn print<'a>(s: &'a str);
 
-// elided
+// 省略
 fn trim(s: &str) -> &str;
 
-// expanded
+// 展开
 fn trim<'a>(s: &'a str) -> &'a str;
 
-// illegal, can't determine output lifetime, no inputs
+// 不合法，无法确定输出的生命周期，因为没有输入的
 fn get_str() -> &str;
 
-// explicit options include
-fn get_str<'a>() -> &'a str; // generic version
-fn get_str() -> &'static str; // 'static version
+// 显式的写法包括
+fn get_str<'a>() -> &'a str; // 泛型版本
+fn get_str() -> &'static str; // 'static 版本
 
-// illegal, can't determine output lifetime, multiple inputs
+// 不合法，无法确定输出的生命周期，因为有多个输入
 fn overlap(s: &str, t: &str) -> &str;
 
-// explicit (but still partially elided) options include
-fn overlap<'a>(s: &'a str, t: &str) -> &'a str; // output can't outlive s
-fn overlap<'a>(s: &str, t: &'a str) -> &'a str; // output can't outlive t
-fn overlap<'a>(s: &'a str, t: &'a str) -> &'a str; // output can't outlive s & t
-fn overlap(s: &str, t: &str) -> &'static str; // output can outlive s & t
-fn overlap<'a>(s: &str, t: &str) -> &'a str; // no relationship between input & output lifetimes
+// 显式(但仍有部分省略)的写法包括
+fn overlap<'a>(s: &'a str, t: &str) -> &'a str; // 输出生命周期不能长于s
+fn overlap<'a>(s: &str, t: &'a str) -> &'a str; // 输出生命周期不能长于t
+fn overlap<'a>(s: &'a str, t: &'a str) -> &'a str; // 输出生命周期不能长于s和t
+fn overlap(s: &str, t: &str) -> &'static str; // 输出生命周期可以长于s和t
+fn overlap<'a>(s: &str, t: &str) -> &'a str; // 输入和输出的生命周期无关
 
-// expanded
+// 展开
 fn overlap<'a, 'b>(s: &'a str, t: &'b str) -> &'a str;
 fn overlap<'a, 'b>(s: &'a str, t: &'b str) -> &'b str;
 fn overlap<'a>(s: &'a str, t: &'a str) -> &'a str;
 fn overlap<'a, 'b>(s: &'a str, t: &'b str) -> &'static str;
 fn overlap<'a, 'b, 'c>(s: &'a str, t: &'b str) -> &'c str;
 
-// elided
+// 省略
 fn compare(&self, s: &str) -> &str;
 
-// expanded
+// 展开
 fn compare<'a, 'b>(&'a self, &'b str) -> &'a str;
 ```
 
-If you've ever written
-- a struct method
-- a function which takes references
-- a function which returns references
-- a generic function
-- a trait object (more on this later)
-- a closure (more on this later)
+如果你曾写过
+- 结构体方法
+- 接收引用的函数
+- 返回引用的函数
+- 泛型函数
+- trait object(后面会有更详细的讨论)
+- 闭包(后面会有更详细的讨论)
 
-then your code has generic elided lifetime annotations all over it.
+那么你的代码就有被省略的泛型生命周期记号。
 
-**Key Takeaways**
-- almost all Rust code is generic code and there's elided lifetime annotations everywhere
-
+**要点**
+- 几乎所有Rust代码都是泛型代码，到处都有被省略的生命周期记号
 
 
 ### 5) if it compiles then my lifetime annotations are correct
