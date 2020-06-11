@@ -348,14 +348,16 @@ fn compare<'a, 'b>(&'a self, &'b str) -> &'a str;
 - 几乎所有Rust代码都是泛型代码，到处都有被省略的生命周期记号
 
 
-### 5) if it compiles then my lifetime annotations are correct
+### 5) 如果编译能通过，那么我的生命周期标注就是正确的
 
-**Misconception Corollaries**
-- Rust's lifetime elision rules for functions are always right
-- Rust's borrow checker is always right, technically _and semantically_
-- Rust knows more about the semantics of my program than I do
+**误解推论**
+- Rust对函数的的生命周期省略规则总是正确的
+- Rust的借用检查器在技术上和语义上总是正确的
+- Rust比我更了解我的程序的语义
 
-It's possible for a Rust program to be technically compilable but still semantically wrong. Take this for example:
+
+Rust程序是有可能在技术上能通过编译，但语义上仍然是错的。来看一下这个例子：
+
 
 ```rust
 struct ByteIter<'a> {
@@ -381,7 +383,8 @@ fn main() {
 }
 ```
 
-`ByteIter` is an iterator that iterates over a slice of bytes. We're skipping the `Iterator` trait implementation for conciseness. It seems to work fine, but what if we want to check a couple bytes at a time?
+`ByteIter` 是在字节切片上迭代的迭代器，为了简洁我们跳过对 `Iterator` trait的实现。
+这看起来没什么问题，但如果我们想同时检查多个字节呢？
 
 ```rust
 fn main() {
@@ -389,12 +392,12 @@ fn main() {
     let byte_1 = bytes.next();
     let byte_2 = bytes.next();
     if byte_1 == byte_2 {
-        // do something
+        // 做点什么
     }
 }
 ```
 
-Uh oh! Compile error:
+啊哦！编译错误：
 
 ```rust
 error[E0499]: cannot borrow `bytes` as mutable more than once at a time
@@ -408,9 +411,11 @@ error[E0499]: cannot borrow `bytes` as mutable more than once at a time
    |        ------ first borrow later used here
 ```
 
-I guess we can copy each byte. Copying is okay when we're working with bytes but if we turned `ByteIter` into a generic slice iterator that can iterate over any `&'a [T]` then we might want to use it in the future with types that may be very expensive or impossible to copy / clone. Oh well, I guess there's nothing we can do about that, the code compiles so the lifetime annotations must be right, right?
+我觉得我们可以拷贝每一个字节。拷贝在我们处理字节的时候是可行的，
+但当我们从 `ByteIter` 转向泛型切片迭代器用来迭代任意 `&'a [T]` 的时候
+我们也会想到将来可能它会被应用到那些拷贝/克隆的代价很昂贵或根本不可能的类型上。
+噢，我想我们对这没什么办法，代码能过编译，那么生命周期标记必然是对的不是吗？
 
-Nope, the current lifetime annotations are actually the source of the bug! It's particularly hard to spot because the buggy lifetime annotations are elided. Lets expand the elided lifetimes to get a clearer look at the problem:
 
 ```rust
 struct ByteIter<'a> {
@@ -430,7 +435,8 @@ impl<'a> ByteIter<'a> {
 }
 ```
 
-That didn't help at all. I'm still confused. Here's a hot tip that only Rust pros know: give your lifetime annotations descriptive names. Lets try again:
+这一点帮助都没有，我仍然搞不明白。这里有个只有Rust专家才知道的小窍门：
+给你的生命周期标记取个有描述性的名字。我们再试一次：
 
 ```rust
 struct ByteIter<'remainder> {
@@ -450,9 +456,10 @@ impl<'remainder> ByteIter<'remainder> {
 }
 ```
 
-Each returned byte is annotated with `'mut_self` but the bytes are clearly coming from `'remainder`! Lets fix it.
+每个返回的字节都被用 `'mut_self` 标记了，但这些字节显然是来自于 `'remainder` 的，
+让我们来改一下。
 
-```rust
+```rust 
 struct ByteIter<'remainder> {
     remainder: &'remainder [u8]
 }
@@ -473,65 +480,74 @@ fn main() {
     let mut bytes = ByteIter { remainder: b"1123" };
     let byte_1 = bytes.next();
     let byte_2 = bytes.next();
-    std::mem::drop(bytes); // we can even drop the iterator now!
-    if byte_1 == byte_2 { // compiles
-        // do something
+    std::mem::drop(bytes); // 我们甚至可以在这里把迭代器drop掉！
+    if byte_1 == byte_2 { // 编译通过
+        // 做点什么
     }
 }
 ```
 
-Now that we look back on the previous version of our program it was obviously wrong, so why did Rust compile it? The answer is simple: it was memory safe.
+现在让我们回顾一下，我们前一版的程序显然是错误的，但为什么Rust仍然允许它通过编译呢？
+答案很简单：这么做是内存安全的。
 
-The Rust borrow checker only cares about the lifetime annotations in a program to the extent it can use them to statically verify the memory safety of the program. Rust will happily compile programs even if the lifetime annotations have semantic errors, and the consequence of this is that the program becomes unnecessarily restrictive.
+Rust的借用检查器对程序的生命周期标记只要求到能够以静态的方式验证程序的内存安全。
+Rust会爽快地编译一个程序，即使它的生命周期标记有语义上的错误，
+这带来的结果就是程序会变得过于受限。
 
-Here's a quick example that's the opposite of the previous example: Rust's lifetime elision rules happen to be semantically correct in this instance but we unintentionally write a very restrictive method with our own unnecessary explicit lifetime annotations.
+来看一个与前一个相反的例子：Rust的生命周期省略规则恰好在这个例子上语义是正确的，
+但我们却无意中用了一些多余的显式生命周期标记写了个非常受限的方法。
 
 ```rust
 #[derive(Debug)]
 struct NumRef<'a>(&'a i32);
 
 impl<'a> NumRef<'a> {
-    // my struct is generic over 'a so that means I need to annotate
-    // my self parameters with 'a too, right? (answer: no, not right)
+    // 我的结构体是在'a上泛型的，所以我同样也要
+    // 标记一下我的self参数，对吗？（答案是：不，不对）
     fn some_method(&'a mut self) {}
 }
 
 fn main() {
     let mut num_ref = NumRef(&5);
-    num_ref.some_method(); // mutably borrows num_ref for the rest of its lifetime
-    num_ref.some_method(); // compile error
-    println!("{:?}", num_ref); // also compile error
+    num_ref.some_method(); // 可变借用num_ref直到它剩余的生命周期结束
+    num_ref.some_method(); // 编译错误
+    println!("{:?}", num_ref); // 同样编译错误
 }
 ```
 
-If we have some struct generic over `'a` we almost never want to write a method with a `&'a mut self` receiver. What we're communicating to Rust is "this method will mutably borrow the struct for the entirety of the struct's lifetime". In practice this means Rust's borrow checker will only allow at most one call to `some_method` before the struct becomes permanently mutably borrowed and thus unusable. The use-cases for this are extremely rare but the code above is very easy for confused beginners to write and it compiles. The fix is to not add unnecessary explicit lifetime annotations and let Rust's lifetime elision rules handle it:
+如果我们有一个在 `'a` 上的泛型，我们几乎永远不会想要写一个接收 `&'a mut self`的方法。
+因为这意味着我们告诉Rust，这个方法会可变借用这个结构体直到整个结构体生命周期结束。
+这也就告诉Rust的借用检查器最多只允许 `some_method` 被调用一次，
+在这之后这个结构体将会被永久性地可变借用走，也就变得不可用了。
+这样的用例非常非常少，但处于困惑中的初学者非常容易写出这种代码，并能通过编译。
+正确的做法是不要添加这些多余的显式生命周期标记，让Rust的生命周期省略规则来处理它：
+
 
 ```rust
 #[derive(Debug)]
 struct NumRef<'a>(&'a i32);
 
 impl<'a> NumRef<'a> {
-    // no more 'a on mut self
+    // 去掉mut self前面的'a
     fn some_method(&mut self) {}
 
-    // above line desugars to
+    // 上一段代码脱掉语法糖后变为
     fn some_method_desugared<'b>(&'b mut self){}
 }
 
 fn main() {
     let mut num_ref = NumRef(&5);
     num_ref.some_method();
-    num_ref.some_method(); // compiles
-    println!("{:?}", num_ref); // compiles
+    num_ref.some_method(); // 编译通过
+    println!("{:?}", num_ref); // 编译通过
 }
 ```
 
-**Key Takeaways**
-- Rust's lifetime elision rules for functions are not always right for every situation
-- Rust does not know more about the semantics of your program than you do
-- give your lifetime annotations descriptive names
-- try to be mindful of where you place explicit lifetime annotations and why
-
+**要点**
+- Rust的函数生命周期省略规则并不总是对所有情况都正确的
+- Rust对你的程序的语义了解并不比你多
+- 给你的生命周期标记起一个更有描述性的名字
+- 在你使用显式生命周期标记的时候要想清楚它们应该被用在哪以及为什么要这么用
 
 
 ### 6) boxed trait objects don't have lifetimes
