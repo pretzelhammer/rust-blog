@@ -550,58 +550,60 @@ fn main() {
 - 在你使用显式生命周期标记的时候要想清楚它们应该被用在哪以及为什么要这么用
 
 
-### 6) boxed trait objects don't have lifetimes
+### 6) 装箱的trait对象没有生命周期
 
-Earlier we discussed Rust's lifetime elision rules _for functions_. Rust also has lifetime elision rules for trait objects, which are:
-- if a trait object is used as a type argument to a generic type then its life bound is inferred from the containing type
-    - if there's a unique bound from the containing then that's used
-    - if there's more than one bound from the containing type then an explicit bound must be specified
-- if the above doesn't apply then
-    - if the trait is defined with a single lifetime bound then that bound is used
-    - if `'static` is used for any lifetime bound then `'static` is used
-    - if the trait has no lifetime bounds then its lifetime is inferred in expressions and is `'static` outside of expressions
+早前我们讨论了Rust对函数的生命周期省略规则。Rust同样有着对于trait对象的生命周期省略规则，它们是：
+- 如果一个trait对象作为一个类型参数传递到泛型中，那么它的生命约束会从它包含的类型中推断
+    - 如果包含的类型中有唯一的约束，那么就使用这个约束。
+    - 如果包含的类型中有超过一个约束，那么必须显式指定约束。
+- 如果以上都不适用，那么：
+    - 如果trait是以单个生命周期约束定义的，那么就使用这个约束
+    - 如果所有生命周期约束都是 `'static` 的，那么就使用 `'static` 作为约束
+    - 如果trait没有生命周期约束，那么她它生命周期将会从表达式中推断，如果不在表达式中，那么就是 `'static` 的
 
-All of that sounds super complicated but can be simply summarized as _"a trait object's lifetime bound is inferred from context."_ After looking at a handful of examples we'll see the lifetime bound inferences are pretty intuitive so we don't have to memorize the formal rules:
+这么多东西听起来超级复杂，但我们可以简单地总结为 _"trait对象的生命周期约束是从上下文中推断出来的。"_ 
+在我们看过几个例子后，我们会发现生命周期约束推断其实是很符合直觉的，我们不需要去记这些很正式的规则。
 
 ```rust
 use std::cell::Ref;
 
 trait Trait {}
 
-// elided
+// 省略
 type T1 = Box<dyn Trait>;
-// expanded, Box<T> has no lifetime bound on T, so inferred as 'static
+// 展开，Box<T>对T没有生命周期约束，所以被推断为'static
 type T2 = Box<dyn Trait + 'static>;
 
-// elided
+// 省略
 impl dyn Trait {}
-// expanded
+// 展开
 impl dyn Trait + 'static {}
 
-// elided
+// 省略
 type T3<'a> = &'a dyn Trait;
-// expanded, &'a T requires T: 'a, so inferred as 'a
+// 展开, 因为&'a T 要求 T: 'a, 所以推断为 'a
 type T4<'a> = &'a (dyn Trait + 'a);
 
-// elided
+// 省略
 type T5<'a> = Ref<'a, dyn Trait>;
-// expanded, Ref<'a, T> requires T: 'a, so inferred as 'a
+// 展开, 因为Ref<'a, T> 要求 T: 'a, 所以推断为 'a
 type T6<'a> = Ref<'a, dyn Trait + 'a>;
 
 trait GenericTrait<'a>: 'a {}
 
-// elided
+// 省略
 type T7<'a> = Box<dyn GenericTrait<'a>>;
-// expanded
+// 展开
 type T8<'a> = Box<dyn GenericTrait<'a> + 'a>;
 
-// elided
+// 省略
 impl<'a> dyn GenericTrait<'a> {}
-// expanded
+// 展开
 impl<'a> dyn GenericTrait<'a> + 'a {}
 ```
 
-Concrete types which implement traits can have references and thus they also have lifetime bounds, and so their corresponding trait objects have lifetime bounds. Also you can implement traits directly for references which obviously have lifetime bounds:
+实现了某个trait的具体的类型可以包含引用，因此它们同样拥有生命周期约束，且对应的trait对象也有生命周期约束。
+你也可以直接为引用实现trait，而引用显然有生命周期约束。
 
 ```rust
 trait Trait {}
@@ -610,11 +612,12 @@ struct Struct {}
 struct Ref<'a, T>(&'a T);
 
 impl Trait for Struct {}
-impl Trait for &Struct {} // impl Trait directly on a ref type
-impl<'a, T> Trait for Ref<'a, T> {} // impl Trait on a type containing refs
+impl Trait for &Struct {} // 直接在引用类型上实现Trait
+impl<'a, T> Trait for Ref<'a, T> {} // 在包含引用的类型上实现Trait
 ```
 
-Anyway, this is worth going over because it often confuses beginners when they refactor a function from using trait objects to generics or vice versa. Take this program for example:
+不管怎样，这都值得我们仔细研究，因为新手们经常在将一个使用trait对象的函数重构成使用泛型的函数（或者反过来）的时候感到困惑。
+我们来看看这个例子：
 
 ```rust
 use std::fmt::Display;
@@ -632,7 +635,7 @@ fn static_thread_print<T: Display + Send>(t: T) {
 }
 ```
 
-It throws these compile errors:
+这会抛出下面的编译错误：
 
 ```rust
 error[E0310]: the parameter type `T` may not live long enough
@@ -650,7 +653,8 @@ note: ...so that the type `[closure@src/lib.rs:10:24: 12:6 t:T]` will meet its r
    |     ^^^^^^^^^^^^^^^^^^
 ```
 
-Okay great, the compiler tells us how to fix the issue so lets fix the issue.
+
+很好，编译器告诉了我们怎么解决这个问题，我们来试试。
 
 ```rust
 use std::fmt::Display;
@@ -668,7 +672,9 @@ fn static_thread_print<T: Display + Send + 'static>(t: T) {
 }
 ```
 
-It compiles now but these two functions look awkward next to each other, why does the second function require a `'static` bound on `T` where the first function doesn't? That's a trick question. Using the lifetime elision rules Rust automatically infers a `'static` bound in the first function so both actually have `'static` bounds. This is what the Rust compiler sees:
+编译通过，但这两个函数放在一块儿看起来有点怪，为什么第二个函数对 `T` 有 `'static` 约束，而第一个没有？
+这个问题很刁钻。根据生命周期省略规则，Rust自动为第一个函数推断出 `'static` 约束，所以两个函数实际上都有 `'static` 约束。
+在Rust编译器的眼中是这样的：
 
 ```rust
 use std::fmt::Display;
@@ -686,8 +692,8 @@ fn static_thread_print<T: Display + Send + 'static>(t: T) {
 }
 ```
 
-**Key Takeaways**
-- all trait objects have some inferred default lifetime bounds
+**要点**
+- 所有trait对象都有着默认推断的生命周期约束
 
 
 
