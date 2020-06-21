@@ -39,7 +39,7 @@ I've held all of these misconceptions at some point and I see many beginners str
 
 ## The Misconceptions
 
-In a nutshell: A variable's lifetime is how long the data it points to can be statically verified by the compiler to be valid at its current memory address. I'll now spend the next ~6000 words going into more detail about where people commonly get confused.
+In a nutshell: A variable's lifetime is how long the data it points to can be statically verified by the compiler to be valid at its current memory address. I'll now spend the next ~6500 words going into more detail about where people commonly get confused.
 
 
 
@@ -126,7 +126,7 @@ fn main() {
 }
 ```
 
-They get told that `"str literal"` is hardcoded into the compiled binary and it's loaded into read-only memory at run-time so it's immutable and valid for the entire program and that's what makes it `'static`. These concepts are further reinforced by the rules surrounding defining `static` variables using the `static` keyword.
+They get told that `"str literal"` is hardcoded into the compiled binary and is loaded into read-only memory at run-time so it's immutable and valid for the entire program and that's what makes it `'static`. These concepts are further reinforced by the rules surrounding defining `static` variables using the `static` keyword.
 
 ```rust
 static BYTES: [u8; 3] = [1, 2, 3];
@@ -592,7 +592,7 @@ fn static_thread_print<T: Display + Send>(t: T) {
 }
 ```
 
-It throws these compile errors:
+It throws this compile error:
 
 ```rust
 error[E0310]: the parameter type `T` may not live long enough
