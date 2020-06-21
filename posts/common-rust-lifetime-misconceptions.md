@@ -1,9 +1,9 @@
 # Common Rust Lifetime Misconceptions
 
-_May 19th, 2020 · 34 minute read · #rust · #lifetimes_
+_May 19th, 2020 · 37 minute read · #rust · #lifetimes_
 
 **Table of Contents**
-- [Intro](#Intro)
+- [Intro](#intro)
 - [The Misconceptions](#the-misconceptions)
     - [1) `T` only contains owned types](#1-t-only-contains-owned-types)
     - [2) if `T: 'static` then `T` must be valid for the entire program](#2-if-t-static-then-t-must-be-valid-for-the-entire-program)
@@ -15,9 +15,11 @@ _May 19th, 2020 · 34 minute read · #rust · #lifetimes_
     - [8) lifetimes can grow and shrink at run-time](#8-lifetimes-can-grow-and-shrink-at-run-time)
     - [9) downgrading mut refs to shared refs is safe](#9-downgrading-mut-refs-to-shared-refs-is-safe)
     - [10) closures follow the same lifetime elision rules as functions](#10-closures-follow-the-same-lifetime-elision-rules-as-functions)
+    - [11) `'static` refs can always be coerced into `'a` refs](#11-static-refs-can-always-be-coerced-into-a-refs)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
 - [Follow](#follow)
+- [Further Reading](#further-reading)
 
 
 
@@ -1066,6 +1068,102 @@ There's no real lesson or insight to be had here, it just is what it is.
 - every language has gotchas 🤷
 
 
+### 11) `'static` refs can always be coerced into `'a` refs
+
+**Misconception Corollaries**
+- Rust can coerce values and types
+
+I presented this code example earlier:
+
+```rust
+fn get_str<'a>() -> &'a str; // generic version
+fn get_str() -> &'static str; // 'static version
+```
+
+Several readers contacted me to ask if there was a practical difference between the two. At first I wasn't sure but after some investigation it unforuntately turns out that the answer is yes, there is a practical difference between these two functions.
+
+So ordinarily, when working with values, we can use a `'static` ref in place of an `'a` ref because Rust automatically coerces `'static` refs into `'a` refs. Intuitively this makes sense, since using a ref with a long lifetime where only a short lifetime is required will never cause any memory safety issues. The program below compiles as expected:
+
+```rust
+use rand;
+
+fn generic_str_fn<'a>() -> &'a str {
+    "str"
+}
+
+fn static_str_fn() -> &'static str {
+    "str"
+}
+
+fn a_or_b<T>(a: T, b: T) -> T {
+    if rand::random() {
+        a
+    } else {
+        b
+    }
+}
+
+fn main() {
+    let some_string = "string".to_owned();
+    let some_str = &some_string[..];
+    let str_ref = a_or_b(some_str, generic_str_fn()); // compiles
+    let str_ref = a_or_b(some_str, static_str_fn()); // compiles
+}
+```
+
+However this coercion does not take place when the references are part of a function's type signature, so this does not compile:
+
+```rust
+use rand;
+
+fn generic_str_fn<'a>() -> &'a str {
+    "str"
+}
+
+fn static_str_fn() -> &'static str {
+    "str"
+}
+
+fn a_or_b_fn<T, F>(a: T, b_fn: F) -> T
+    where F: Fn() -> T
+{
+    if rand::random() {
+        a
+    } else {
+        b_fn()
+    }
+}
+
+fn main() {
+    let some_string = "string".to_owned();
+    let some_str = &some_string[..];
+    let str_ref = a_or_b_fn(some_str, generic_str_fn); // compiles
+    let str_ref = a_or_b_fn(some_str, static_str_fn); // compile error
+}
+```
+
+Throws this error:
+
+```rust
+error[E0597]: `some_string` does not live long enough
+  --> src/main.rs:23:21
+   |
+23 |     let some_str = &some_string[..];
+   |                     ^^^^^^^^^^^ borrowed value does not live long enough
+...
+25 |     let str_ref = a_or_b_fn(some_str, static_str_fn);
+   |                   ---------------------------------- argument requires that `some_string` is borrowed for `'static`
+26 | }
+   | - `some_string` dropped here while still borrowed
+```
+
+It's debatable whether or not this is a Rust Gotcha, since it's not a simple straight-forward case of coercing a `&'static str` into a `&'a str` but coercing a `for<T> Fn() -> &'static T` into a `for<'a, T> Fn() -> &'a T`. The former is a coercion between values and the latter is a coercion between types.
+
+**Key Takeaways**
+- Rust can only coerce values, and does not coerce types
+- functions with `for<'a, T> fn() -> &'a T` signatures are more flexible and work in more scenarios than functions with `for<T> fn() -> &'static T` signatures
+
+
 
 ## Conclusion
 
@@ -1096,6 +1194,8 @@ There's no real lesson or insight to be had here, it just is what it is.
 - try not to re-borrow mut refs as shared refs, or you're gonna have a bad time
 - re-borrowing a mut ref doesn't end its lifetime, even if the ref is dropped
 - every language has gotchas 🤷
+- Rust can only coerce values, and does not coerce types
+- functions with `for<'a, T> fn() -> &'a T` signatures are more flexible and work in more scenarios than functions with `for<T> fn() -> &'static T` signatures
 
 
 
@@ -1113,3 +1213,9 @@ Discuss this article on
 ## Follow
 
 [Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
+
+
+
+## Further Reading
+
+[Learning Rust in 2020](./learning-rust-in-2020.md)

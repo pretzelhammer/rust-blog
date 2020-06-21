@@ -1,28 +1,30 @@
 # Learning Rust in 2020
 
-_May 9th, 2020 · 16 minute read · #rust_
+_May 9th, 2020 · 17 minute read · #rust_
 
 **Table of Contents**
-- [Intro](#Intro)
-- [TL;DR](#TLDR)
-- [Practical Rust Resource Reviews](#Practical-Rust-Resource-Reviews)
-    - [HackerRank](#HackerRank)
-    - [Project Euler](#Project-Euler)
-    - [LeetCode](#LeetCode)
-    - [Codewars](#Codewars)
-    - [Advent of Code](#Advent-of-Code)
-    - [Rustlings](#Rustlings)
-    - [Exercism](#Exercism)
-- [Conclusion](#Conclusion)
-- [Discuss](#Discuss)
-- [Follow](#Follow)
-- [Further Reading](#Further-Reading)
+- [Intro](#intro)
+- [TL;DR](#tldr)
+- [Practical Rust Resource Reviews](#practical-rust-resource-reviews)
+    - [HackerRank](#hackerrank)
+    - [Project Euler](#project-euler)
+    - [LeetCode](#leetcode)
+    - [Codewars](#codewars)
+    - [Advent of Code](#advent-of-code)
+    - [Rustlings](#rustlings)
+    - [Exercism](#xxercism)
+- [Conclusion](#conclusion)
+- [Discuss](#discuss)
+- [Follow](#follow)
+- [Further Reading](#further-reading)
 
 ## Intro
 
 When I started learning Rust I made the mistake of following the advice to read [The Book](https://doc.rust-lang.org/book/title-page.html) first. While it's a great resource, it's pretty overwhelming for a beginner to get told _"If you'd like to learn this programming language the best way to start is to read this 20 chapter book!"_ Most people give up before they even get started when they get advice like this. Nobody ever told someone to read a 20 chapter book just to get started with Javascript or Python. Rust's learning curve is no joke but you gotta give the people what they want, and they want to program, not read about programming. Programming is fun and reading about programming is not as fun.
 
 The first 10% of this article is gonna be me giving you advice on how to learn Rust in 2020 following a _practical hands-on coding_ approach. This is the good part of the article. You can safely exit after this part (I'll tell you when). The remaining 90% of this article is me ranting about how most online coding challenge sites have poor support for Rust.
+
+
 
 ## TL;DR
 
@@ -34,6 +36,8 @@ At this point you're probably an advanced beginner and can find your own path. I
 
 Exit now, the good part of the article is over.
 
+
+
 ## Practical Rust Resource Reviews
 
 _Alternative title: Reviews of Free Online Resources a Rust Beinnger can use to Practice Writing Small Simple Rust Programs_
@@ -41,6 +45,8 @@ _Alternative title: Reviews of Free Online Resources a Rust Beinnger can use to 
 Most of these resources weren't specifically created for the purpose of teaching Rust, however they can all be used to learn and practice Rust and many of them explicitly support Rust submissions and provide Rust-specific versions of problems.
 
 The resources are ordered from worst to best.
+
+
 
 ### [HackerRank](https://www.hackerrank.com)
 
@@ -50,9 +56,13 @@ Rust is a supported language on HackerRank except you aren't allowed to submit R
 
 This is really strange because I was able to browse Rust solutions for the problem above submitted by other HackerRank users, so it's possible to submit a Rust solution somehow. I tried Googling this issue and but Google didn't return any useful results. There's no way for me to evalute HackerRank other than to tell you not to waste your time with it like I did.
 
+
+
 ### [Project Euler](https://projecteuler.net/archives)
 
 When I first started to learn programming back in 2012 I commonly heard _"If you wanna get up to speed quickly in a new programming language solve some Project Euler problems with it!"_ which was okay advice at the time since there were not many other alternatives but in my opinion Project Euler has very little to do with programming. Project Euler problems are more math problems than they are programming problems. Their challenge lies almost entirely in the mathematical reasoning required to reach the solution as the programming required is usually trivial. I would not recommend solving Project Euler problems as a way to learn Rust unless you're very mathematically inclined and have some nostalgia for the site.
+
+
 
 ### [LeetCode](https://leetcode.com/problemset/all/)
 
@@ -80,6 +90,8 @@ General LeetCode issues:
 Things LeetCode does right:
 - Solutions to problems are tested against a suite of secret unit tests, but if you fail a particular test case they show you the failed case.
 - All of the generated Rust code at least follows rustfmt conventions.
+
+
 
 ### [Codewars](https://www.codewars.com/join?language=rust)
 
@@ -117,6 +129,8 @@ Things Codewars does right:
 - Submitting a solution to a problem also automatically publishes the solution. You can view and upvote other members' solutions. You can sort solutions by most upvotes to see particularly concise and clever solutions, which sometimes will also be very idiomatic (but sometimes not, as explained above).
 - Problem difficulty grading is pretty good! Instead of grading problems as Easy, Medium, or Hard like LeetCode, Codewars chooses to grade problems from easiest to hardest as: 8 kyu, 7 kyu, 6 kyu, 5 kyu, 4 kyu, 3 kyu, 2 kyu, 1 kyu. I completed 60 problems in the 8 kyu - 4 kyu range and every level felt a little more difficult than the last, which aligned with my expectations.
 
+
+
 ### [Advent of Code](https://adventofcode.com/)
 
 Advent of Code is totally language-agnostic. This would seem like a minus at first but seeing how horribly HackerRank, LeetCode, and Codewars handle their support for Rust on their sites it's actually a plus. Advent of Code also gets placed above the previously mentioned sites because AoC's exercises are really interesting, diverse, and high quality in my opinion.
@@ -130,6 +144,8 @@ Things AoC got right:
 - High quality, interesting, curated exercises that are tied together with a narrative.
 - Language agnostic, so while it doesn't teach you any Rust patterns it at least doesn't teach you any Rust anti-patterns either.
 
+
+
 ### [Rustlings](https://github.com/rust-lang/rustlings)
 
 Rustlings is sooo good. All Rustlings exercises are hand-crafted for Rust with love and it's a wonderful breath of fresh air. Finally, a set of exercises that really teach you idiomatic Rust!
@@ -139,6 +155,8 @@ If you're a total Rust newbie you should absolutely checkout [Rustlings](https:/
 I have only 1 tiny Rustlings criticism: there are some sudden difficulty spikes in the "error-handling" and "conversions" exercises that I could see some users getting overwhelmed by. I assume most probably make it through, or at least I hope.
 
 I also have 1 tiny non-criticism: it's too short. This is a non-criticism because it's one of Rustlings design goals to be a quick and gentle introduction to Rust but it's so good that of course I wish it was somehow longer.
+
+
 
 ### [Exercism](https://exercism.io/tracks/rust)
 
@@ -156,9 +174,13 @@ Things Exercism does right:
 - All unit tests are public, if you're failing a test you know exactly why.
 - After you submit a solution you can browse other user's solutions, and you can sort solutions by which received the most stars.
 
+
+
 ## Conclusion
 
-Same as the [TL;DR](#TLDR) :)
+Same as the [TL;DR](#tldr) :)
+
+
 
 ## Discuss
 
@@ -169,9 +191,13 @@ Discuss this article on
 - [rust subreddit](https://www.reddit.com/r/rust/comments/gie64f/learning_rust_in_2020/)
 - [Hackernews](https://news.ycombinator.com/item?id=23160975)
 
+
+
 ## Follow
 
 [Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
+
+
 
 ## Further Reading
 
