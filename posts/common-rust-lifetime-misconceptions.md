@@ -1070,9 +1070,6 @@ There's no real lesson or insight to be had here, it just is what it is.
 
 ### 11) `'static` refs can always be coerced into `'a` refs
 
-**Misconception Corollaries**
-- Rust can coerce values and types
-
 I presented this code example earlier:
 
 ```rust
@@ -1160,7 +1157,6 @@ error[E0597]: `some_string` does not live long enough
 It's debatable whether or not this is a Rust Gotcha, since it's not a simple straight-forward case of coercing a `&'static str` into a `&'a str` but coercing a `for<T> Fn() -> &'static T` into a `for<'a, T> Fn() -> &'a T`. The former is a coercion between values and the latter is a coercion between types.
 
 **Key Takeaways**
-- Rust can only coerce values, and does not coerce types
 - functions with `for<'a, T> fn() -> &'a T` signatures are more flexible and work in more scenarios than functions with `for<T> fn() -> &'static T` signatures
 
 
@@ -1194,7 +1190,6 @@ It's debatable whether or not this is a Rust Gotcha, since it's not a simple str
 - try not to re-borrow mut refs as shared refs, or you're gonna have a bad time
 - re-borrowing a mut ref doesn't end its lifetime, even if the ref is dropped
 - every language has gotchas 🤷
-- Rust can only coerce values, and does not coerce types
 - functions with `for<'a, T> fn() -> &'a T` signatures are more flexible and work in more scenarios than functions with `for<T> fn() -> &'static T` signatures
 
 
