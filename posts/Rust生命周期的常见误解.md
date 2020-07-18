@@ -697,13 +697,13 @@ fn static_thread_print<T: Display + Send + 'static>(t: T) {
 
 
 
-### 7) compiler error messages will tell me how to fix my program
+### 7) 编译器报错信息会告诉我怎么修改我的代码
 
-**Misconception Corollaries**
-- Rust's lifetime elision rules for trait objects are always right
-- Rust knows more about the semantics of my program than I do
+**误解推论**
+- Rust编译器对于trait objects的生命周期省略规则总是对的
+- Rust编译器比我更懂我代码的语义
 
-This misconception is the previous 2 misconceptions combined into one example:
+这个误解是前两个误解的合二为一的例子：
 
 ```rust
 use std::fmt::Display;
@@ -713,7 +713,7 @@ fn box_displayable<T: Display>(t: T) -> Box<dyn Display> {
 }
 ```
 
-Throws this error:
+抛出如下错误：
 
 ```rust
 error[E0310]: the parameter type `T` may not live long enough
@@ -731,7 +731,8 @@ note: ...so that the type `T` will meet its required lifetime bounds
   |     ^^^^^^^^^^^
 ```
 
-Okay, let's fix it how the compiler is telling us to fix it, nevermind the fact that it's automatically inferring a `'static` lifetime bound for our boxed trait object without telling us and its recommended fix is based on that unstated fact:
+好吧，让我们照着编译器告诉我们的方式修改它，别在意这种改法基于了一个没有告知的事实：
+编译器自动为我们的boxed trait object推断了一个`'static`的生命周期约束。
 
 ```rust
 use std::fmt::Display;
@@ -741,7 +742,8 @@ fn box_displayable<T: Display + 'static>(t: T) -> Box<dyn Display> {
 }
 ```
 
-So the program compiles now... but is this what we actually want? Probably, but maybe not. The compiler didn't mention any other fixes but this would have also been appropriate:
+现在编译通过了，但这真的是我们想要的吗？可能是，也可能不是，编译去并没有告诉我们其它解决方法
+但这个也许合适。
 
 ```rust
 use std::fmt::Display;
@@ -751,7 +753,8 @@ fn box_displayable<'a, T: Display + 'a>(t: T) -> Box<dyn Display + 'a> {
 }
 ```
 
-This function accepts all the same arguments as the previous version plus a lot more! Does that make it better? Not necessarily, it depends on the requirements and constraints of our program. This example is a bit abstract so lets take a look at a simpler and more obvious case:
+这个函数接收的参数和前一个版本一样，但多了不少东西。这样写能让它更好吗？不一定，
+这取决于我们的程序的要求和约束。这个例子有些抽象，让我们来看看更简单明了的情况。
 
 ```rust
 fn return_first(a: &str, b: &str) -> &str {
@@ -759,7 +762,7 @@ fn return_first(a: &str, b: &str) -> &str {
 }
 ```
 
-Throws:
+报错:
 
 ```rust
 error[E0106]: missing lifetime specifier
@@ -775,7 +778,9 @@ help: consider introducing a named lifetime parameter
   |                ^^^^    ^^^^^^^     ^^^^^^^     ^^^
 ```
 
-The error message recommends annotating both inputs and the output with the same lifetime. If we did this our program would compile but this function would overly-constrain the return type. What we actually want is this:
+这个错误信息建议我们给输入和输出打上相同的生命周期标记。
+这么做虽然能使得编译通过，但却过度限制了返回类型。
+我们真正想要的是这个：
 
 ```rust
 fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
@@ -783,11 +788,10 @@ fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
 }
 ```
 
-**Key Takeaways**
-- Rust's lifetime elision rules for trait objects are not always right for every situation
-- Rust does not know more about the semantics of your program than you do
-- Rust compiler error messages suggest fixes which will make your program compile which is not that same as fixes which will make you program compile _and_ best suit the requirements of your program
-
+**要点**
+- Rust对trait object的生命周期省略规则并不是在所有情况下都正确。
+- Rust不见得比你更懂你代码的语义。
+- Rust编译错误信息给出的修改建议可能能让你的代码编译通过，但这不一定是最符合你的要求的。
 
 
 ### 8) lifetimes can grow and shrink at run-time
