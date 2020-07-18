@@ -794,13 +794,13 @@ fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
 - Rust编译错误信息给出的修改建议可能能让你的代码编译通过，但这不一定是最符合你的要求的。
 
 
-### 8) lifetimes can grow and shrink at run-time
+### 8) 生命周期可以在运行时变长缩短。
 
-**Misconception Corollaries**
-- container types can swap references at run-time to change their lifetime
-- Rust borrow checker does advanced control flow analysis
+**误解推论**
+- 容器类型可以通过更换引用在运行时更改自己的生命周期
+- Rust的借用检查会进行深入的控制流分析
 
-This does not compile:
+这过不了编译：
 
 ```rust
 struct Has<'lifetime> {
@@ -814,22 +814,22 @@ fn main() {
 
     {
         let short = String::from("short");
-        // "switch" to short lifetime
+        // 换成短生命周期
         has.lifetime = &short;
         assert_eq!(has.lifetime, "short");
 
-        // "switch back" to long lifetime (but not really)
+        // 换回长生命周期（并不行）
         has.lifetime = &long;
         assert_eq!(has.lifetime, "long");
-        // `short` dropped here
+        // `short`在这里析构
     }
 
-    // compile error, `short` still "borrowed" after drop
+    // 编译错误，`short`在析构后仍处于借用状态
     assert_eq!(has.lifetime, "long");
 }
 ```
 
-It throws:
+报错：
 
 ```rust
 error[E0597]: `short` does not live long enough
@@ -844,7 +844,7 @@ error[E0597]: `short` does not live long enough
    |     --------------------------------- borrow later used here
 ```
 
-This also does not compile, throws the exact same error as above:
+下面这个代码同样过不了编译，报的错和上面一样。
 
 ```rust
 struct Has<'lifetime> {
@@ -856,31 +856,36 @@ fn main() {
     let mut has = Has { lifetime: &long };
     assert_eq!(has.lifetime, "long");
 
-    // this block will never run
+    // 这个代码块不会被执行
     if false {
         let short = String::from("short");
-        // "switch" to short lifetime
+        // 换成短生命周期
         has.lifetime = &short;
         assert_eq!(has.lifetime, "short");
 
-        // "switch back" to long lifetime (but not really)
+        // 换回长生命周期（并不行）
         has.lifetime = &long;
         assert_eq!(has.lifetime, "long");
-        // `short` dropped here
+        // `short`在这里析构
     }
 
-    // still a compile error, `short` still "borrowed" after drop
+    // 仍旧编译错误，`short`在析构后仍处于借用状态
     assert_eq!(has.lifetime, "long");
 }
 ```
 
-Lifetimes have to be statically verified at compile-time and the Rust borrow checker only does very basic control flow analysis, so it assumes every block in an `if-else` statement and every match arm in a `match` statement can be taken and then chooses the shortest possible lifetime for the variable. Once a variable is bounded by a lifetime it is bounded by that lifetime _forever_. The lifetime of a variable can only shrink, and all the shrinkage is determined at compile-time.
+生命周期只会在编译期被静态验证，并且Rust的借用检查只能做到基本的控制流分析，
+它假设每个`if-else`中的代码块和`match`的每个分支都会被执行，
+并且其中的每一个变量都能被指定一个最短的生命周期。
+一旦变量被指定了一个生命周期，它就一直受到这个生命周期约束。变量的生命周期只能缩短，
+并且所有缩短都会在编译器被确定。
 
-**Key Takeaways**
-- lifetimes are statically verified at compile-time
-- lifetimes cannot grow or shrink or change in any way at run-time
-- Rust borrow checker will always choose the shortest possible lifetime for a variable assuming all code paths can be taken
 
+
+**要点**
+- 生命周期是在编译期静态验证的
+- 生命周期不能在运行时变长、缩短或者改变
+- Rust的借用检查总是会为所有变量指定一个最短可能的生命周期，并且假定所有代码路径都会被执行
 
 
 ### 9) downgrading mut refs to shared refs is safe
