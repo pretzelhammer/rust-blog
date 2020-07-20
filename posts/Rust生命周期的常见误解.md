@@ -794,13 +794,13 @@ fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
 - Rust编译错误信息给出的修改建议可能能让你的代码编译通过，但这不一定是最符合你的要求的。
 
 
-### 8) lifetimes can grow and shrink at run-time
+### 8) 生命周期可以在运行时变长缩短。
 
-**Misconception Corollaries**
-- container types can swap references at run-time to change their lifetime
-- Rust borrow checker does advanced control flow analysis
+**误解推论**
+- 容器类型可以通过更换引用在运行时更改自己的生命周期
+- Rust的借用检查会进行深入的控制流分析
 
-This does not compile:
+这过不了编译：
 
 ```rust
 struct Has<'lifetime> {
@@ -814,22 +814,22 @@ fn main() {
 
     {
         let short = String::from("short");
-        // "switch" to short lifetime
+        // 换成短生命周期
         has.lifetime = &short;
         assert_eq!(has.lifetime, "short");
 
-        // "switch back" to long lifetime (but not really)
+        // 换回长生命周期（并不行）
         has.lifetime = &long;
         assert_eq!(has.lifetime, "long");
-        // `short` dropped here
+        // `short`在这里析构
     }
 
-    // compile error, `short` still "borrowed" after drop
+    // 编译错误，`short`在析构后仍处于借用状态
     assert_eq!(has.lifetime, "long");
 }
 ```
 
-It throws:
+报错：
 
 ```rust
 error[E0597]: `short` does not live long enough
@@ -844,7 +844,7 @@ error[E0597]: `short` does not live long enough
    |     --------------------------------- borrow later used here
 ```
 
-This also does not compile, throws the exact same error as above:
+下面这个代码同样过不了编译，报的错和上面一样。
 
 ```rust
 struct Has<'lifetime> {
@@ -856,62 +856,68 @@ fn main() {
     let mut has = Has { lifetime: &long };
     assert_eq!(has.lifetime, "long");
 
-    // this block will never run
+    // 这个代码块不会被执行
     if false {
         let short = String::from("short");
-        // "switch" to short lifetime
+        // 换成短生命周期
         has.lifetime = &short;
         assert_eq!(has.lifetime, "short");
 
-        // "switch back" to long lifetime (but not really)
+        // 换回长生命周期（并不行）
         has.lifetime = &long;
         assert_eq!(has.lifetime, "long");
-        // `short` dropped here
+        // `short`在这里析构
     }
 
-    // still a compile error, `short` still "borrowed" after drop
+    // 仍旧编译错误，`short`在析构后仍处于借用状态
     assert_eq!(has.lifetime, "long");
 }
 ```
 
-Lifetimes have to be statically verified at compile-time and the Rust borrow checker only does very basic control flow analysis, so it assumes every block in an `if-else` statement and every match arm in a `match` statement can be taken and then chooses the shortest possible lifetime for the variable. Once a variable is bounded by a lifetime it is bounded by that lifetime _forever_. The lifetime of a variable can only shrink, and all the shrinkage is determined at compile-time.
-
-**Key Takeaways**
-- lifetimes are statically verified at compile-time
-- lifetimes cannot grow or shrink or change in any way at run-time
-- Rust borrow checker will always choose the shortest possible lifetime for a variable assuming all code paths can be taken
-
+生命周期只会在编译期被静态验证，并且Rust的借用检查只能做到基本的控制流分析，
+它假设每个`if-else`中的代码块和`match`的每个分支都会被执行，
+并且其中的每一个变量都能被指定一个最短的生命周期。
+一旦变量被指定了一个生命周期，它就一直受到这个生命周期约束。变量的生命周期只能缩短，
+并且所有缩短都会在编译器被确定。
 
 
-### 9) downgrading mut refs to shared refs is safe
 
-**Misconception Corollaries**
-- re-borrowing a reference ends its lifetime and starts a new one
+**要点**
+- 生命周期是在编译期静态验证的
+- 生命周期不能在运行时变长、缩短或者改变
+- Rust的借用检查总是会为所有变量指定一个最短可能的生命周期，并且假定所有代码路径都会被执行
 
-You can pass a mut ref to a function expecting a shared ref because Rust will implicitly re-borrow the mut ref as immutable:
+
+### 9) 将可变引用降级为共享引用是安全的
+
+**误解推论**
+- 重新借用一个引用会终止它的生命周期并且开始一个新的
+
+你可以向一个接收共享引用的函数传递一个可变引用，因为Rust会隐式将可变引用重新借用为不可变引用：
 
 ```rust
 fn takes_shared_ref(n: &i32) {}
 
 fn main() {
     let mut a = 10;
-    takes_shared_ref(&mut a); // compiles
-    takes_shared_ref(&*(&mut a)); // above line desugared
+    takes_shared_ref(&mut a); // 编译通过
+    takes_shared_ref(&*(&mut a)); // 上一行的显式写法
 }
 ```
 
-Intuitively this makes sense, since there's no harm in re-borrowing a mut ref as immutable, right? Surprisingly no, as the program below does not compile:
+直觉上这没问题，将一个可变引用重新借用为不可变引用，应该不会有什么害处不是吗？
+然而并非如此，下面的代码过不了编译。
 
 ```rust
 fn main() {
     let mut a = 10;
-    let b: &i32 = &*(&mut a); // re-borrowed as immutable
+    let b: &i32 = &*(&mut a); // 重新借用为不可变
     let c: &i32 = &a;
-    dbg!(b, c); // compile error
+    dbg!(b, c); // 编译错误
 }
 ```
 
-Throws this error:
+报错：
 
 ```rust
 error[E0502]: cannot borrow `a` as immutable because it is also borrowed as mutable
@@ -925,7 +931,9 @@ error[E0502]: cannot borrow `a` as immutable because it is also borrowed as muta
   |          - mutable borrow later used here
 ```
 
-A mutable borrow does occur, but it's immediately and unconditionally re-borrowed as immutable and then dropped. Why is Rust treating the immutable re-borrow as if it still has the mut ref's exclusive lifetime? While there's no issue in the particular example above, allowing the ability to downgrade mut refs to shared refs does indeed introduce potential memory safety issues:
+可变借用出现后立即重新借用为不可变引用，然后可变引用自身析构。
+为什么Rust会认为这个不可变的重新借用仍具有可变引用的独占生命周期？
+虽然上面这个例子没什么问题，但允许将可变引用降级为共享引用实际上引入了潜在的内存安全问题。
 
 ```rust
 use std::sync::Mutex;
@@ -935,14 +943,13 @@ struct Struct {
 }
 
 impl Struct {
-    // downgrades mut self to shared str
+    // 将self的可变引用降级为str的共享引用
     fn get_string(&mut self) -> &str {
         self.mutex.get_mut().unwrap()
     }
     fn mutate_string(&self) {
-        // if Rust allowed downgrading mut refs to shared refs
-        // then the following line would invalidate any shared
-        // refs returned from the get_string method
+        // 如果Rust允许将可变引用降级为共享引用，
+        // 那么下面这行代码会使得所有从get_string中得到的共享引用失效
         *self.mutex.lock().unwrap() = "surprise!".to_owned();
     }
 }
@@ -951,30 +958,36 @@ fn main() {
     let mut s = Struct {
         mutex: Mutex::new("string".to_owned())
     };
-    let str_ref = s.get_string(); // mut ref downgraded to shared ref
-    s.mutate_string(); // str_ref invalidated, now a dangling pointer
-    dbg!(str_ref); // compile error as expected
+    let str_ref = s.get_string(); // 可变引用降级为共享引用
+    s.mutate_string(); // str_ref失效，变为悬空指针
+    dbg!(str_ref); // 编译错误，和我们预期的一样
 }
 ```
 
-The point here is that when you re-borrow a mut ref as a shared ref you don't get that shared ref without a big gotcha: it extends the mut ref's lifetime for the duration of the re-borrow even if the mut ref itself is dropped. Using the re-borrowed shared ref is very difficult because it's immutable but it can't overlap with any other shared refs. The re-borrowed shared ref has all the cons of a mut ref and all the cons of a shared ref and has the pros of neither. I believe re-borrowing a mut ref as a shared ref should be considered a Rust anti-pattern. Being aware of this anti-pattern is important so that you can easily spot it when you see code like this:
+这里的问题在于，当你将一个可变引用重新借用为共享引用，你会遇到一点麻烦：
+即使可变引用已经析构，重新借用出来的共享引用还是会将可变引用的生命周期延长到和自己一样长。
+这种重新借用出来的共享引用非常难用，因为它不能与其它共享引用共存。
+它有着可变引用和不可变引用的所有缺点，却没有它们各自的优点。
+我认为将可变引用重新借用为共享引用应该被认为是Rust的反模式（anti-pattern)。
+对这种反模式保持警惕很重要，这可以让你在看到下面这样的代码的时候更容易发现它：
 
 ```rust
-// downgrades mut T to shared T
+// 将T的可变引用降级为共享引用
 fn some_function<T>(some_arg: &mut T) -> &T;
 
 struct Struct;
 
 impl Struct {
-    // downgrades mut self to shared self
+    // 将self的可变引用降级为self共享引用
     fn some_method(&mut self) -> &self;
 
-    // downgrades mut self to shared T
+    // 将self的可变引用降级为T的共享引用
     fn other_method(&mut self) -> &T;
 }
 ```
 
-Even if you avoid re-borrows in function and method signatures Rust still does automatic implicit re-borrows so it's easy to bump into this problem without realizing it like so:
+即使你避免了函数和方法签名中的重新借用，Rust仍然会自动隐式重新借用，
+所以很容易无意中遇到这样的问题：
 
 ```rust
 use std::collections::HashMap;
@@ -987,16 +1000,18 @@ struct Player {
 }
 
 fn start_game(player_a: PlayerID, player_b: PlayerID, server: &mut HashMap<PlayerID, Player>) {
-    // get players from server or create & insert new players if they don't yet exist
+    // 从服务器中获取player，如果不存在则创建并插入一个新的
     let player_a: &Player = server.entry(player_a).or_default();
     let player_b: &Player = server.entry(player_b).or_default();
 
-    // do something with players
-    dbg!(player_a, player_b); // compile error
+    // 用player做点什么
+    dbg!(player_a, player_b); // 编译错误
 }
 ```
 
-The above fails to compile. `or_default()` returns a `&mut Player` which we're implicitly re-borrowing as `&Player` because of our explicit type annotations. To do what we want we have to:
+上面的代码编译失败。因为 `or_default()` 返回一个 `&mut Player`，
+而我们的显式类型标注 `&Player` 使得这个 `&mut Player` 被隐式重新借用为 `&Player` 。
+为了通过编译，我们不得不这样写：
 
 ```rust
 use std::collections::HashMap;
@@ -1009,24 +1024,24 @@ struct Player {
 }
 
 fn start_game(player_a: PlayerID, player_b: PlayerID, server: &mut HashMap<PlayerID, Player>) {
-    // drop the returned mut Player refs since we can't use them together anyway
+    // 因为我们不能把它们放在一起用，所以这里把返回的Player可变引用析构掉
     server.entry(player_a).or_default();
     server.entry(player_b).or_default();
 
-    // fetch the players again, getting them immutably this time, without any implicit re-borrows
+    // 再次获取这些Player，这次以不可变的方式，避免出现隐式重新借用
     let player_a = server.get(&player_a);
     let player_b = server.get(&player_b);
 
-    // do something with players
-    dbg!(player_a, player_b); // compiles
+    // 用Player做点什么
+    dbg!(player_a, player_b); // 编译通过
 }
 ```
 
-Kinda awkward and clunky but this is the sacrifice we make at the Altar of Memory Safety.
+虽然有点尴尬和笨重，但这也算是为内存安全做出的牺牲。
 
-**Key Takeaways**
-- try not to re-borrow mut refs as shared refs, or you're gonna have a bad time
-- re-borrowing a mut ref doesn't end its lifetime, even if the ref is dropped
+**要点**
+- 尽量不要把可变引用重新借用为共享引用，不然你会遇到不少麻烦
+- 重新借用一个可变引用不会使得它的生命周期终结，即使这个可变引用已经析构
 
 
 
