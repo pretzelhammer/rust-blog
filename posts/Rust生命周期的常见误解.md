@@ -3,21 +3,21 @@
 _5月19日, 2020 · 阅读大概需要34分钟 · #rust · #生命周期_
 
 **目录**
-- [Intro](#Intro)
-- [The Misconceptions](#the-misconceptions)
-    - [1) `T` only contains owned types](#1-t-only-contains-owned-types)
-    - [2) if `T: 'static` then `T` must be valid for the entire program](#2-if-t-static-then-t-must-be-valid-for-the-entire-program)
-    - [3) `&'a T` and `T: 'a` are the same thing](#3-a-t-and-t-a-are-the-same-thing)
-    - [4) my code isn't generic and doesn't have lifetimes](#4-my-code-isnt-generic-and-doesnt-have-lifetimes)
-    - [5) if it compiles then my lifetime annotations are correct](#5-if-it-compiles-then-my-lifetime-annotations-are-correct)
-    - [6) boxed trait objects don't have lifetimes](#6-boxed-trait-objects-dont-have-lifetimes)
-    - [7) compiler error messages will tell me how to fix my program](#7-compiler-error-messages-will-tell-me-how-to-fix-my-program)
-    - [8) lifetimes can grow and shrink at run-time](#8-lifetimes-can-grow-and-shrink-at-run-time)
-    - [9) downgrading mut refs to shared refs is safe](#9-downgrading-mut-refs-to-shared-refs-is-safe)
-    - [10) closures follow the same lifetime elision rules as functions](#10-closures-follow-the-same-lifetime-elision-rules-as-functions)
-- [Conclusion](#conclusion)
-- [Discuss](#discuss)
-- [Follow](#follow)
+- [介绍](#介绍)
+- [误解列表](#误解列表)
+    - [1) `T` 只包含所有权类型](#1-T-只包含所有权类型)
+    - [2) 如果 `T: 'static` 那么 `T` 必须在整个程序运行中都是有效的](#2-如果-T:-static-那么-T-必须在整个程序运行中都是有效的)
+    - [3) `&'a T` 和 `T: 'a` 是相同的](#3-&'a-T-和-T:-'a-是相同的)
+    - [4) 我的代码没用到泛型，也不含生命周期](#4-我的代码没用到泛型，也不含生命周期)
+    - [5) 如果编译能通过，那么我的生命周期标注就是正确的](#5-如果编译能通过，那么我的生命周期标注就是正确的)
+    - [6) 装箱的trait对象没有生命周期](#6-装箱的trait对象没有生命周期)
+    - [7) 编译器报错信息会告诉我怎么修改我的代码](#7-编译器报错信息会告诉我怎么修改我的代码)
+    - [8) 生命周期可以在运行时变长缩短](#8-生命周期可以在运行时变长缩短)
+    - [9) 将可变引用降级为共享引用是安全的](#9-将可变引用降级为共享引用是安全的)
+    - [10) 闭包遵循和函数相同的生命周期省略规则](#10-闭包遵循和函数相同的生命周期省略规则)
+- [总结](#总结)
+- [讨论](#讨论)
+- [关注](#关注)
 
 
 
@@ -794,7 +794,7 @@ fn return_first<'a>(a: &'a str, b: &str) -> &'a str {
 - Rust编译错误信息给出的修改建议可能能让你的代码编译通过，但这不一定是最符合你的要求的。
 
 
-### 8) 生命周期可以在运行时变长缩短。
+### 8) 生命周期可以在运行时变长缩短
 
 **误解推论**
 - 容器类型可以通过更换引用在运行时更改自己的生命周期
@@ -1045,11 +1045,11 @@ fn start_game(player_a: PlayerID, player_b: PlayerID, server: &mut HashMap<Playe
 
 
 
-### 10) closures follow the same lifetime elision rules as functions
+### 10) 闭包遵循和函数相同的生命周期省略规则
 
-This is more of a Rust Gotcha than a misconception.
+比起误解，这更像是Rust的一个小陷阱。
 
-Closures, despite being functions, do not follow the same lifetime elision rules as functions.
+闭包，虽然也是个函数，但是它并不遵循和函数相同的生命周期省略规则。
 
 ```rust
 fn function(x: &i32) -> &i32 {
@@ -1061,7 +1061,7 @@ fn main() {
 }
 ```
 
-Throws:
+报错：
 
 ```rust
 error: lifetime may not live long enough
@@ -1074,50 +1074,52 @@ error: lifetime may not live long enough
   |                       let's call the lifetime of this reference `'1`
 ```
 
-After desugaring we get:
+去掉语法糖后：
 
 ```rust
-// input lifetime gets applied to output
+// 输入的生命周期应用到输出上
 fn function<'a>(x: &'a i32) -> &'a i32 {
     x
 }
 
 fn main() {
-    // input and output each get their own distinct lifetimes
+    // 输入和输出有它们自己独有的生命周期
     let closure = for<'a, 'b> |x: &'a i32| -> &'b i32 { x };
-    // note: the above line is not valid syntax, but we need it for illustrative purposes
+    // 注意：上面这行代码不是合法的语法，但可以表达出我们的意思
 }
 ```
 
-There's no good reason for this discrepancy. Closures were first implemented with different type inference semantics than functions and now we're stuck with it forever because to unify them at this point would be a breaking change. So how can we explicitly annotate a closure's type? Our options include:
+出现这种差异并没有一个好的理由。闭包最早的实现用的类型推断语义和函数不同，
+现在变得没法改了，因为将它们统一起来会造成一个不兼容的改动。
+那么我们要怎么样显式标注闭包的类型呢？我们可选的办法有：
 
 ```rust
 fn main() {
-    // cast to trait object, becomes unsized, oops, compile error
+    // 转成trait object，变成不定长类型，编译错误
     let identity: dyn Fn(&i32) -> &i32 = |x: &i32| x;
 
-    // can allocate it on the heap as a workaround but feels clunky
+    // 可以通过将它分配在堆上来绕过这个错误，但这样很笨重
     let identity: Box<dyn Fn(&i32) -> &i32> = Box::new(|x: &i32| x);
 
-    // can skip the allocation and just create a static reference
+    // 也可以跳过分配，直接创建一个静态的引用
     let identity: &dyn Fn(&i32) -> &i32 = &|x: &i32| x;
 
-    // previous line desugared :)
+    // 上一行去掉语法糖之后:)
     let identity: &'static (dyn for<'a> Fn(&'a i32) -> &'a i32 + 'static) = &|x: &i32| -> &i32 { x };
 
-    // this would be ideal but it's invalid syntax
+    // 理想中的写法是这样的，但这不是有效的语法
     let identity: impl Fn(&i32) -> &i32 = |x: &i32| x;
 
-    // this would also be nice but it's also invalid syntax
+    // 这样也不错，但也不是有效的语法
     let identity = for<'a> |x: &'a i32| -> &'a i32 { x };
 
-    // since "impl trait" works in the function return position
+    // "impl trait"可以写在函数返回的位置，我们也可以这样写
     fn return_identity() -> impl Fn(&i32) -> &i32 {
         |x| x
     }
     let identity = return_identity();
 
-    // more generic version of the previous solution
+    // 前一种解决方案更泛化的写法
     fn annotate<T, F>(f: F) -> F where F: Fn(&T) -> &T {
         f
     }
@@ -1125,50 +1127,50 @@ fn main() {
 }
 ```
 
-As I'm sure you've already noticed from the examples above, when closure types are used as trait bounds they do follow the usual function lifetime elision rules.
+相信你已经注意到，在上面的例子中，当闭包类型使用trait约束的时候会遵循一般函数的生命周期省略规则。
 
-There's no real lesson or insight to be had here, it just is what it is.
+这里没有什么真正的教训和洞察，只是它就是这样的而已。
 
-**Key Takeaways**
-- every language has gotchas 🤷
-
-
-
-## Conclusion
-
-- `T` is a superset of both `&T` and `&mut T`
-- `&T` and `&mut T` are disjoint sets
-- `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_
-- if `T: 'static` then `T` can be a borrowed type with a `'static` lifetime _or_ an owned type
-- since `T: 'static` includes owned types that means `T`
-    - can be dynamically allocated at run-time
-    - does not have to be valid for the entire program
-    - can be safely and freely mutated
-    - can be dynamically dropped at run-time
-    - can have lifetimes of different durations
-- `T: 'a` is more general and more flexible than `&'a T`
-- `T: 'a` accepts owned types, owned types which contain references, and references
-- `&'a T` only accepts references
-- if `T: 'static` then `T: 'a` since `'static` >= `'a` for all `'a`
-- almost all Rust code is generic code and there's elided lifetime annotations everywhere
-- Rust's lifetime elision rules are not always right for every situation
-- Rust does not know more about the semantics of your program than you do
-- give your lifetime annotations descriptive names
-- try to be mindful of where you place explicit lifetime annotations and why
-- all trait objects have some inferred default lifetime bounds
-- Rust compiler error messages suggest fixes which will make your program compile which is not that same as fixes which will make you program compile _and_ best suit the requirements of your program
-- lifetimes are statically verified at compile-time
-- lifetimes cannot grow or shrink or change in any way at run-time
-- Rust borrow checker will always choose the shortest possible lifetime for a variable assuming all code paths can be taken
-- try not to re-borrow mut refs as shared refs, or you're gonna have a bad time
-- re-borrowing a mut ref doesn't end its lifetime, even if the ref is dropped
-- every language has gotchas 🤷
+**要点**
+- 每一门语言都有自己的小陷阱 🤷
 
 
 
-## Discuss
+## 总结
 
-Discuss this article on
+- `T` 是 `&T` 和 `&mut T` 的超集
+- `&T` 和 `&mut T` 是不相交的集合
+- `T: 'static` 应该被读作 _"`T` 受 `'static` 生命周期约束"_
+- 如果 `T: 'static` 那么 `T` 可以是一个有着 `'static` 生命周期的借用类型，或是一个所有权类型
+- 既然 `T: 'static` 包含了所有权类型，那么意味着 `T`
+    - 可以在运行时动态分配
+    - 不必在整个程序中都是有效的
+    - 可以被安全地任意修改
+    - 可以在运行时动态析构
+    - 可以有不同长度的生命周期
+- `T: 'a` 比 `&'a T` 更泛化、灵活
+- `T: 'a` 接收所有权类型、带引用的所有权类型，以及引用
+- `&'a T` 只接收引用
+- 如果 `T: 'static` 那么 `T: 'a`，因为对于所有 `'a` 都有 `'static` >= `'a`
+- 几乎所有Rust代码都是泛型的，到处都有省略的生命周期
+- Rust的生命周期省略规则并不是在任何情况下都对
+- Rust并不比你更了解你程序的语义
+- 给生命周期标记起一个有描述性的名字
+- 考虑清楚哪里需要显式写出生命周期标记，以及为什么要这么写
+- 所有trait object都有默认推断的生命周期约束
+- Rust的编译错误信息可以让你的代码通过编译，但不一定是最符合你代码要求的
+- 生命周期是在编译期静态验证的
+- 生命周期不会以任何方式在运行时变长缩短
+- Rust的借用检查总会为每个变量选择一个最短可能的生命周期，并且假定每条代码路径都会被执行
+- 尽量避免将可变引用重新借用为不可变引用，不然你会遇到不少麻烦
+- 重新借用一个可变引用不会终止它的生命周期，即使这个可变引用已经析构
+- 每个语言都有自己的小陷阱 🤷
+
+
+
+## 讨论
+
+在这些地方讨论这篇文章
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/gmrcrq/common_rust_lifetime_misconceptions/)
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-common-rust-lifetime-misconceptions/42950)
 - [Twitter](https://twitter.com/pretzelhammer/status/1263505856903163910)
@@ -1177,6 +1179,6 @@ Discuss this article on
 
 
 
-## Follow
+## 关注
 
-[Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
+[在Twitter上关注pretzelhammer](https://twitter.com/pretzelhammer) 来获取最新的博客的更新!
