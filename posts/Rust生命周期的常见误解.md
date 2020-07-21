@@ -1,13 +1,13 @@
 # Rust生命周期常见误区
 
-_5月19日, 2020 · 阅读大概需要34分钟 · #rust · #生命周期_
+_5月19日, 2020 · 阅读大概需要37分钟 · #rust · #生命周期_
 
 **目录**
 - [介绍](#介绍)
 - [误解列表](#误解列表)
     - [1) `T` 只包含所有权类型](#1-T-只包含所有权类型)
-    - [2) 如果 `T: 'static` 那么 `T` 必须在整个程序运行中都是有效的](#2-如果-T:-static-那么-T-必须在整个程序运行中都是有效的)
-    - [3) `&'a T` 和 `T: 'a` 是相同的](#3-&'a-T-和-T:-'a-是相同的)
+    - [2) 如果 `T: 'static` 那么 `T` 必须在整个程序运行中都是有效的](#2-如果-T-static-那么-T-必须在整个程序运行中都是有效的)
+    - [3) `&'a T` 和 `T: 'a` 是相同的](#3-a-T-和-T-a-是相同的)
     - [4) 我的代码没用到泛型，也不含生命周期](#4-我的代码没用到泛型，也不含生命周期)
     - [5) 如果编译能通过，那么我的生命周期标注就是正确的](#5-如果编译能通过，那么我的生命周期标注就是正确的)
     - [6) 装箱的trait对象没有生命周期](#6-装箱的trait对象没有生命周期)
@@ -15,6 +15,7 @@ _5月19日, 2020 · 阅读大概需要34分钟 · #rust · #生命周期_
     - [8) 生命周期可以在运行时变长缩短](#8-生命周期可以在运行时变长缩短)
     - [9) 将可变引用降级为共享引用是安全的](#9-将可变引用降级为共享引用是安全的)
     - [10) 闭包遵循和函数相同的生命周期省略规则](#10-闭包遵循和函数相同的生命周期省略规则)
+    - [11) `'static` 引用总能强制转换为 `'a` 引用](#11-static-引用总能强制转换为-a-引用)
 - [总结](#总结)
 - [讨论](#讨论)
 - [关注](#关注)
@@ -1135,6 +1136,104 @@ fn main() {
 - 每一门语言都有自己的小陷阱 🤷
 
 
+### 11) `'static` 引用总能强制转换为 `'a` 引用
+
+我前面给出了这个例子：
+
+```rust
+fn get_str<'a>() -> &'a str; // 泛型版本
+fn get_str() -> &'static str; // 'static版本
+```
+
+有的读者问我这两个在实践中是否有区别。一开始我也不太确定，但不幸的是，
+在经过一段时间的研究之后我发现它们在实践中确实存在着区别。
+
+所以一般来说，在操作值得时候我们可以使用 `'static` 引用来替换 `'a` 引用，
+因为Rust会自动将 `'static` 引用强制转换到 `'a` 引用。
+直觉上来讲，这没毛病，在一个要求较短生命周期引用的地方使用一个有着更长的生命周期的引用不会造成内存安全问题。
+下面的代码和我们想的一样编译通过：
+
+```rust
+use rand;
+
+fn generic_str_fn<'a>() -> &'a str {
+    "str"
+}
+
+fn static_str_fn() -> &'static str {
+    "str"
+}
+
+fn a_or_b<T>(a: T, b: T) -> T {
+    if rand::random() {
+        a
+    } else {
+        b
+    }
+}
+
+fn main() {
+    let some_string = "string".to_owned();
+    let some_str = &some_string[..];
+    let str_ref = a_or_b(some_str, generic_str_fn()); // compiles
+    let str_ref = a_or_b(some_str, static_str_fn()); // compiles
+}
+```
+
+然而，这种强制转换并不会在引用作为函数的类型签名的一部分的时候出现，所以下面这段代码无法通过编译：
+
+```rust
+use rand;
+
+fn generic_str_fn<'a>() -> &'a str {
+    "str"
+}
+
+fn static_str_fn() -> &'static str {
+    "str"
+}
+
+fn a_or_b_fn<T, F>(a: T, b_fn: F) -> T
+    where F: Fn() -> T
+{
+    if rand::random() {
+        a
+    } else {
+        b_fn()
+    }
+}
+
+fn main() {
+    let some_string = "string".to_owned();
+    let some_str = &some_string[..];
+    let str_ref = a_or_b_fn(some_str, generic_str_fn); // 编译通过
+    let str_ref = a_or_b_fn(some_str, static_str_fn); // 编译错误
+}
+```
+
+报错：
+
+```rust
+error[E0597]: `some_string` does not live long enough
+  --> src/main.rs:23:21
+   |
+23 |     let some_str = &some_string[..];
+   |                     ^^^^^^^^^^^ borrowed value does not live long enough
+...
+25 |     let str_ref = a_or_b_fn(some_str, static_str_fn);
+   |                   ---------------------------------- argument requires that `some_string` is borrowed for `'static`
+26 | }
+   | - `some_string` dropped here while still borrowed
+```
+
+这算不算Rust的小陷阱还有待商榷，因为这不是 `&'static str` 到 `&'a str` 简单直接的强制转换，
+而是 `for<T> Fn() -> &'static T` 到 `for<'a, T> Fn() -> &'a T` 这种更复杂的情况。
+前者是值之间的强制转换，后者是类型之间的强制转换。
+
+**要点**
+- 签名为 `for<'a, T> Fn() -> &'a T` 的函数要比签名为 `for<T> fn() -> &'static T` 的函数更为灵活，并且能用在更多场景下
+
+
 
 ## 总结
 
@@ -1182,3 +1281,6 @@ fn main() {
 ## 关注
 
 [在Twitter上关注pretzelhammer](https://twitter.com/pretzelhammer) 来获取最新的博客的更新!
+
+## 拓展阅读
+[Learning Rust in 2020](./learning-rust-in-2020.md)
