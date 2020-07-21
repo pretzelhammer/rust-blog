@@ -1136,7 +1136,6 @@ fn main() {
 - 每一门语言都有自己的小陷阱 🤷
 
 
-<<<<<<< HEAD
 ### 11) `'static` 引用总能强制转换为 `'a` 引用
 
 我前面给出了这个例子：
@@ -1176,8 +1175,8 @@ fn a_or_b<T>(a: T, b: T) -> T {
 fn main() {
     let some_string = "string".to_owned();
     let some_str = &some_string[..];
-    let str_ref = a_or_b(some_str, generic_str_fn()); // compiles
-    let str_ref = a_or_b(some_str, static_str_fn()); // compiles
+    let str_ref = a_or_b(some_str, generic_str_fn()); // 编译通过
+    let str_ref = a_or_b(some_str, static_str_fn()); // 编译通过
 }
 ```
 
@@ -1234,9 +1233,6 @@ error[E0597]: `some_string` does not live long enough
 **要点**
 - 签名为 `for<'a, T> Fn() -> &'a T` 的函数要比签名为 `for<T> fn() -> &'static T` 的函数更为灵活，并且能用在更多场景下
 
-
-=======
->>>>>>> 3be04d30bf56ded0176266c2563e9826557f624b
 
 ## 总结
 
