@@ -10,6 +10,8 @@ Also I saw this comic which was pretty encouraging:
 
 _artist credit: [stuffman](https://stuffman.tumblr.com/)_
 
+
+
 ## Yeah but why is your blog a github repo and not a website?
 
 I'm a full-stack webdev by trade so I'm _super nitpicky_ when it comes to websites. I try to perfect every aspect from the HTML to the CSS to the JS to the HTTP responses sent from the backend. I'll spend days on optimizing my build & deploy pipeline from 2 seconds to 1 second which ironically is a huge waste of time that I'll never get back and it's something nobody will ever see or appreciate. I get so lost in the technical details that I spend all my energy on making _the perfect website_ and then I'm too burned out to do any writing. I know there are [hundreds of static site generators](https://www.staticgen.com/) that do 90%+ of the technical work for you but I've tried those in the past and wasn't satisfied with them. That's not because they're bad tools, a lot of them are excellent tools, it's just that I'm a craftsman and not happy with something unless I made it with my own two hands. It's a problem, I know.
@@ -18,9 +20,13 @@ I was almost about to give up on my blog idea but that's when I ran across [Fran
 
 One small final note: I plan to focus this blog entirely around Rust. Aside from this initial post I don't intend to use this blog to post about personal things.
 
+
+
 ## Follow
 
 [Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
+
+
 
 ## Further Reading
 
