@@ -22,7 +22,7 @@ One small final note: I plan to focus this blog entirely around Rust. Aside from
 
 
 
-## Follow
+## Notifications
 
 [Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
 

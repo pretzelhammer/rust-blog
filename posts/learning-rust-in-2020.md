@@ -15,7 +15,7 @@ _May 9th, 2020 · 15 minute read · #rust_
     - [Exercism](#xxercism)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
-- [Follow](#follow)
+- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -195,7 +195,7 @@ Discuss this article on
 
 
 
-## Follow
+## Notifications
 
 [Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
 

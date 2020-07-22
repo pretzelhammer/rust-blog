@@ -18,7 +18,7 @@ _May 19th, 2020 · 34 minute read · #rust · #lifetimes_
     - [11) `'static` refs can always be coerced into `'a` refs](#11-static-refs-can-always-be-coerced-into-a-refs)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
-- [Follow](#follow)
+- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -1205,7 +1205,7 @@ Discuss this article on
 
 
 
-## Follow
+## Notifications
 
 [Follow pretzelhammer on Twitter](https://twitter.com/pretzelhammer) to get notified of future blog posts!
 
