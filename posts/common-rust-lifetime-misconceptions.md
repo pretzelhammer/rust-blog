@@ -1213,4 +1213,5 @@ Discuss this article on
 
 ## Further Reading
 
-[Learning Rust in 2020](./learning-rust-in-2020.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
+- [Learning Rust in 2020](./learning-rust-in-2020.md)

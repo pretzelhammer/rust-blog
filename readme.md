@@ -6,6 +6,7 @@ My posts are listed below in reverse chronological order.
 
 | Date | Title | Translations |
 |-|-|-|
+| 2020-07-22 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | |
 | 2020-05-19 | [Common Rust Lifetime Misconceptions](./posts/common-rust-lifetime-misconceptions.md) | [中文](./posts/Rust生命周期的常见误解.md)
 | 2020-05-09 | [Learning Rust in 2020](./posts/learning-rust-in-2020.md) | |
 | 2020-05-02 | [Why blog?](./posts/why-blog.md) | |
@@ -28,4 +29,4 @@ If you wanna translate a blog post into another language that's awesome! Please 
 
 To be compatible with [Rust](https://github.com/rust-lang/rust), all code examples in this blog are licensed under [Apache License Version 2.0](./license-apache) or [MIT License](./license-mit), at your option.
 
-I'd like to retain exclusive rights to the English version of the posts themselves, but as mentioned above you're free to translate posts and promote your translations however you like.
+I'd like to retain exclusive rights to the English version of the posts themselves, but as mentioned above if you translate a post into another language you're welcome to promote your translations however you like.

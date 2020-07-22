@@ -26,3 +26,4 @@ One small final note: I plan to focus this blog entirely around Rust. Aside from
 
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)

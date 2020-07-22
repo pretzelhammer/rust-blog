@@ -201,4 +201,5 @@ Discuss this article on
 
 ## Further Reading
 
-[Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
+- [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
