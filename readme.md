@@ -15,7 +15,7 @@ My posts are listed below in reverse chronological order.
 
 Get notified when a blog post get published by
 - [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- Watching this repo's releases (click on `Watch` dropdown and select `Releases Only`)
+- Watching this repo's releases (click on `Watch` dropdown and select `Releases only`)
 
 ## Feedback
 
