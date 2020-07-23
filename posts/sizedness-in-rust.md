@@ -1271,7 +1271,10 @@ A unit struct is any struct without any fields, e.g.
 struct Struct;
 ```
 
-They're mentioned here for comprehensiveness but have no interesting properties aside from being ZSTs.
+Properties that make unit structs more useful than `()`:
+- we can implement whatever traits we want on our own unit structs, Rust's trait orphan rules prevent us from implementing traits for `()` as it's defined in the standard library
+- unit structs can be given meaningful names within the context of our program
+- unit structs, like all structs, are non-Copy by default, which may be important in the context of our program
 
 
 
