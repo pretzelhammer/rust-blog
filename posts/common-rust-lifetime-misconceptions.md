@@ -480,7 +480,7 @@ fn main() {
 }
 ```
 
-If we have some struct generic over `'a` we almost never want to write a method with an `&'a mut self` argument. What we're communicating to Rust is _"this method will mutably borrow the struct for the entirety of the struct's lifetime"_. In practice this means Rust's borrow checker will only allow at most one call to `some_method` before the struct becomes permanently mutably borrowed and thus unusable. The use-cases for this are extremely rare but the code above is very easy for confused beginners to write and it compiles. The fix is to not add unnecessary explicit lifetime annotations and let Rust's lifetime elision rules handle it:
+If we have some struct generic over `'a` we almost never want to write a method with a `&'a mut self` receiver. What we're communicating to Rust is _"this method will mutably borrow the struct for the entirety of the struct's lifetime"_. In practice this means Rust's borrow checker will only allow at most one call to `some_method` before the struct becomes permanently mutably borrowed and thus unusable. The use-cases for this are extremely rare but the code above is very easy for confused beginners to write and it compiles. The fix is to not add unnecessary explicit lifetime annotations and let Rust's lifetime elision rules handle it:
 
 ```rust
 #[derive(Debug)]
