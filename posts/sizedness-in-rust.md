@@ -1238,7 +1238,8 @@ struct Struct {
 
 ## Discuss
 
-I'm in the early stages of soliciting feedback for this article so I can improve it and fix any techincal inaccuracies, confusing examples, or unclear explanations. After a few revisions I'll share it in the usual places like reddit, twitter, and hackernews and post the links here.
+Discuss this article on
+- [official Rust users forum](https://users.rust-lang.org/t/blog-post-sizedness-in-rust/46293?u=pretzelhammer)
 
 
 
