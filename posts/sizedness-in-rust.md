@@ -13,7 +13,7 @@ _July 22nd, 2020 · 42 minute read · #rust · #sizedness_
     - [Trait Objects](#trait-objects)
         - [Trait Object-Safety](#trait-object-safety)
             - [Trait cannot have Associated Functions](#trait-cannot-have-associated-functions)
-            - [Trait cannot have Associated Consts](#trait-cannot-have-associated-consts)
+            - [Trait cannot have Associated Constants](#trait-cannot-have-associated-constants)
             - [Trait cannot have Generic Methods](#trait-cannot-have-generic-methods)
             - [Trait can be Generic](#trait-can-be-generic)
             - [Trait can have Associated Types](#trait-can-have-associated-types)
@@ -50,7 +50,7 @@ Table of phrases I use and what they're suppose to mean:
 | ZST | zero-sized type, i.e. instances of the type are 0 bytes in size |
 | 1) usize _or_<br>2) width | 1) pointer-sized unsigned integer _or_<br>2) single unit of measurement of pointer width |
 | 1) thin pointer _or_<br>2) single-width pointer | pointer that is _1 usize wide_ or _1 width_ |
-| 1) wide pointer _or_<br>2) double-width pointer | pointer that is _2 usizes wide_ or _2 widths_ |
+| 1) fat pointer _or_<br>2) double-width pointer | pointer that is _2 usizes wide_ or _2 widths_ |
 | 1) pointer _or_<br>2) reference | some pointer of some width, width will be clarified by context |
 | slice | double-width pointer to a dynamically sized view into some array |
 
@@ -71,7 +71,7 @@ fn main() {
     // tuples
     assert_eq!(8, size_of::<(i32, i32)>());
 
-    // fixed-size arrays
+    // arrays
     assert_eq!(0, size_of::<[i32; 0]>());
     assert_eq!(12, size_of::<[i32; 3]>());
 
@@ -119,7 +119,7 @@ fn main() {
 }
 ```
 
-How we determine the size of sized types is straight-forward: all primitives and pointers have known sizes and all structs, tuples, enums, and fixed-size arrays are just made up of primitives and pointers or other nested structs, tuples, enums, and fixed-size arrays so we can just count up the bytes recursively. We can't determine the size of unsized types for similarly straight-forward reasons: arrays can have any number of elements in them and can thus be of any size at run-time and trait objects can be implemented by any number of structs or enums and thus can also be of any size at run-time.
+How we determine the size of sized types is straight-forward: all primitives and pointers have known sizes and all structs, tuples, enums, and arrays are just made up of primitives and pointers or other nested structs, tuples, enums, and arrays so we can just count up the bytes recursively. We can't determine the size of unsized types for similarly straight-forward reasons: slices can have any number of elements in them and can thus be of any size at run-time and trait objects can be implemented by any number of structs or enums and thus can also be of any size at run-time.
 
 **Pro tips**
 - pointers of dynamically sized views into arrays are called slices in Rust, e.g. a `&str` is a _"string slice"_, a `&[i32]` is an _"i32 slice"_
@@ -128,7 +128,7 @@ How we determine the size of sized types is straight-forward: all primitives and
 - unsized structs pointers are double-width because they store a pointer to the struct data and the size of the struct
 - unsized structs can only have 1 unsized field and it must be the last field in the struct
 
-To really hammer home the point about double-width pointers for unsized types here's a commented code example comparing fixed-size arrays to slices:
+To really hammer home the point about double-width pointers for unsized types here's a commented code example comparing arrays to slices:
 
 ```rust
 use std::mem::size_of;
@@ -259,7 +259,7 @@ fn main() {
 
 The `Sized` trait in Rust is an auto trait and a marker trait.
 
-Auto traits are traits that get automatically implemented for a type if it passes certain conditions. Marker traits are traits that mark a type as having a certain property. Marker traits do not have any trait items such as methods, associated functions, associated consts, or associated types. All auto traits are marker traits but not all marker traits are auto traits. Auto traits must be marker traits so the compiler can provide an automatic default implementation for them, which would not be possible if the trait had any trait items.
+Auto traits are traits that get automatically implemented for a type if it passes certain conditions. Marker traits are traits that mark a type as having a certain property. Marker traits do not have any trait items such as methods, associated functions, associated constants, or associated types. All auto traits are marker traits but not all marker traits are auto traits. Auto traits must be marker traits so the compiler can provide an automatic default implementation for them, which would not be possible if the trait had any trait items.
 
 A type gets an auto `Sized` implementation if all of its members are also `Sized`. What "members" means depends on the containing type, for example: fields of a struct, variants of an enum, elements of an array, items of a tuple, and so on. Once a type has been "marked" with a `Sized` implementation that means its size in bytes is known at compile time.
 
@@ -280,10 +280,12 @@ impl !Sync for Struct {}
 impl !Sized for Struct {} // compile error
 ```
 
-This seems reasonable since there might be reasons why we wouldn't want our user-defined type to be sent or shared across threads, however it's hard to imagine a scenario where we'd want the compiler to "forget" the size of our type and treat it as an unsized type as that offers no benefits and merely makes the type more difficult to work with.
+This seems reasonable since there might be reasons why we wouldn't want our type to be sent or shared across threads, however it's hard to imagine a scenario where we'd want the compiler to "forget" the size of our type and treat it as an unsized type as that offers no benefits and merely makes the type more difficult to work with.
+
+Also, to be super pedantic `Sized` is not technically an auto trait as it's not defined using the `auto` keyword but the special treatment it gets from the compiler makes it behave like all other auto traits so in practice it's okay to think of it as an auto trait.
 
 **Key Takeaways**
-- `Sized` is an auto marker trait
+- `Sized` is an "auto" marker trait
 
 
 
@@ -338,7 +340,7 @@ fn dbg<T: Debug>(t: &T) { // T: Debug + Sized
 }
 
 fn main() {
-    dbg("my str"); // &T = &str, T = str, str: Debug + ?Sized ❌
+    dbg("my str"); // &T = &str, T = str, str: Debug + !Sized ❌
 }
 ```
 
@@ -370,11 +372,11 @@ I've already kinda spoiled the answer in the code comments above, but basically:
 |------------|---|----|
 | `&str` | `T` = `&str` | `T` = `str` |
 
-| Type | `Sized` | `?Sized` |
-|-|-|-|
-| `str` | ❌ | ✔️ |
-| `&str` | ✔️ | ❌ |
-| `&&str` | ✔️ | ❌ |
+| Type | `Sized` |
+|-|-|
+| `str` | ❌ |
+| `&str` | ✔️ |
+| `&&str` | ✔️ |
 
 This is why I had to add a `?Sized` bound to make the function work as intended after changing it to take references. The working function below:
 
@@ -386,7 +388,7 @@ fn debug<T: Debug + ?Sized>(t: &T) { // T: Debug + ?Sized
 }
 
 fn main() {
-    debug("my str"); // &T = &str, T = str, str: Debug + ?Sized ✔️
+    debug("my str"); // &T = &str, T = str, str: Debug + !Sized ✔️
 }
 ```
 
@@ -822,7 +824,7 @@ This is as expected, but at least we can turn our trait into a trait object now.
 
 
 
-##### Trait cannot have Associated Consts
+##### Trait cannot have Associated Constants
 
 This does not compile:
 
@@ -942,7 +944,7 @@ This works for the same reason as above, the associated type is part of the trai
 - a trait is object-unsafe if
     - it's bounded by `Sized`
     - it has associated functions
-    - it has associated consts
+    - it has associated constants
     - it has generic methods
 - a trait is otherwise object-safe, including if
     - it's generic
@@ -1559,7 +1561,7 @@ struct Struct {
 - only instances of sized types can be placed on the stack, i.e. can be passed around by value
 - instances of unsized types can't be placed on the stack and must be passed around by reference
 - pointers to unsized types are double-width because aside from pointing to data they need to do an extra bit of bookkeeping to also keep track of the data's length _or_ point to a vtable
-- `Sized` is an auto marker trait
+- `Sized` is an "auto" marker trait
 - all generic type parameters are auto-bound with `Sized` by default
 - if we have a generic function which takes an argument of some `T` behind a pointer, e.g. `&T`, `Box<T>`, `Rc<T>`, et cetera, then we almost always want to opt-out of the default `Sized` bound with `T: ?Sized`
 - leveraging slices and Rust's auto type coercions allows us to write flexible APIs
@@ -1570,7 +1572,7 @@ struct Struct {
 - a trait is object-unsafe if
     - it's bounded by `Sized`
     - it has associated functions
-    - it has associated consts
+    - it has associated constants
     - it has generic methods
 - a trait is otherwise object-safe, including if
     - it's generic
