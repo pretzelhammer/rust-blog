@@ -1,6 +1,6 @@
 # Sizedness in Rust
 
-_July 22nd, 2020 · 42 minute read · #rust · #sizedness_
+_July 22nd, 2020 · 35 minute read · #rust · #sizedness_
 
 **Table of Contents**
 
@@ -11,15 +11,9 @@ _July 22nd, 2020 · 42 minute read · #rust · #sizedness_
 - [Unsized Types](#unsized-types)
     - [Slices](#slices)
     - [Trait Objects](#trait-objects)
-        - [Trait Object-Safety](#trait-object-safety)
-            - [Trait cannot have Associated Functions](#trait-cannot-have-associated-functions)
-            - [Trait cannot have Associated Constants](#trait-cannot-have-associated-constants)
-            - [Trait cannot have Generic Methods](#trait-cannot-have-generic-methods)
-            - [Trait can be Generic](#trait-can-be-generic)
-            - [Trait can have Associated Types](#trait-can-have-associated-types)
-        - [More Trait Object Limitations](#more-trait-object-limitations)
-            - [Cannot Cast Unsized Types to Trait Objects](#cannot-cast-unsized-types-to-trait-objects)
-            - [Cannot create Multi-Trait Objects](#cannot-create-multi-trait-objects)
+    - [Trait Object Limitations](#trait-object-limitations)
+        - [Cannot Cast Unsized Types to Trait Objects](#cannot-cast-unsized-types-to-trait-objects)
+        - [Cannot create Multi-Trait Objects](#cannot-create-multi-trait-objects)
     - [User-Defined Unsized Types](#user-defined-unsized-types)
 - [Zero-Sized Types](#zero-sized-types)
     - [Unit Type](#unit-type)
@@ -48,9 +42,9 @@ Table of phrases I use and what they're suppose to mean:
 | ?sized type | type that may or may not be sized |
 | unsized coercion | coercing a sized type into an unsized type |
 | ZST | zero-sized type, i.e. instances of the type are 0 bytes in size |
-| 1) usize _or_<br>2) width | 1) pointer-sized unsigned integer _or_<br>2) single unit of measurement of pointer width |
-| 1) thin pointer _or_<br>2) single-width pointer | pointer that is _1 usize wide_ or _1 width_ |
-| 1) fat pointer _or_<br>2) double-width pointer | pointer that is _2 usizes wide_ or _2 widths_ |
+| width | single unit of measurement of pointer width |
+| 1) thin pointer _or_<br>2) single-width pointer | pointer that is _1 width_ |
+| 1) fat pointer _or_<br>2) double-width pointer | pointer that is _2 widths_ |
 | 1) pointer _or_<br>2) reference | some pointer of some width, width will be clarified by context |
 | slice | double-width pointer to a dynamically sized view into some array |
 
@@ -282,7 +276,7 @@ impl !Sized for Struct {} // compile error
 
 This seems reasonable since there might be reasons why we wouldn't want our type to be sent or shared across threads, however it's hard to imagine a scenario where we'd want the compiler to "forget" the size of our type and treat it as an unsized type as that offers no benefits and merely makes the type more difficult to work with.
 
-Also, to be super pedantic `Sized` is not technically an auto trait as it's not defined using the `auto` keyword but the special treatment it gets from the compiler makes it behave like all other auto traits so in practice it's okay to think of it as an auto trait.
+Also, to be super pedantic `Sized` is not technically an auto trait since it's not defined using the `auto` keyword but the special treatment it gets from the compiler makes it behave very similarly to auto traits so in practice it's okay to think of it as an auto trait.
 
 **Key Takeaways**
 - `Sized` is an "auto" marker trait
@@ -685,288 +679,21 @@ As we saw before everything is okay as long as we don't call the `Sized` method 
 
 
 
-#### Trait Object-Safety
+### Trait Object Limitations
 
-A trait is _"object safe"_ if we can cast types which implement the trait to trait objects. As we have discovered already making a trait `Sized` makes it object-unsafe. Unfortunately there are many more constraints which we'll go over below.
+Even if a trait is object-safe there are still sizedness-related edge cases which limit what types can be cast to trait objects and how many and what kind of traits can be represented by a trait object.
 
 
 
-##### Trait cannot have Associated Functions
-
-```rust
-trait Trait {
-    fn associated_function() {}
-}
-
-fn function(t: &dyn Trait) {} // compile error
-```
-
-It's not immediately obvious why this is the case but it becomes more clear in this example:
-
-```rust
-trait Trait {
-    fn associated_function() {}
-}
-
-struct Struct;
-struct Struct2;
-
-impl Trait for Struct {
-    fn associated_function() {
-        println!("struct");
-    }
-}
-
-impl Trait for Struct2 {
-    fn associated_function() {
-        println!("struct2");
-    }
-}
-
-fn function(t: &dyn Trait) {} // compile error
-
-fn main() {
-    <dyn Trait>::associated_function(); // print "struct" or "struct2" ???
-}
-```
-
-If multiple types implement the trait then there's no way to determine which implementation should be used for `<dyn Trait>::associated_function`. Above program throws:
-
-```rust
-error[E0038]: the trait `Trait` cannot be made into an object
-  --> src/main.rs:20:16
-   |
-1  | trait Trait {
-   |       ----- this trait cannot be made into an object...
-2  |     fn associated_function() {}
-   |        ------------------- ...because associated function `associated_function` has no `self` parameter
-...
-20 | fn function(t: &dyn Trait) {}
-   |                ^^^^^^^^^^ the trait `Trait` cannot be made into an object
-   |
-help: consider turning `associated_function` into a method by giving it a `&self` argument or constraining it so it does not apply to trait objects
-   |
-2  |     fn associated_function() where Self: Sized {}
-   |                              ^^^^^^^^^^^^^^^^^
-
-error[E0038]: the trait `Trait` cannot be made into an object
-  --> src/main.rs:21:6
-   |
-1  | trait Trait {
-   |       ----- this trait cannot be made into an object...
-2  |     fn associated_function() {}
-   |        ------------------- ...because associated function `associated_function` has no `self` parameter
-...
-21 |     <dyn Trait>::associated_function();
-   |      ^^^^^^^^^ the trait `Trait` cannot be made into an object
-   |
-help: consider turning `associated_function` into a method by giving it a `&self` argument or constraining it so it does not apply to trait objects
-   |
-2  |     fn associated_function() where Self: Sized {}
-   |    
-```
-
-The compiler suggests an interesting fix. Our associated function doesn't use `Self` anywhere, it can't take `self` as an argument because then it would become a method and not an associated function, however there's nothing barring its return type from being `Self`. In fact the very handy `std::default::Default` trait in the standard library has this exact signature:
-
-```rust
-pub trait Default {
-    // associated function returning Self
-    fn default() -> Self;
-}
-```
-
-So while its a little odd in our example there are scenarios where we would want to mark an associated function as `Sized` to make the trait object-safe. Here's the updated example:
-
-```rust
-trait Trait {
-    fn associated_function() where Self: Sized {}
-}
-
-struct Struct;
-struct Struct2;
-
-impl Trait for Struct {
-    fn associated_function() {
-        println!("struct");
-    }
-}
-
-impl Trait for Struct2 {
-    fn associated_function() {
-        println!("struct2");
-    }
-}
-
-fn function(t: &dyn Trait) {} // now compiles
-
-fn main() {
-    <dyn Trait>::associated_function(); // still compile error
-}
-```
-
-Now throws:
-
-```rust
-error[E0277]: the size for values of type `dyn Trait` cannot be known at compilation time
-  --> src/main.rs:23:5
-   |
-2  |     fn associated_function() where Self: Sized {}
-   |     ------------------------------------------ required by `Trait::associated_function`
-...
-23 |     <dyn Trait>::associated_function();
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
-   |
-   = help: the trait `std::marker::Sized` is not implemented for `dyn Trait`
-   = note: to learn more, visit <https://doc.rust-lang.org/book/ch19-04-advanced-types.html#dynamically-sized-types-and-the-sized-trait>
-```
-
-This is as expected, but at least we can turn our trait into a trait object now.
-
-
-
-##### Trait cannot have Associated Constants
-
-This does not compile:
-
-```rust
-trait Trait {
-    const NUM: u32;
-}
-
-fn function(t: &dyn Trait) {} // compile error
-```
-
-If multiple types implement `Trait` there's no way to determine what `<dyn Trait>::NUM` should be.
-
-
-
-##### Trait cannot have Generic Methods
-
-```rust
-trait Trait {
-    fn generic_method<T>(&self, t: T) {}
-}
-
-fn function(t: &dyn Trait) {} // compile error
-```
-
-Throws:
-
-```rust
-error[E0038]: the trait `Trait` cannot be made into an object
- --> src/lib.rs:5:16
-  |
-1 | trait Trait {
-  |       ----- this trait cannot be made into an object...
-2 |     fn generic_method<T>(&self, t: T) {}
-  |        -------------- ...because method `generic_method` has generic type parameters
-...
-5 | fn function(t: &dyn Trait) {} // compile error
-  |                ^^^^^^^^^^ the trait `Trait` cannot be made into an object
-  |
-  = help: consider moving `generic_method` to another trait
-```
-
-This is because Rust monomorphizes generic functions at compile-time. _"Monomorphizes"_ is a fancy word that means _"generate concrete implementations of"_. For which struct would Rust generate a monomorphized function in this case:
-
-```rust
-trait Trait {
-    fn method<T>(&self, t: T) {}
-}
-
-struct Struct;
-struct Struct2;
-
-impl Trait for Struct {}
-impl Trait for Struct2 {}
-
-fn call_method(t: &dyn Trait) {
-    t.method(5); // generate method_i32(&self, t: i32) for Struct or Struct2 ???
-}
-```
-
-There's no way for Rust to determine which struct to generate a `method_i32(&self, t: i32)` for so therefore `Trait` is not object-safe.
-
-If the type parameters in the generic method are each bound by a single trait then the workaround would be to refactor the generic method into a method which takes trait object arguments instead. For example we'd change this:
-
-```rust
-trait Trait {
-    fn method<T: ToString>(&self, t: T);
-}
-```
-
-Into this:
-
-```rust
-trait Trait {
-    fn method(&self, t: &dyn ToString);
-}
-```
-
-And then `Trait` would become object-safe and still maintain roughly the same API and functionality.
-
-
-
-##### Trait can be Generic
-
-This compiles:
-
-```rust
-trait Trait<T> {
-    fn method(&self, t: T) {}
-}
-
-fn call_method(t: &dyn Trait<i32>) {
-    t.method(5); // compiles
-}
-```
-
-So why does this work where the previous examples did not? It works because the generic type parameter is part of the trait's type so whenever we implement the trait for a type or use it as a trait object we have to explicitly declare a conrete type along with it which doesn't leave any room for ambiguities. If we `impl Trait<i32> for Struct` then Rust knows `Struct` must have a `method_i32(&self, t: i32)` implementation and wherever we use `dyn Trait<i32>` Rust knows the underlying concrete type must already have a `method_i32(&self, t: i32)` implementation.
-
-
-
-##### Trait can have Associated Types
-
-```rust
-trait Trait {
-    type Assoc;
-    fn method(&self, assoc: Self::Assoc) {}
-}
-
-fn call_method(t: &dyn Trait<Assoc = i32>) {
-    t.method(5); // compiles
-}
-```
-
-This works for the same reason as above, the associated type is part of the trait's type.
-
-**Key Takeaways**
-- a trait is object-unsafe if
-    - it's bounded by `Sized`
-    - it has associated functions
-    - it has associated constants
-    - it has generic methods
-- a trait is otherwise object-safe, including if
-    - it's generic
-    - it has associated types
-
-
-
-#### More Trait Object Limitations
-
-Even if a trait is object-safe there are still edge cases which limit what types can be cast to trait objects and how many and what kind of traits can be represented by a trait object.
-
-
-
-##### Cannot Cast Unsized Types to Trait Objects
+#### Cannot Cast Unsized Types to Trait Objects
 
 ```rust
 fn generic<T: ToString>(t: T) {}
 fn trait_object(t: &dyn ToString) {}
 
 fn main() {
-    generic(String::from("String")); // compiles, monomorphized
-    generic("str"); // compiles, monomorphized
+    generic(String::from("String")); // compiles
+    generic("str"); // compiles
     trait_object(&String::from("String")); // compiles, unsized coercion
     trait_object("str"); // compile error, unsized coercion impossible
 }
@@ -1001,7 +728,7 @@ Previous 2 paragraphs summarized in a table:
 
 
 
-##### Cannot create Multi-Trait Objects
+#### Cannot create Multi-Trait Objects
 
 ```rust
 trait Trait {}
@@ -1339,26 +1066,6 @@ fn example2(nums: &[i32]) -> Vec<i32> {
 }
 ```
 
-Without any type hints whatsoever `!` by default coerces to `()` as we can see in this program:
-
-```rust
-fn main() {
-    5 + panic!();
-}
-```
-
-Which throws:
-
-```rust
-error[E0277]: cannot add `()` to `i32`
- --> src/main.rs:2:7
-  |
-2 |     5 + panic!();
-  |       ^ no implementation for `i32 + ()`
-  |
-  = help: the trait `std::ops::Add<()>` is not implemented for `i32`
-```
-
 The seconding interesting property of `!` allows us to mark certain states as impossible on a type level. Lets take this function signature as an example:
 
 ```rust
@@ -1457,62 +1164,7 @@ pub enum Infallible {}
 
 ### PhantomData
 
-The third most commonly used ZST is probably `PhantomData`. `PhantomData` is a zero-sized marker struct which can be used to "mark" a containing struct as having certain properties. It's similar in purpose to its auto marker trait cousins such as `Sized`, `Send`, and `Sync` but being a marker struct is used a little bit differently. Giving a thorough explanation of `PhantdomData` and exploring all of its use-cases is outside the scope of this article so lets only briefly go over a couple quick examples.
-
-The most common use-case of `PhantomData` is to provide a safe interface to a type that otherwise uses unsafe code internally. For example, we could define a type that acts as a generic container for references like this:
-
-```rust
-struct Ref<'a, T: 'a> {
-    item: &'a T,
-}
-```
-
-However, imagine we discovered a new requirement that would require us to hold `item` as a raw pointer instead of a reference, we'd have to change our type to this:
-
-```rust
-struct Ref<'a, T: 'a> {
-    item: *const T,
-}
-```
-
-Which does not compile:
-
-```rust
-error[E0392]: parameter `'a` is never used
- --> src/lib.rs:1:12
-  |
-1 | struct Ref<'a, T: 'a> {
-  |            ^^ unused parameter
-  |
-  = help: consider removing `'a`, referring to it in a field, or using a marker such as `std::marker::PhantomData`
-```
-
-We could "solve" the problem by removing the `'a` parameter but that would be a disaster. Internally our type is holding onto a reference and should be parameterized by that reference's lifetime otherwise users of our type can hold onto it indefinitely long including past when the internal reference has been invalidated. The real solution here is to use `PhantomData`:
-
-```rust
-use std::marker::PhantomData;
-
-struct Ref<'a, T: 'a> {
-    item: *const T,
-    _phantom: PhantomData<&'a T>,
-}
-
-// example of creating an instance 
-// of Ref<'a, T> from an &'a T
-
-impl<'a, T: 'a> Ref<'a, T> {
-    fn new(item: &'a T) -> Ref<'a, T> {
-        Ref {
-            item: item as *const T,
-            _phantom: PhantomData,
-        }
-    } 
-}
-```
-
-We have now "marked" our type as containing an `&'a T` although it doesn't technically, but it's necessary to present a safe interface so that the Rust borrow checker checks the type correctly and so our users can use the type safely. `PhantomData` is used internally all over the Rust standard library for this exact purpose.
-
-As for another example, recall this code snippet presented earlier:
+The third most commonly used ZST is probably `PhantomData`. `PhantomData` is a zero-sized marker struct which can be used to "mark" a containing struct as having certain properties. It's similar in purpose to its auto marker trait cousins such as `Sized`, `Send`, and `Sync` but being a marker struct is used a little bit differently. Giving a thorough explanation of `PhantdomData` and exploring all of its use-cases is outside the scope of this article so lets only briefly go over a single simple example. Recall this code snippet presented earlier:
 
 ```rust
 #![feature(negative_impls)]
@@ -1539,7 +1191,7 @@ struct Struct {
 }
 ```
 
-This is less than ideal because it adds size to every instance of `Struct` and we now also have to conjure a `Rc<()>` from thin air every time we want to create a `Struct`. `PhantomData` solves both of these problems:
+This is less than ideal because it adds size to every instance of `Struct` and we now also have to conjure a `Rc<()>` from thin air every time we want to create a `Struct`. Since `PhantomData` is a ZST it solves both of these problems:
 
 ```rust
 use std::rc::Rc;
@@ -1572,14 +1224,6 @@ struct Struct {
 - `Trait: ?Sized` is required for `impl Trait for dyn Trait`
 - we can require `Self: Sized` on a per-method basis
 - traits bound by `Sized` can't be made into trait objects
-- a trait is object-unsafe if
-    - it's bounded by `Sized`
-    - it has associated functions
-    - it has associated constants
-    - it has generic methods
-- a trait is otherwise object-safe, including if
-    - it's generic
-    - it has associated types
 - Rust doesn't support pointers wider than 2 widths so
     - we can't cast unsized types to trait objects
     - we can't have multi-trait objects, but we can work around this by coalescing multiple traits into a single trait
