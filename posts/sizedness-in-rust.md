@@ -113,7 +113,7 @@ fn main() {
 }
 ```
 
-How we determine the size of sized types is straight-forward: all primitives and pointers have known sizes and all structs, tuples, enums, and arrays are just made up of primitives and pointers or other nested structs, tuples, enums, and arrays so we can just count up the bytes recursively. We can't determine the size of unsized types for similarly straight-forward reasons: slices can have any number of elements in them and can thus be of any size at run-time and trait objects can be implemented by any number of structs or enums and thus can also be of any size at run-time.
+How we determine the size of sized types is straight-forward: all primitives and pointers have known sizes and all structs, tuples, enums, and arrays are just made up of primitives and pointers or other nested structs, tuples, enums, and arrays so we can just count up the bytes recursively, taking into account extra bytes needed for padding and alignment. We can't determine the size of unsized types for similarly straight-forward reasons: slices can have any number of elements in them and can thus be of any size at run-time and trait objects can be implemented by any number of structs or enums and thus can also be of any size at run-time.
 
 **Pro tips**
 - pointers of dynamically sized views into arrays are called slices in Rust, e.g. a `&str` is a _"string slice"_, a `&[i32]` is an _"i32 slice"_
@@ -879,7 +879,7 @@ struct Unsized {
 }
 ```
 
-We can define an unsized struct by giving the struct an unsized field. Unsized structs can only have 1 unsized field and it must be the last field in the struct. Again, this is so we can represent the unsized struct using only a double-width pointer, as more unsized fields would require more widths.
+We can define an unsized struct by giving the struct an unsized field. Unsized structs can only have 1 unsized field and it must be the last field in the struct. This is a requirement so that the compiler can determine the starting offset of every field in the struct at compile-time, which is important for efficient and fast field access. Furthermore, a single unsized field is the most that can be tracked using a double-width pointer, as more unsized fields would require more widths.
 
 So how do we even instantiate this thing? The same way we do with any unsized type: by first making a sized version of it then coercing it into the unsized version. However, `Unsized` is always unsized by definition, there's no way to make a sized version of it! The only workaround is to make the struct generic so that it can exist in both sized and unsized versions:
 
@@ -960,7 +960,7 @@ impl Ord for () {
 }
 ```
 
-The compiler understands `()` has no size and optimizes away interactions with instances of `()` into no-ops. For example, a `Vec<()>` will never make any heap allocations, and pushing and popping `()` from the `Vec` just increments and decrements its `len` field:
+The compiler understands `()` is zero-sized and optimizes away interactions with instances of `()`. For example, a `Vec<()>` will never make any heap allocations, and pushing and popping `()` from the `Vec` just increments and decrements its `len` field:
 
 ```rust
 fn main() {
@@ -975,7 +975,7 @@ fn main() {
 }
 ```
 
-The above example has no practical applications, but is there any situation where we can take advantage of the above idea in a meaningful way? Surprisingly yes, we can get an efficient `HashSet<Key>` implementation from a `HashMap<Key, Value>` by setting the `Value` to `()` which is exactly how the `HashSet` in the Rust standard library works:
+The above example has no practical applications, but is there any situation where we can take advantage of the above idea in a meaningful way? Surprisingly yes, we can get an efficient `HashSet<Key>` implementation from a `HashMap<Key, Value>` by setting the `Value` to `()` which is exactly how `HashSet` in the Rust standard library works:
 
 ```rust
 // std::collections::HashSet
