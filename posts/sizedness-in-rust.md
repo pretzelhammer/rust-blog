@@ -1242,7 +1242,7 @@ Discuss this article on
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-sizedness-in-rust/46293?u=pretzelhammer)
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/hx2jd0/sizedness_in_rust/)
 - [Twitter](https://twitter.com/pretzelhammer/status/1286669073137491973)
-
+- [rust subreddit](https://www.reddit.com/r/rust/comments/hxips7/sizedness_in_rust/)
 
 
 ## Notifications
