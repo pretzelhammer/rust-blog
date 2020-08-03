@@ -1164,7 +1164,7 @@ pub enum Infallible {}
 
 ### PhantomData
 
-The third most commonly used ZST is probably `PhantomData`. `PhantomData` is a zero-sized marker struct which can be used to "mark" a containing struct as having certain properties. It's similar in purpose to its auto marker trait cousins such as `Sized`, `Send`, and `Sync` but being a marker struct is used a little bit differently. Giving a thorough explanation of `PhantdomData` and exploring all of its use-cases is outside the scope of this article so lets only briefly go over a single simple example. Recall this code snippet presented earlier:
+The third most commonly used ZST is probably `PhantomData`. `PhantomData` is a zero-sized marker struct which can be used to "mark" a containing struct as having certain properties. It's similar in purpose to its auto marker trait cousins such as `Sized`, `Send`, and `Sync` but being a marker struct is used a little bit differently. Giving a thorough explanation of `PhantomData` and exploring all of its use-cases is outside the scope of this article so lets only briefly go over a single simple example. Recall this code snippet presented earlier:
 
 ```rust
 #![feature(negative_impls)]
