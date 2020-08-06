@@ -1029,8 +1029,8 @@ fn example2() -> i32 {
     }
 }
 
-fn example3(bool: someCondition) -> &'static str {
-    if (!someCondition) {
+fn example3(some_condition: bool) -> &'static str {
+    if !some_condition {
         panic!() // ! coerced to &str
     } else {
         "str"
