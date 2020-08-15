@@ -104,7 +104,7 @@ Rust is a supported language on Codewars. For every problem on Codewars you get 
 | Codewars' Rust Problems | Idiomatic Rust |
 |-|-|
 | sometimes don't follow rustfmt conventions, e.g. `fn makeUppercase(s:&str)->String` | always follows rustfmt conventions, e.g. `fn make_uppercase(s: &str) -> String` |
-| sometimes takes signed integer arguments for problems that aren't defined for nonnegative integers, e.g. `fn nth_fib(n: i32) -> i32` | if a problem isn't defined for nonnegative integers use unsigned integer arguments, e.g. `fn nth_fib(n: u32) -> u32` |
+| sometimes takes signed integer arguments for problems that aren't defined for nonpositive integers, e.g. `fn nth_fib(n: i32) -> i32` | if a problem isn't defined for nonpositive integers use unsigned integer arguments, e.g. `fn nth_fib(n: u32) -> u32` |
 | sometimes a problem asks you to return `-1` for the null case, e.g. `fn get_index(needle: i32, haystack: &[i32]) -> i32` | if a result can be null the return type should be wrapped in an `Option`, e.g. `fn get_index(needle: i32, haystack: &[i32]) -> Option<usize>` |
 | sometimes don't take advantage of deref coercion, e.g. `fn do_stuff(s: &String, list: &Vec<i32>)` | takes advantage of deref coercion, e.g. `fn do_stuff(s: &str, list: &[i32])` |
 
