@@ -1211,5 +1211,5 @@ error[E0597]: `some_string` does not live long enough
 
 ## Дальнейшее чтение
 
-- [Рзмерность в Rust](./../../sizedness-in-rust.md)
+- [Размерность в Rust](./../../sizedness-in-rust.md)
 - [Изучение Rust в 2020 году](./../../learning-rust-in-2020.md)
