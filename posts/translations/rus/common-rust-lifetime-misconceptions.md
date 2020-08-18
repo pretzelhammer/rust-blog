@@ -1205,8 +1205,11 @@ error[E0597]: `some_string` does not live long enough
 
 ## Контакты
 
-[Подписывайтесь на pretzelhammer в Twitter](https://twitter.com/pretzelhammer), чтобы получать уведомления о будущих публикациях в блоге!
+Получайте уведомления о будущих публикациях в блоге
+- [подписавшись на pretzelhammer в Twitter](https://twitter.com/pretzelhammer) или
+- подписавшись на уведомления о релизах в репозитории (кликните на выпадающем списке `Watch` и выберете `Releases only`)
 
 ## Дальнейшее чтение
 
-[Изучение Rust в 2020 году](./learning-rust-in-2020.md)
+- [Рзмерность в Rust](./../../sizedness-in-rust.md)
+- [Изучение Rust в 2020 году](./../../learning-rust-in-2020.md)
