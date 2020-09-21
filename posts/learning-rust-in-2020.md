@@ -74,7 +74,7 @@ Rust is a supported language on LeetCode. For every problem on LeetCode you get 
 |-|-|
 | tree problems represent links as `Option<Rc<RefCell<Node>>>` | `Option<Rc<RefCell<Node>>>` is overkill for tree links and `Option<Box<Node>>` works just as well and is much easier to work with |
 | methods which obviously mutate self still borrow it immutably, e.g. `fn insert(&self, val: i32)` | methods that mutate self need to borrow it mutably, e.g. `fn insert(&mut self, val: i32)` |
-| signed 32-bit integers are used for all numbers, even if the problem is undefined for nonnegative integers, e.g. `fn nth_fib(n: i32) -> i32` | problems which are undefined for nonnegative integers should use unsigned integers, e.g. `fn nth_fib(n: u32) -> u32` |
+| signed 32-bit integers are used for all numbers, even if the problem is undefined for negative integers, e.g. `fn nth_fib(n: i32) -> i32` | problems which are undefined for negative integers should use unsigned integers, e.g. `fn nth_fib(n: u32) -> u32` |
 | functions always take ownership of their arguments, even if it's unnecessary, e.g. `fn sum(nums: Vec<i32>) -> i32` | if you don't need ownership then borrow `fn sum(nums: &[i32]) -> i32` |
 | functions sometimes ignore basic error cases, e.g. for `fn get_max(nums: Vec<i32>) -> i32` what `i32` should be returned if `nums` is empty? | if a result might be undefined the return type should be wrapped in an `Option`, e.g. `fn get_max(nums: &[i32]) -> Option<i32>` |
 
@@ -104,7 +104,7 @@ Rust is a supported language on Codewars. For every problem on Codewars you get 
 | Codewars' Rust Problems | Idiomatic Rust |
 |-|-|
 | sometimes don't follow rustfmt conventions, e.g. `fn makeUppercase(s:&str)->String` | always follows rustfmt conventions, e.g. `fn make_uppercase(s: &str) -> String` |
-| sometimes takes signed integer arguments for problems that aren't defined for nonpositive integers, e.g. `fn nth_fib(n: i32) -> i32` | if a problem isn't defined for nonpositive integers use unsigned integer arguments, e.g. `fn nth_fib(n: u32) -> u32` |
+| sometimes takes signed integer arguments for problems that aren't defined for negative integers, e.g. `fn nth_fib(n: i32) -> i32` | if a problem isn't defined for negative integers use unsigned integer arguments, e.g. `fn nth_fib(n: u32) -> u32` |
 | sometimes a problem asks you to return `-1` for the null case, e.g. `fn get_index(needle: i32, haystack: &[i32]) -> i32` | if a result can be null the return type should be wrapped in an `Option`, e.g. `fn get_index(needle: i32, haystack: &[i32]) -> Option<usize>` |
 | sometimes don't take advantage of deref coercion, e.g. `fn do_stuff(s: &String, list: &Vec<i32>)` | takes advantage of deref coercion, e.g. `fn do_stuff(s: &str, list: &[i32])` |
 
