@@ -102,7 +102,7 @@ The first `usize` of every `Inst` is its run-length encoding. The second `usize`
 
 We'll skip going over the remaining brainfuck interpreter code as it's very unexciting but you [can see it here](). Lets get to the fun part and try interpreting some brainfuck programs!
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to interpret brainfuck programs is `just interpret {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to interpret brainfuck programs is `just interpret {{name}}` where `{{name}}` is the name of the brainfuck source file in the `./input` directory.
 
 ```sh
 # prints "Hello world!"
@@ -113,10 +113,10 @@ Hello World!
 > just interpret fibonacci
 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 
-# rot13 encrypts lines from stdin
+# encrypts lines from stdin using rot13 cipher
 > just interpret rot13
-abcdef
-nopqrs
+unencrypted text
+harapelcgrq grkg
 ```
 
 Cool, we have a working brainfuck interpreter. Lets start digging into assembly.
@@ -125,7 +125,7 @@ Cool, we have a working brainfuck interpreter. Lets start digging into assembly.
 
 ## What is assembly?
 
-A slightly better first question is what is an ISA? ISA stands for Instruction Set Architecture. An ISA is an interface which CPUs can implement. The most popular ISAs today are x86_64 and aarch64. If we write code using x86_64 instructions then any CPU which implements the x86_64 ISA will be able to run that code. So what is assembly? Is it the same thing as an ISA? Well, not quite. The short answer is that "assembly" is any syntax understood by an assembler. What is an assembler? It's an utility program that allows people to write machine-code in a more human-friendly way, like with comments, whitespace, and symbolic names for machine instructions. "Assembly" therefore is a thin level of abstraction over an ISA offered by an assembler. The assembler we will be using to assemble all of our x86_64 and aarch64 programs will be the GNU Assembler, often abbreviated to GAS. We'll be using Intel syntax instead of the default AT&T syntax for x86_64 assembly because it's closer to ARM syntax for aarch64 assembly which makes it less jarring to switch between the two. If that last sentence made no sense to you don't worry you're in good company. Also, we'll be executing all the compiled binaries in a Linux environment so we'll be making direct Linux system calls in our assembly programs when necessary.
+A slightly better first question is what is an ISA? ISA stands for Instruction Set Architecture. An ISA is an interface which CPUs can implement. The most popular ISAs today are x86_64 and aarch64. If we write code using x86_64 instructions then any CPU which implements the x86_64 ISA will be able to run that code. So is "assembly" the same thing as an ISA? Well, not quite. The short answer is that "assembly" is any syntax understood by an assembler. An assembler is an utility program that allows people to write machine-code in a more human-friendly way, like with comments, whitespace, and symbolic names for machine instructions. "Assembly" therefore is a thin layer of abstraction over an ISA offered by an assembler. The assembler we will be using to assemble all of our x86_64 and aarch64 programs will be the GNU Assembler, often abbreviated to GAS. We'll be using Intel syntax instead of the default AT&T syntax for x86_64 assembly because it's closer to ARM syntax for aarch64 assembly which makes it less jarring to switch between the two. If that last sentence made no sense to you don't worry you're in good company. Also, we'll be executing all the compiled binaries in a Linux environment so we'll be making direct Linux system calls in our assembly programs when necessary.
 
 
 
@@ -345,9 +345,11 @@ Unpacking the new stuff:
 - `.byte` allows us to define an array of bytes by writing a comma-separated list of integer literals. In the above program we only needed 1 byte.
 - By default, GAS dereferences labels, so `mov rsi, CHAR` would copy the value `0` into `rsi`. However, we don't want to copy the value at `CHAR` but we want to copy the literal value of `CHAR` itself, i.e. its memory address. We can do this using the `offset` keyword, which we do in `mov rsi, offset CHAR`.
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run x86_64 example programs is `just carx {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run x86_64 example programs is `just carx {{name}}` where `{{name}}` is the name of the x86_64 source file in the `./examples/x86_64` directory.
 
 ```sh
+# reads char from stdin, switches its case, prints to stdout
+
 > just carx switch_case
 a
 A
@@ -558,18 +560,21 @@ Multiple stacked loops is interesting because it's not any different than a sing
 
 And we're done. Lets give our compiler a test drive.
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to x86_64 and run them is `just carbx {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to x86_64 and run them is `just carbx {{name}}` where `{{name}}` is the name of the brainfuck source file in the `./input` directory.
 
 ```sh
+# prints "Hello world!"
 > just carbx hello_world
 Hello World!
 
+# prints fibonacci numbers under 100
 > just carbx fibonacci
 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 
+# encrypts lines from stdin using rot13 cipher
 > just carbx rot13
-abcdef
-nopqrs
+unencrypted text
+harapelcgrq grkg
 ```
 
 Everything works as expected. I'm curious how much faster the compiled programs are compared to the interpreter so I'll run a very unscientific and informal benchmark by timing how long it takes to interpret the most CPU-intensive brainfuck program `./input/mandlebrot.b` vs how long the x86_64 compiled version takes to execute.
@@ -623,6 +628,7 @@ ldr x20, [x19]          // load 8 bytes from [x19] into x20
 ldr w20, [x19]          // load 4 bytes from [x19] into x20
 ldrh w20, [x19]         // load 2 bytes from [x19] into x20
 ldrb w20, [x19]         // load 1 byte from [x19] into x20
+
 str x20, [x19]          // store 8 bytes from x20 into [x19]
 str w20, [x19]          // store 4 bytes from x20 into [x19]
 strh w20, [x19]         // store 2 bytes from x20 into [x19]
@@ -759,20 +765,19 @@ WRITE:
     svc 0
 ```
 
-Unpacking the new stuff:
-- `ldr <reg>, =<label>` loads a label's memory address into a register
-
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run aarch64 example programs is `just cara {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run aarch64 example programs is `just cara {{name}}` where `{{name}}` is the name of the aarch64 source file in the `./examples/aarch64` directory.
 
 ```sh
+# reads char from stdin, switches its case, prints to stdout
+
 > just cara switch_case
-a
-A
+d
+D
 Exit code: 0
 
 > just cara switch_case
-A
-a
+G
+g
 Exit code: 0
 ```
 
@@ -938,18 +943,21 @@ LOOP_END_1:
 
 We're done with our compiler. Let's give it a test drive.
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to aarch64 and run them is `just carba {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to aarch64 and run them is `just carba {{name}}` where `{{name}}` is the name of the brainfuck source file in the `./input` directory.
 
 ```sh
+# prints "Hello world!"
 > just carba hello_world
 Hello World!
 
+# prints fibonacci numbers under 100
 > just carba fibonacci
 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 
+# encrypts lines from stdin using rot13 cipher
 > just carba rot13
-abcdef
-nopqrs
+unencrypted text
+harapelcgrq grkg
 ```
 
 And to perform another unscientific and informal benchmark:
@@ -1377,17 +1385,19 @@ Okay, we've _finally_ established enough context that we can now port `switch_ca
 )
 ```
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run wasm32-wasi examples is `just carw {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run WebAssembly examples is `just carw {{name}}` where `{{name}}` is the name of the WebAssembly source file in the `./examples/wasm32-wasi` directory.
 
 ```sh
+# reads char from stdin, switches its case, prints to stdout
+
 > just carw switch_case
-a
-A
+f
+F
 Exit code: 0
 
 > just carw switch_case
-A
-a
+Q
+q
 Exit code: 0
 ```
 
@@ -1585,18 +1595,21 @@ end
 end
 ```
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to WebAssembly and run them is `just carbw {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to WebAssembly and run them is `just carbw {{name}}` where `{{name}}` is the brainfuck source file in the `./input` directory.
 
 ```sh
+# prints "Hello world!"
 > just carbw hello_world
 Hello World!
 
+# prints fibonacci numbers under 100
 > just carbw fibonacci
 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 
+# encrypts lines from stdin using rot13 cipher
 > just carbw rot13
-abcdef
-nopqrs
+unencrypted text
+harapelcgrq grkg
 ```
 
 Another unscientific and informal benchmark:
@@ -1860,17 +1873,19 @@ WRITE:
 }
 ```
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run LLVM IR examples is `just carl {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile and run LLVM IR examples is `just carl {{name}}` where `{{name}}` is the LLVM IR source file in the `./examples/llvm_ir` directory.
 
 ```sh
+# reads char from stdin, switches its case, prints to stdout
+
 > just carl switch_case
-a
-A
+j
+J
 Exit code: 0
 
 > just carl switch_case
-A
-a
+T
+t
 Exit code: 0
 ```
 
@@ -2033,18 +2048,21 @@ LOOP_END_0:
 
 Eagle-eyed readers may have noticed something slightly unusual in the implementation for `,`. The reason why we need to perform an `icmp` and `select` in our implementation of `,` is because the libc `getchar()` function returns `-1` on EOF but the semantics of our brainfuck compiler is that all EOFs should be read and stored as the value `0` so if we get a `-1` from `getchar()` we have to map it to a `0` before storing it in our array.
 
-> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to LLVM IR and run them is `just carbl {{name}}`.
+> If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to LLVM IR and run them is `just carbl {{name}}` where `{{name}}` is the brainfuck source file in the `./input` directory.
 
 ```sh
+# prints "Hello world!"
 > just carbl hello_world
 Hello World!
 
+# prints fibonacci numbers under 100
 > just carbl fibonacci
 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 
+# encrypts lines from stdin using rot13 cipher
 > just carbl rot13
-abcdef
-nopqrs
+unencrypted text
+harapelcgrq grkg
 ```
 
 Another totally unscientific and informal benchmark:
