@@ -1,6 +1,6 @@
 # Common Rust Lifetime Misconceptions
 
-_May 19th, 2020 · 33 minute read · #rust · #lifetimes_
+_May 19th, 2020 · 30 minute read · #rust · #lifetimes_
 
 **Table of Contents**
 - [Intro](#intro)
