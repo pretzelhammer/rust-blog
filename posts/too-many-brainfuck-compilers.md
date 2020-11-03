@@ -25,15 +25,15 @@ _Nov 1st, 2020 · 50 minute read · #assembly · #compilers_
 
 ## Intro
 
-Hey you! Have you ever wanted to become a _CPU Whisperer_? Me too! I'm a frontend web developer by trade but low-level assembly code and compilers have always fascinated me. I've procrastinated on learning either for a long time but after I recently picked up Rust and have been hanging out in a lot online Rust communities it's given me the kick in the butt to dive in. Rustaceans use fancy words and acronyms like _auto-vectorization_, _inlining_, _alignment_, _padding_, _linking_, _custom allocators_, _endianness_, _system calls_, _LLVM_, _SIMD_, _ABI_, _TLS_ and I feel bad for not being able to follow the discussions because I don't know what any of that stuff is. All I know is that it vaguely relates to low-level assembly code somehow so I decided I'd learn assembly by writing entirely too many brainfuck compilers in Rust. How many is too many? Four! My compile targets are going to be x86, ARM, WebAssembly, and LLVM.
+Hey you! Have you ever wanted to become a _CPU Whisperer_? Me too! I'm a frontend web developer by trade but low-level assembly code and compilers have always fascinated me. I've procrastinated on learning either for a long time but after I recently picked up Rust and have been hanging out in a lot of online Rust communities it's given me the kick in the butt to dive in. Rustaceans use fancy words and acronyms like _auto-vectorization_, _inlining_, _alignment_, _padding_, _linking_, _custom allocators_, _endianness_, _system calls_, _LLVM_, _SIMD_, _ABI_, _TLS_ and I feel bad for not being able to follow the discussions because I don't know what any of that stuff is. All I know is that it vaguely relates to low-level assembly code somehow so I decided I'd learn assembly by writing entirely too many brainfuck compilers in Rust. How many is too many? Four! My compile targets are going to be x86, ARM, WebAssembly, and LLVM.
 
-The goal of this article is to be easily-digestable for anyone who has a modest amount of programming experience under their belt, even if they've never written a single line of assembly before.
+The goal of this article is to be easily-digestible for anyone who has a modest amount of programming experience under their belt, even if they've never written a single line of assembly before.
 
 So why x86? x86 is not just an ISA but it is _the_ ISA. Most servers, desktop PCs, laptops, and home gaming consoles use x86 CPUs.
 
 Why ARM? ARM is not just an ISA but it is _the other_ ISA. Most mobile phones, tablets, mobile gaming consoles, and microcontrollers use ARM CPUs. Also Apple announced they will be switching all their laptops and desktops from x86 to ARM CPUs in 2021 which seems like a Pretty Big Deal.
 
-Why WebAssembly? WebAssembly has the potential to be the future of the web and also the future of containerized applications in general! Solomon Hykes, the creator of Docker, has tweeted _"If WASM + WASI existed in 2008, we wouldn't have needed to created Docker. That's how important it is. WebAssembly on the server is the future of computing. A standardized system interface was the missing link. Let's hope WASI is up to the task!"_
+Why WebAssembly? WebAssembly has the potential to be the future of the web and also the future of containerized applications in general! Solomon Hykes, the creator of Docker, has tweeted _"If WASM + WASI existed in 2008, we wouldn't have needed to create Docker. That's how important it is. WebAssembly on the server is the future of computing. A standardized system interface was the missing link. Let's hope WASI is up to the task!"_
 
 Why LLVM? LLVM because it can compile to x86, ARM, or WebAssembly. Also because many modern and successful programming languages like Rust and Swift compile to LLVM instead of to assembly directly.
 
@@ -83,7 +83,7 @@ As is customary in introducing any new programming language, here's _"Hello worl
 
 ## Interpreting brainfuck
 
-Lets write a quick brainfuck interpreter first. We're going to parse brainfuck programs into an `Vec<Inst>` where `Inst` is defined as:
+Let's write a quick brainfuck interpreter first. We're going to parse brainfuck programs into an `Vec<Inst>` where `Inst` is defined as:
 
 ```rust
 pub enum Inst {
@@ -100,7 +100,7 @@ pub enum Inst {
 
 The first `usize` of every `Inst` is its run-length encoding. The second `usize` of `LoopStart` and `LoopEnd` is the index of the instruction after the matching `LoopEnd` or `LoopStart` within the `Vec<Inst>`. Keeping track of these little additional pieces of information will allow us to implement a much more efficient interpreter and also produce much more efficient assembly from our compilers.
 
-We'll skip going over the remaining brainfuck interpreter code as it's very unexciting but you [can see it here](). Lets get to the fun part and try interpreting some brainfuck programs!
+We'll skip going over the remaining brainfuck interpreter code as it's very unexciting but you [can see it here](). Let's get to the fun part and try interpreting some brainfuck programs!
 
 > If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to interpret brainfuck programs is `just interpret {{name}}` where `{{name}}` is the name of the brainfuck source file in the `./input` directory.
 
@@ -119,13 +119,13 @@ unencrypted text
 harapelcgrq grkg
 ```
 
-Cool, we have a working brainfuck interpreter. Lets start digging into assembly.
+Cool, we have a working brainfuck interpreter. Let's start digging into assembly.
 
 
 
 ## What is assembly?
 
-A slightly better first question is what is an ISA? ISA stands for Instruction Set Architecture. An ISA is an interface which CPUs can implement. The most popular ISAs today are x86_64 and aarch64. If we write code using x86_64 instructions then any CPU which implements the x86_64 ISA will be able to run that code. So is "assembly" the same thing as an ISA? Well, not quite. The short answer is that "assembly" is any syntax understood by an assembler. An assembler is an utility program that allows people to write machine-code in a more human-friendly way, like with comments, whitespace, and symbolic names for machine instructions. "Assembly" therefore is a thin layer of abstraction over an ISA offered by an assembler. The assembler we will be using to assemble all of our x86_64 and aarch64 programs will be the GNU Assembler, often abbreviated to GAS. We'll be using Intel syntax instead of the default AT&T syntax for x86_64 assembly because it's closer to ARM syntax for aarch64 assembly which makes it less jarring to switch between the two. If that last sentence made no sense to you don't worry you're in good company. Also, we'll be executing all the compiled binaries in a Linux environment so we'll be making direct Linux system calls in our assembly programs when necessary.
+A slightly better first question is what is an ISA? ISA stands for Instruction Set Architecture. An ISA is an interface which CPUs can implement. The most popular ISAs today are x86_64 and aarch64. If we write code using x86_64 instructions then any CPU which implements the x86_64 ISA will be able to run that code. So is "assembly" the same thing as an ISA? Well, not quite. The short answer is that "assembly" is any syntax understood by an assembler. An assembler is a utility program that allows people to write machine-code in a more human-friendly way, like with comments, whitespace, and symbolic names for machine instructions. "Assembly" therefore is a thin layer of abstraction over an ISA offered by an assembler. The assembler we will be using to assemble all of our x86_64 and aarch64 programs will be the GNU Assembler, often abbreviated to GAS. We'll be using Intel syntax instead of the default AT&T syntax for x86_64 assembly because it's closer to ARM syntax for aarch64 assembly which makes it less jarring to switch between the two. If that last sentence made no sense to you don't worry you're in good company. Also, we'll be executing all the compiled binaries in a Linux environment so we'll be making direct Linux system calls in our assembly programs when necessary.
 
 
 
@@ -133,7 +133,7 @@ A slightly better first question is what is an ISA? ISA stands for Instruction S
 
 x86_64 is a register-based ISA. A register is a container where we can store data. We can store data in RAM too but RAM is very far from the CPU whereas registers are directly _in_ the CPU and are where the CPU does all of its actual work. All of the instructions in x86_64 operate on registers directly or indirectly in some way. There are many different kinds of registers: some store integers, some store floats, some store vectors of integers, some are general purpose and some have a special purpose, and some we can modify directly and others we can only modify indirectly (as a byproduct of certain instructions). For the purposes of this article the only registers we'll be using are `rax`, `rdi`, `rsi`, `rdx`, and `r12` which all store 64-bit integers.
 
-Lets learn some instructions.
+Let's learn some instructions.
 
 ```s
 mov <dest>, <src>       # dest <- src
@@ -163,7 +163,7 @@ mov rax, r12            # copy value from r12 to rax
 mov rax, [r12]          # copy value from memory address stored in r12 to rax
 ```
 
-Some arthmetic instructions:
+Some arithmetic instructions:
 
 ```s
 add <dest>, <src>       # dest <- dest + src
@@ -237,7 +237,7 @@ syscall                 # make system call
 # syscall returns number of bytes written in rax
 ```
 
-We now know a handful of x86_64 instructions, enough to write a brainfuck compiler actually, and yet we still haven't put together a single complete program yet. This is where the assembler comes in. Like mentioned above we'll be using GNU Assembler for all our x86_64 code. Lets take a look at a simple x86_64 program that does nothing but exit.
+We now know a handful of x86_64 instructions, enough to write a brainfuck compiler actually, and yet we still haven't put together a single complete program yet. This is where the assembler comes in. Like mentioned above we'll be using GNU Assembler for all our x86_64 code. Let's take a look at a simple x86_64 program that does nothing but exit.
 
 ```s
 # ./examples/x86_64/exit.s
@@ -264,11 +264,11 @@ Unpacking the new stuff:
 - Words prefixed with a dot `.` are called _assembler directives_ and they direct the assembler on how to assemble our assembly.
 - `.data` means _"Everything below this directive is program data."_
 - `.equ <symbol>, <literal>` means declare a constant `<symbol>` equal to value `<literal>`.
-- `.text` means _"Everything below this directive is program instuctions."_
+- `.text` means _"Everything below this directive is program instructions."_
 - Words suffixed by a colon `:` are labels and they can point to data or instructions. The `_start` label points to the first instruction of our program.
 - `.global <label>` means _"Make `<label>` visible to the linker."_ The linker is a program which converts the assembled output of our assembler into an actual executable program, and it needs to know where our program begins, hence the `_start` label.
 
-To make our program a little more exciting lets read a character from stdin, and if it's lowercase we'll make it uppercase, and if it's uppercase we'll make it lowercase, and then write the switched case character to stdout.
+To make our program a little more exciting let's read a character from stdin, and if it's lowercase we'll make it uppercase, and if it's uppercase we'll make it lowercase, and then write the switched case character to stdout.
 
 ```s
 # ./examples/x86_64/switch_case.s
@@ -382,9 +382,9 @@ However, even for a compiler generated solution, it looks pretty dumb. Luckily f
 .lcomm ARRAY, 30000
 ```
 
-`.bss` is similar to `.data` in the sense that we define data items below it, but the main difference is we don't initalize the data items, we just declare their size, and they are automatically zero initialized for us. `.lcomm ARRAY, 30000` means, _"Make symbol `ARRAY` point to a zero-initialized array of 30k bytes"_.
+`.bss` is similar to `.data` in the sense that we define data items below it, but the main difference is we don't initialize the data items, we just declare their size, and they are automatically zero initialized for us. `.lcomm ARRAY, 30000` means, _"Make symbol `ARRAY` point to a zero-initialized array of 30k bytes."_
 
-One last tiny decision we have to make is which register we'll be using to store our array pointer. There's a lot to choose from, but lets go with `r12` because it's a general-purpose callee-saved register which means if we make any function or system calls we're guaranteed those calls won't overwrite `r12`.
+One last tiny decision we have to make is which register we'll be using to store our array pointer. There's a lot to choose from, but let's go with `r12` because it's a general-purpose callee-saved register which means if we make any function or system calls we're guaranteed those calls won't overwrite `r12`.
 
 Now that we have that out of the way we can generate the header and footer boilerplate for any compiled brainfuck program:
 
@@ -426,7 +426,7 @@ _start:
     syscall
 ```
 
-Lets now map brainfuck commands to x86_64 instructions. Lets also consider how we can coalesce multiple repeating commands into single instructions.
+Let's now map brainfuck commands to x86_64 instructions. We should also consider how we can coalesce multiple repeating commands into single instructions.
 
 ```s
 # increment array pointer
@@ -461,7 +461,7 @@ subb [r12], 1
 # --
 subb [r12], 2
 
-# read byte from stdin
+# read byte from stdin & store at pointer
 
 # ,
 mov rax, SYS_READ
@@ -482,7 +482,7 @@ mov rsi, r12
 mov rdx, 1
 syscall
 
-# write byte to STDOUT
+# write byte at pointer to stdout
 
 # .
 mov rax, SYS_WRITE
@@ -558,7 +558,7 @@ LOOP_END_1:
 
 Multiple stacked loops is interesting because it's not any different than a single loop. If the current byte is zero it doesn't matter how many `[` we have in a row because it will jump past all of them to the outermost matching `]`. Also, if the current byte is nonzero then it doesn't matter how many `]` we have in a row because it'll jump back to the innermost matching `[`. Our parser handles the hard work of figuring out which jumps to make so our label generation scheme stays the same regardless of how many stacked loops we have in the source code.
 
-And we're done. Lets give our compiler a test drive.
+And we're done, time to give our compiler a test drive.
 
 > If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to x86_64 and run them is `just carbx {{name}}` where `{{name}}` is the name of the brainfuck source file in the `./input` directory.
 
@@ -577,17 +577,17 @@ unencrypted text
 harapelcgrq grkg
 ```
 
-Everything works as expected. I'm curious how much faster the compiled programs are compared to the interpreter so I'll run a very unscientific and informal benchmark by timing how long it takes to interpret the most CPU-intensive brainfuck program `./input/mandlebrot.b` vs how long the x86_64 compiled version takes to execute.
+Everything works as expected. I'm curious how much faster the compiled programs are compared to the interpreter so I'll run a very unscientific and informal benchmark by timing how long it takes to interpret the most CPU-intensive brainfuck program `./input/mandelbrot.b` vs how long the x86_64 compiled version takes to execute.
 
 ```sh
-> just benchmark mandlebrot
+> just benchmark mandelbrot
 
 # program outputs omitted
 
-# interpreted mandlebrot.b
+# interpreted mandelbrot.b
 4.95s user 0.01s system 99% cpu 4.960 total
 
-# x86_64 compiled mandlebrot.b
+# x86_64 compiled mandelbrot.b
 real    0m1.214s
 user    0m1.149s
 sys     0m0.041s
@@ -601,7 +601,7 @@ Wow, not bad! Our compiled version runs over 4x as fast as the interpreted versi
 
 Like x86_64, aarch64 is a register-based ISA. We'll be using the following 64-bit registers for our examples and for our compiler `x0`, `x1`, `x2`, `x8`, `x19`, and `x20`.
 
-Lets learn some instructions.
+Let's learn some instructions.
 
 ```s
 mov <dest>, <src>       // dest <- src
@@ -655,7 +655,7 @@ Control flow:
 ```s
 b <label>               // unconditionally branch to <label>
 
-// all instuctions below are conditional and check the flags in the NZCV register
+// all instructions below are conditional and check the flags in the NZCV register
 
 b.eq <label>            // branch to <label> if equal
 b.ne <label>            // branch to <label> if not equal
@@ -797,7 +797,7 @@ We declare a zero-initialized array of 30k bytes with:
 
 You may have noticed the new `.p2align` directive. Why does that need to be there? I have no clue, but if it's not there the program will segfault immediately.
 
-As for our pointer and memory storage registers lets use `x19` and `x20` as they are general-purpose callee-saved registers so we're guaranteed they won't be overwritten if we need to make any function or system calls.
+As for our pointer and memory storage registers let's use `x19` and `x20` as they are general-purpose callee-saved registers so we're guaranteed they won't be overwritten if we need to make any function or system calls.
 
 Our aarch64 boilerplate:
 
@@ -884,7 +884,7 @@ ldrb w20, [x19]
 sub w20, w20, 2
 strb w20, [x19]
 
-// read byte from STDIN
+// read byte from stdin & store at pointer
 
 // ,
 mov x8, SYS_READ
@@ -905,7 +905,7 @@ mov x1, x19
 mov x2, 1
 svc 0
 
-// write byte to STDOUT
+// write byte at pointer to stdout
 
 // .
 mov x8, SYS_WRITE
@@ -963,19 +963,19 @@ harapelcgrq grkg
 And to perform another unscientific and informal benchmark:
 
 ```sh
-> just benchmark mandlebrot
+> just benchmark mandelbrot
 
 # program outputs omitted
 
-# interpreted mandlebrot.b
+# interpreted mandelbrot.b
 4.95s user 0.01s system 99% cpu 4.960 total
 
-# x86_64 compiled mandlebrot.b
+# x86_64 compiled mandelbrot.b
 real    0m1.214s
 user    0m1.149s
 sys     0m0.041s
 
-# aarch64 compiled mandlebrot.b
+# aarch64 compiled mandelbrot.b
 real    0m4.206s
 user    0m4.103s
 sys     0m0.083s
@@ -987,7 +987,7 @@ The compiled aarch64 program is only a little faster than the interpreter, and m
 
 ## Intro to WebAssembly
 
-Unlike both x86_64 and aarch64, wasm32 is a stack-based ISA. All wasm32 instructions operate by pushing and popping values from an implicit stack. Lets start with a simple example:
+Unlike both x86_64 and aarch64, wasm32 is a stack-based ISA. All wasm32 instructions operate by pushing and popping values from an implicit stack. Let's start with a simple example:
 
 ```wat
 i32.const 4     ;; push value 4 onto stack
@@ -1027,7 +1027,7 @@ WebAssembly Textual Format supports writing instructions using S-expressions so 
 (i32.add (i32.const 4) (i32.const 5))
 ```
 
-Both formats, a flat list of instructions and instructions in S-expressions, can be used in the same source file and we'll be using both interchangably in our examples wherever each helps improve readability.
+Both formats, a flat list of instructions and instructions in S-expressions, can be used in the same source file and we'll be using both interchangeably in our examples wherever each helps improve readability.
 
 If we're not interested in a value on the stack we can discard it using the `drop` instruction.
 
@@ -1044,9 +1044,9 @@ i32.const 5
 i64.add             ;; type mismatch compile error, expected i64s found i32s
 ```
 
-For simplicitity and consistency we'll only be using `i32`s for all our examples and our compiler.
+For simplicity and consistency we'll only be using `i32`s for all our examples and our compiler.
 
-Similarly to aarch64, wasm32 does not allow us to operate on memory directly, so we have to load values from memory to the stack, operate on them, and then store the updates values from the stack back to memory.
+Similarly to aarch64, wasm32 does not allow us to operate on memory directly, so we have to load values from memory to the stack, operate on them, and then store the updated values from the stack back to memory.
 
 ```wat
 ;; all instructions below pop a memory address from the stack
@@ -1088,7 +1088,7 @@ Comparing values:
 
 ```wat
 ;; instructions below pop 2 values from stack
-;; then push the result of the comparsion onto stack
+;; then push the result of the comparison onto stack
 
 i32.eq              ;; equal
 i32.ne              ;; not equal
@@ -1199,7 +1199,7 @@ Functions can use `local.set <index or $label>` to pop the top value off the sta
 )
 ```
 
-We can setup a function call by pushing the function's arguments onto the stack and then calling the function with the `call $label` instruction.
+We can set up a function call by pushing the function's arguments onto the stack and then calling the function with the `call $label` instruction.
 
 ```wat
 i32.const 4
@@ -1405,7 +1405,7 @@ Exit code: 0
 
 ## Compiling brainfuck to WebAssembly
 
-Defining a zero-initialized memory segment in wasm32 is easy and we covered that in the previous section. What's not as easy is deciding where to store our iovec, which is a required in-memory struct that we need to use for `fd_read` and `fd_write` system calls. Since we're using the first 30k bytes of our memory segment for our brainfuck program lets store the iovec at memory address 30004. For our array pointer lets store it a function local variable and copy it over to the iovec struct before reads and writes. We've now made enough decisions to generate a wasm32-wasi boilerplate for our compiled brainfuck programs:
+Defining a zero-initialized memory segment in wasm32 is easy and we covered that in the previous section. What's not as easy is deciding where to store our iovec, which is a required in-memory struct that we need to use for `fd_read` and `fd_write` system calls. Since we're using the first 30k bytes of our memory segment for our brainfuck program let's store the iovec at memory address 30004. For our array pointer let's store it a function local variable and copy it over to the iovec struct before reads and writes. We've now made enough decisions to generate a wasm32-wasi boilerplate for our compiled brainfuck programs:
 
 ```wat
 ;; header boilerplate ;;
@@ -1450,7 +1450,7 @@ Defining a zero-initialized memory segment in wasm32 is easy and we covered that
 )
 ```
 
-Alrights lets map brainfuck commands to wasm32 instructions:
+Alright let's map brainfuck commands to wasm32 instructions:
 
 ```wat
 ;; increment array pointer
@@ -1517,7 +1517,7 @@ i32.const 2
 i32.sub
 i32.store8
 
-;; read byte from STDIN
+;; read byte from stdin & store at pointer
 
 ;; ,
 i32.const 30004
@@ -1547,7 +1547,7 @@ i32.const 30012
 call $fd_read
 drop
 
-;; write byte to STDOUT
+;; write byte at pointer to stdout
 
 ;; .
 i32.const 30004
@@ -1615,24 +1615,24 @@ harapelcgrq grkg
 Another unscientific and informal benchmark:
 
 ```sh
-> just benchmark mandlebrot
+> just benchmark mandelbrot
 
 # program outputs omitted
 
-# interpreted mandlebrot.b
+# interpreted mandelbrot.b
 4.95s user 0.01s system 99% cpu 4.960 total
 
-# x86_64 compiled mandlebrot.b
+# x86_64 compiled mandelbrot.b
 real    0m1.214s
 user    0m1.149s
 sys     0m0.041s
 
-# aarch64 compiled mandlebrot.b
+# aarch64 compiled mandelbrot.b
 real    0m4.206s
 user    0m4.103s
 sys     0m0.083s
 
-# wasm32-wasi compiled mandlebrot.b
+# wasm32-wasi compiled mandelbrot.b
 real    0m1.480s
 user    0m1.429s
 sys     0m0.046s
@@ -1689,10 +1689,10 @@ void (i8, i8)           ; function taking 2 bytes and returning void
 
 i8*                     ; byte pointer
 [10 x i32]*             ; pointer to array of 10 32-bit integers
-i32 (i32)*              ; pointer to function taking and returing one i32
+i32 (i32)*              ; pointer to function taking and returning one i32
 ```
 
-There's an LLVM IR instruction called `atomicrmw` that allows us to atomically modify memory values directly using a subset of the available arithmetic instructions but learning and using that instruction before we've learned the basics of `load` and `store` kinda feels like cheating so lets go over those instead. We'll explicitly load and store values for our examples and in our compiler.
+There's an LLVM IR instruction called `atomicrmw` that allows us to atomically modify memory values directly using a subset of the available arithmetic instructions but learning and using that instruction before we've learned the basics of `load` and `store` kinda feels like cheating so let's go over those instead. We'll explicitly load and store values for our examples and in our compiler.
 
 ```ll
 ; load
@@ -1805,7 +1805,7 @@ define <return_type> @<name>(<args>) {
 ; where <args> is a comma-separated list of <type> %<name>
 ```
 
-LLVM refers to labeled blocks of instructions (note: the block of instructions inside a function body gets an implicit label) as _basic blocks_ and all _basic blocks_ must be terminated with a _terminator instruction_ that produces control flow to some other _basic block_ so _terminator instructions_ naturely include all the control flow instructions like `br` and `ret`. This is important to note because there's no "fall through" between blocks in LLVM IR like there is in x86_64 and aarch64. Example:
+LLVM refers to labeled blocks of instructions (note: the block of instructions inside a function body gets an implicit label) as _basic blocks_ and all _basic blocks_ must be terminated with a _terminator instruction_ that produces control flow to some other _basic block_ so _terminator instructions_ naturally include all the control flow instructions like `br` and `ret`. This is important to note because there's no "fall through" between blocks in LLVM IR like there is in x86_64 and aarch64. Example:
 
 ```ll
 define i32 @max(i32 %a, i32 %b) {
@@ -1899,7 +1899,7 @@ We can create a global zero-initialized array of 30k bytes using the handy `zero
 @array = global [ 300000 x i8 ] zeroinitializer
 ```
 
-We could maintain a pointer into this array but LLVM IR doesn't make that easy on us because there are no pointer arithmetic instructions. To do pointer arithmetic in LLVM IR we have to convert the pointer to an integer with `ptrtoint`, do the arithmetic, and then convert it back with `inttoptr`. This is verbose and not fun. Instead lets maintain a global index variable and use the `getelementptr` instruction to get pointers into our global array.
+We could maintain a pointer into this array but LLVM IR doesn't make that easy on us because there are no pointer arithmetic instructions. To do pointer arithmetic in LLVM IR we have to convert the pointer to an integer with `ptrtoint`, do the arithmetic, and then convert it back with `inttoptr`. This is verbose and not fun. Instead let's maintain a global index variable and use the `getelementptr` instruction to get pointers into our global array.
 
 ```ll
 @index = global i64 0
@@ -1993,7 +1993,7 @@ store i8 %byte.5, i8* %ptr.2
 %byte.7 = sub i8 %byte.6, 2
 store i8 %byte.7, i8* %ptr.3
 
-; read byte from stdin and store at pointer
+; read byte from stdin & store at pointer
 
 ; ,
 %idx.12 = load i64, i64* @index
@@ -2068,29 +2068,29 @@ harapelcgrq grkg
 Another totally unscientific and informal benchmark:
 
 ```sh
-> just benchmark mandlebrot
+> just benchmark mandelbrot
 
 # program outputs omitted
 
-# interpreted mandlebrot.b
+# interpreted mandelbrot.b
 4.95s user 0.01s system 99% cpu 4.960 total
 
-# x86_64 compiled mandlebrot.b
+# x86_64 compiled mandelbrot.b
 real    0m1.214s
 user    0m1.149s
 sys     0m0.041s
 
-# aarch64 compiled mandlebrot.b
+# aarch64 compiled mandelbrot.b
 real    0m4.206s
 user    0m4.103s
 sys     0m0.083s
 
-# wasm32-wasi compiled mandlebrot.b
+# wasm32-wasi compiled mandelbrot.b
 real    0m1.480s
 user    0m1.429s
 sys     0m0.046s
 
-# llvm-ir compiled mandlebrot.b
+# llvm-ir compiled mandelbrot.b
 real    0m0.896s
 user    0m0.887s
 sys     0m0.001s
@@ -2107,7 +2107,7 @@ There's 3 ways we can massively improve the performance of all our compilers.
 
 ### Interpret during compilation and capture output
 
-Brainfuck programs that don't have any `,` (read byte from stdin) commands have completely determinstic outputs and so a brainfuck program completes in a finite amount of time (as some brainfuck programs are written to execute indefinitely until they get a SIGKILL) then we can interpret it during compilation, capture its output, and the write a compiled program that just prints that output to stdout. This is "the ultimate" optimization as all compiled programs, regardless of how complex their source was, will finish execution nearly instantly and no other optimizations are required. The following 2 optimizations are listed only to take into account brainfuck programs where this optimization cannot be applied (which are programs with `,` in their source or programs that run indefinitely).
+Brainfuck programs that don't have any `,` (read byte from stdin) commands have deterministic outputs so if a brainfuck program completes in a finite amount of time (as some brainfuck programs are written to execute indefinitely until they get a SIGKILL) then we can interpret it during compilation, capture its output, and the write a compiled program that just prints that output to stdout. This is "the ultimate" optimization as all compiled programs, regardless of how complex their source was, will finish execution nearly instantly and no other optimizations are required. The following 2 optimizations are listed only to take into account brainfuck programs where this optimization cannot be applied (which are programs with `,` in their source or programs that run indefinitely).
 
 
 ### Un-loop-ify simple loops
@@ -2149,7 +2149,7 @@ subb [r12], 1
 # > (move to neighbor)
 add r12, 1
 
-# + (increment neighboor)
+# + (increment neighbor)
 addb [r12], 1
 
 # < (move back to original byte)
@@ -2175,7 +2175,7 @@ Most simple flat loops in brainfuck can be reduced to just a few instructions. A
 
 ### Buffer reads and writes
 
-System calls are expensive, even without including the cost of switching from user-space to kernel-space they just take a lot of instructions to setup and invoke. Our compilers could all be made more efficient if they wrote bytes to an internal buffer and only invoked the system call to write the bytes to stdout when absolutely necessary: like when the buffer fills up, or an `,` command is reached, or the end of the program is reached.
+System calls are expensive, even without including the cost of switching from user-space to kernel-space they just take a lot of instructions to set up and invoke. Our compilers could all be made more efficient if they wrote bytes to an internal buffer and only invoked the system call to write the bytes to stdout when absolutely necessary: like when the buffer fills up, or an `,` command is reached, or the end of the program is reached.
 
 
 
@@ -2183,7 +2183,7 @@ System calls are expensive, even without including the cost of switching from us
 
 I learned a lot and still far less than I thought I would. Remember that laundry list of fancy terms I mentioned back in the intro of this article? Yeah well, I still don't know what half of that stuff is.
 
-While doing the research and coding for this project I finally learned what _auto-vectorization_, _inlining_, _endianess_, _system calls_, _LLVM_, _SIMD_, and _ABI_ are. On one hand, I also think I kinda get what _linking_ is on a very basic level, but on the other hand, whenever I read anything about _linking_ I get confused because it seems like the linker actually does a whole bunch of really crazy complicated code manipulations other than just playing connect-the-dots with some global symbols, so I don't feel like I "fully get" what a linker does exactly just yet. I get what _custom allocators_ are in concept but I don't get why, for example, Allocator X is more perfomant than Allocator Y for certain workloads. I guess this project never forced me to figure out how heap allocations work in assembly so it makes sense that allocators are still a mystery to me. I know that _TLS_ stands for Thread Local Storage and people love talking about it but I don't know why. I know _padding_ is a thing that exists purely to serve _alignment_ but I have no clue why _alignment_ is so important. Apparently if the data in your program is _aligned_ everything is faster and if it's _unaligned_ it's either slow or completely unusable. But why? What is it with all this magical _alignment_ stuff?
+While doing the research and coding for this project I finally learned what _auto-vectorization_, _inlining_, _endianess_, _system calls_, _LLVM_, _SIMD_, and _ABI_ are. On one hand, I also think I kinda get what _linking_ is on a very basic level, but on the other hand, whenever I read anything about _linking_ I get confused because it seems like the linker actually does a whole bunch of really crazy complicated code manipulations other than just playing connect-the-dots with some global symbols, so I don't feel like I "fully get" what a linker does exactly just yet. I get what _custom allocators_ are in concept but I don't get why, for example, Allocator X is more performant than Allocator Y for certain workloads. I guess this project never forced me to figure out how heap allocations work in assembly so it makes sense that allocators are still a mystery to me. I know that _TLS_ stands for Thread Local Storage and people love talking about it but I don't know why. I know _padding_ is a thing that exists purely to serve _alignment_ but I have no clue why _alignment_ is so important. Apparently if the data in your program is _aligned_ everything is faster and if it's _unaligned_ it's either slow or completely unusable. But why? What is it with all this magical _alignment_ stuff?
 
 I was very surprised by how much easier it was to write the x86_64 and aarch64 compilers compared to the WebAssembly and LLVM IR compilers. I think this mostly has to do with the fact that brainfuck is a super simple language that maps very cleanly to low-level assembly instructions and if I was writing compilers for a higher-level language it'd be easier to map higher-level constructs to WebAssembly and LLVM IR than x86_64 and aarch64 but I've never tried to do this so I can't say 100% for sure.
 
@@ -2191,7 +2191,7 @@ The documentation online for x86_64 and aarch64 is pretty terrible. It seems lik
 
 The documentation online for WebAssembly is good _if you're writing a WASM VM_. If you're approaching WebAssembly as an application or compiler developer then it's terrible. There's no beginner-friendly tutorials on how to do anything and you have to figure everything out for yourself.
 
-The documentation online for LLVM IR is by far the best. The [LLVM IR Language Reference](https://llvm.org/docs/LangRef.html) not only thoroughly explains every instruction but also shows example useages for all of the instructions! LLVM also maintains an official tutorial called [My First Language Frontend with LLVM](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html) that shows how to implement an LLVM IR compiler for a simple programming language in C++. I don't know C++ so I didn't read the tutorial but the fact they have an official maintained tutorial is nice. Also there's a free online ebook called [Mapping High Level Constructs to LLVM IR](https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/README.html) which is also pretty great.
+The documentation online for LLVM IR is by far the best. The [LLVM IR Language Reference](https://llvm.org/docs/LangRef.html) not only thoroughly explains every instruction but also shows example usages for all of the instructions! LLVM also maintains an official tutorial called [My First Language Frontend with LLVM](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html) that shows how to implement an LLVM IR compiler for a simple programming language in C++. I don't know C++ so I didn't read the tutorial but the fact they have an official maintained tutorial is nice. Also there's a free online ebook called [Mapping High Level Constructs to LLVM IR](https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/README.html) which is also pretty great.
 
 If I had to write a compiler in the future I think I'll definitely stick with LLVM IR. It has the best documentation, it has a kick-ass optimizer, and it can compile down to x86_64, aarch64, or WebAssembly (plus a whole bunch of other targets)!
 
