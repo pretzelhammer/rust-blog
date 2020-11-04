@@ -2,6 +2,8 @@
 
 2020年5月19日 · 読了時間 33分 · #rust · #lifetimes
 
+Translated by [Yusuke Kominami](https://github.com/komi1230)
+
 ## 目次
 
 - [はじめに](#はじめに)
