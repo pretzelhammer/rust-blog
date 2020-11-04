@@ -1,6 +1,6 @@
 # Rustのライフタイムについてのよくある誤解
 
-2020年5月19日 · 読了時間 33分 · #rust · #lifetimes
+2020年5月19日 · 読了時間 30分 · #rust · #lifetimes
 
 Translated by [Yusuke Kominami](https://github.com/komi1230)
 
