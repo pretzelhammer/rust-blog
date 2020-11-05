@@ -100,7 +100,7 @@ pub enum Inst {
 
 The first `usize` of every `Inst` is its run-length encoding. The second `usize` of `LoopStart` and `LoopEnd` is the index of the instruction after the matching `LoopEnd` or `LoopStart` within the `Vec<Inst>`. Keeping track of these little additional pieces of information will allow us to implement a much more efficient interpreter and also produce much more efficient assembly from our compilers.
 
-We'll skip going over the remaining brainfuck interpreter code as it's very unexciting but you [can see it here](). Let's get to the fun part and try interpreting some brainfuck programs!
+We'll skip going over the remaining brainfuck interpreter code as it's very unexciting. Let's get to the fun part and try interpreting some brainfuck programs!
 
 > If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to interpret brainfuck programs is `just interpret {{name}}` where `{{name}}` is the name of the brainfuck source file in the `./input` directory.
 
