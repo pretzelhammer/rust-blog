@@ -1681,7 +1681,7 @@ i64                     ; 64 bit integer
 i32 (i32)               ; function taking and returning one i32
 void (i8, i8)           ; function taking 2 bytes and returning void
 
-: pointer types
+; pointer types
 
 <type>*                 ; pointer to <type>
 
@@ -2107,7 +2107,7 @@ There's 3 ways we can massively improve the performance of all our compilers.
 
 ### Interpret during compilation and capture output
 
-Brainfuck programs that don't have any `,` (read byte from stdin) commands have deterministic outputs so if a brainfuck program completes in a finite amount of time (as some brainfuck programs are written to execute indefinitely until they get a SIGKILL) then we can interpret it during compilation, capture its output, and the write a compiled program that just prints that output to stdout. This is "the ultimate" optimization as all compiled programs, regardless of how complex their source was, will finish execution nearly instantly and no other optimizations are required. The following 2 optimizations are listed only to take into account brainfuck programs where this optimization cannot be applied (which are programs with `,` in their source or programs that run indefinitely).
+Brainfuck programs that don't have any `,` (read byte from stdin) commands have deterministic outputs so if a brainfuck program completes in a finite amount of time (as some brainfuck programs are written to execute indefinitely until they get a SIGKILL) then we can interpret it during compilation, capture its output, and then write a compiled program that just prints that output to stdout. This is "the ultimate" optimization as all compiled programs, regardless of how complex their source was, will finish execution nearly instantly and no other optimizations are required. The following 2 optimizations are listed only to take into account brainfuck programs where this optimization cannot be applied (which are programs with `,` in their source or programs that run indefinitely).
 
 
 ### Un-loop-ify simple loops
