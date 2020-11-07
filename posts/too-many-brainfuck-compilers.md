@@ -43,7 +43,7 @@ Since all of the above targets go by many names here's a quick list of their ali
 - 32-bit WebAssembly is also called: wasm32
 - LLVM is short for LLVM IR (Intermediate Representation)
 
-If you'd like to play around with the code in this article yourself then you're in luck! The article comes with a [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) which contains all the code and instructions on how to run it. Following along using the companion code repository is completely optional, the article can be easily read without it.
+If you'd like to play around with the code in this article yourself then you're in luck! The article comes with a [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) which contains all the code and instructions on how to run it. Following along using the companion code repository is completely optional and the article can be easily read without it.
 
 
 
@@ -222,22 +222,22 @@ mov rax, 60             # syscall number for exit(code)
 mov rdi, 0              # exit code, 0 for success
 syscall                 # make system call
 
-mov rax, 0              # syscall number for read(fd, mem addr, bytes)
+mov rax, 0              # syscall number for read(fd, buf_adr, buf_len)
 mov rdi, 0              # file descriptor for stdin
-mov rsi, 1234           # some memory address
-mov rdx, 1              # number of bytes to read
+mov rsi, 1234           # memory address to some buffer
+mov rdx, 1              # buffer's length in bytes
 syscall                 # make system call
 # syscall returns number of bytes read in rax
 
-mov rax, 1              # syscall number for write(fd, mem addr, bytes)
+mov rax, 1              # syscall number for write(fd, buf_adr, buf_len)
 mov rdi, 1              # file descriptor for stdout
-mov rsi, 1234           # some memory address
-mov rdx, 1              # number of bytes to write
+mov rsi, 1234           # memory address to some buffer
+mov rdx, 1              # buffer's length in bytes
 syscall                 # make system call
 # syscall returns number of bytes written in rax
 ```
 
-We now know a handful of x86_64 instructions, enough to write a brainfuck compiler actually, and yet we still haven't put together a single complete program yet. This is where the assembler comes in. Like mentioned above we'll be using GNU Assembler for all our x86_64 code. Let's take a look at a simple x86_64 program that does nothing but exit.
+We now know a handful of x86_64 instructions, enough to write a brainfuck compiler actually, and yet we still haven't put together a single complete program yet. This is where the assembler comes in. As mentioned above we'll be using GNU Assembler for all our x86_64 code. Let's take a look at a simple x86_64 program that just exits.
 
 ```s
 # ./examples/x86_64/exit.s
@@ -268,7 +268,7 @@ Unpacking the new stuff:
 - Words suffixed by a colon `:` are labels and they can point to data or instructions. The `_start` label points to the first instruction of our program.
 - `.global <label>` means _"Make `<label>` visible to the linker."_ The linker is a program which converts the assembled output of our assembler into an actual executable program, and it needs to know where our program begins, hence the `_start` label.
 
-To make our program a little more exciting let's read a character from stdin, and if it's lowercase we'll make it uppercase, and if it's uppercase we'll make it lowercase, and then write the switched case character to stdout.
+To make our program a little more exciting let's read a character from stdin, and if it's lowercase we'll make it uppercase, and if it's uppercase we'll make it lowercase, and then we'll write the switched case character to stdout.
 
 ```s
 # ./examples/x86_64/switch_case.s
@@ -281,11 +281,11 @@ To make our program a little more exciting let's read a character from stdin, an
 .equ SYS_EXIT, 60
 .equ EXIT_CODE, 0
 
-# write(fd, buf, buf_len)
+# write(fd, buf_adr, buf_len)
 .equ SYS_WRITE, 1
 .equ STDOUT, 1
 
-# read(fd, buf, buf_len)
+# read(fd, buf_adr, buf_len)
 .equ SYS_READ, 0
 .equ STDIN, 0
 
@@ -504,7 +504,7 @@ mov rdx, 1
 syscall
 ```
 
-Unfortunately there's no simple way to coalesce multiple `,` or `.` commands into less instructions than it takes to execute a single `,` or `.` because the registers we setup for the system calls can be overwritten by the system call procedures so we have to reset the registers again before every call.
+Unfortunately there's no simple way to coalesce multiple `,` or `.` commands into less instructions than it takes to execute a single `,` or `.` because the registers we set up for the system calls can be overwritten by the system call procedures so we have to reset the registers again before every call.
 
 ```s
 # loops
@@ -540,7 +540,7 @@ And using `LoopEnd(n, goto)` and its `index` within our `Vec<Inst>` we can gener
 - `LOOP_END_<index>`
 - `LOOP_START_<goto-1>`
 
-Following this generation scheme we're guaranteed matching labels for matching loops.
+Following this label generation scheme we're guaranteed matching labels for matching loops.
 
 ```s
 # loops
@@ -637,7 +637,7 @@ strb w20, [x19]         // store 1 byte from x20 to [x19]
 
 Important note: `x20` and `w20` are the same register, it's just that referring to it by `x20` accesses all 64 bits of the register and referring to it by `w20` accesses only the lower 32 bits of the register.
 
-Anyway, some arithmetic instructions:
+Some arithmetic instructions:
 
 ```s
 add <dest>, <op1>, <op2>    // dest <- op1 + op2
@@ -647,7 +647,7 @@ sub <dest>, <op1>, <op2>    // dest <- op1 - op2
 Comparing values:
 
 ```s
-cmp <op1>, <op2>        // compares op1 to op2 and set flags in special NZCV register 
+cmp <op1>, <op2>        // compares op1 to op2 and sets flags in the special NZCV register 
 ```
 
 Control flow:
@@ -674,16 +674,16 @@ mov x8, 93              // syscall number for exit(code)
 mov x0, 0               // exit code, 0 for success
 svc 0                   // make system call
 
-mov x8, 63              // syscall number for read(fd, buf, buf_len)
+mov x8, 63              // syscall number for read(fd, buf_adr, buf_len)
 mov x0, 0               // file descriptor for stdin
-mov x1, 1234            // some memory address to a buffer
-mov x2, 1               // number of bytes to read
+mov x1, 1234            // memory address to some buffer
+mov x2, 1               // buffer's length in bytes
 svc 0                   // make system call
 
-mov x8, 64              // syscall number for write(fd, buf_ buf_len)
+mov x8, 64              // syscall number for write(fd, buf_adr, buf_len)
 mov x0, 1               // file descriptor for stdout
-mov x1, 1234            // some memory address to a buffer
-mov x2, 1               // number of bytes to write
+mov x1, 1234            // memory address to some buffer
+mov x2, 1               // buffer's length in bytes
 svc 0                   // make system call
 ```
 
@@ -702,11 +702,11 @@ Here's our `switch_case.s` program from before except ported to aarch64:
 .equ SYS_EXIT, 93
 .equ EXIT_CODE, 0
 
-// write(fd, buf, buf_len)
+// write(fd, buf_adr, buf_len)
 .equ SYS_WRITE, 64
 .equ STDOUT, 1
 
-// read(fd, buf, buf_len)
+// read(fd, buf_adr, buf_len)
 .equ SYS_READ, 63
 .equ STDIN, 0 
 
@@ -1021,7 +1021,7 @@ After `i32.add` the stack looks like this:
 +---------+
 ```
 
-WebAssembly Textual Format supports writing instructions using S-expressions so we could also write the above example like this:
+WebAssembly Textual Format (WAT) supports writing instructions using S-expressions so we could also write the above example like this:
 
 ```wat
 (i32.add (i32.const 4) (i32.const 5))
@@ -1050,7 +1050,7 @@ Similarly to aarch64, wasm32 does not allow us to operate on memory directly, so
 
 ```wat
 ;; all instructions below pop a memory address from the stack
-;; then push the value at that memory address onto the stack as an i32
+;; then push the i32 value at that memory address onto the stack
 
 i32.load8_u         ;; loads unsigned byte value from memory
 i32.load8_s         ;; loads signed byte value from memory
@@ -1063,8 +1063,8 @@ i32.const 1000      ;; push memory address 1000 onto stack
 i32.load            ;; loads 4-byte value from memory address 1000
                     ;; loaded result pushed onto stack
 
-;; all instructions below pop memory address & value from stack
-;; and then store the value at the memory address
+;; all instructions below pop a memory address & value from the stack
+;; and then store that value at that memory address
 
 i32.store8          ;; stores byte at memory address
 i32.store16         ;; stores 2 bytes at memory address
@@ -1079,7 +1079,7 @@ i32.store           ;; stores 123 at memory address 1000
 Some arithmetic instructions:
 
 ```wat
-;; both instructions pop 2 values from stack and push result to stack
+;; both instructions pop 2 values from the stack then push their result onto stack
 i32.add
 i32.sub
 ```
@@ -1087,8 +1087,8 @@ i32.sub
 Comparing values:
 
 ```wat
-;; instructions below pop 2 values from stack
-;; then push the result of the comparison onto stack
+;; instructions below pop 2 values from the stack
+;; then push the result of the comparison onto the stack
 
 i32.eq              ;; equal
 i32.ne              ;; not equal
@@ -1101,8 +1101,8 @@ i32.le_s            ;; less than or equal (signed)
 i32.ge_u            ;; greater than or equal (unsigned)
 i32.ge_s            ;; greater than or equal (signed)
 
-;; instruction below pops 1 value from stack
-;; then pushes the result onto stack
+;; instruction below pops 1 value from the stack
+;; then pushes the result onto the stack
 
 i32.eqz             ;; equal to zero
 ```
@@ -1114,11 +1114,11 @@ Unlike in x86_64 and aarch64, wasm32 doesn't support branching to arbitrary labe
 ```wat
 ;; simple if / else example
 
-;; pops value from stack
+;; "if" pops a value from the stack
 if
-    ;; instructions to run if popped value was true / non-zero
+    ;; instructions to run if popped value was true, i.e. non-zero
 else
-    ;; instructions to run if popped value was false / zero
+    ;; instructions to run if popped value was false, i.e. zero
 end
 
 ;; branching within blocks
@@ -1136,7 +1136,7 @@ loop
 end
 ```
 
-Since control flow structures can be nested the number after the `br` and `br_if` instructions refers to which structure to perform the branch on, where `br 0` within a `block` would mean _"branch to the end of my current block"_ and `br 1` within a pair of nested `block`s would mean _"branch to the end of my parent block"_ and `br 2` within three nested `block`s would mean _"branch to the end of my grandparent block"_ and so on. This allows us to build a _"branch to the end of the loop"_ instruction by wrapping a `loop` with a `block` and using `br 1` like so:
+Since control flow structures can be nested the number after the `br` and `br_if` instructions refers to which structure to perform the branch on, where `br 0` within a `block` would mean _"branch to the end of my current block"_ and `br 1` within a pair of nested `block`s would mean _"branch to the end of my parent block"_ and `br 2` within three nested `block`s would mean _"branch to the end of my grandparent block"_ and so on. This allows us to build a _"branch to the end of the loop"_ instruction by wrapping a `loop` with a `block` and using `br 1` or `br_if 1` like so:
 
 ```wat
 block
@@ -1147,7 +1147,7 @@ block
 end
 ```
 
-wasm32 instructions cannot exist on their own, they must be part of a function. Here's how we define a function:
+wasm32 instructions cannot exist on their own, they must be inside a function. Here's how we define a function:
 
 ```wat
 (func $optional_name <optional params> <optional return> <optional locals>
@@ -1173,9 +1173,9 @@ Functions begin with an empty stack, but can push their params onto the stack us
 )
 ```
 
-Functions can return at most one value (although this restriction will be relaxed in the future). If the function returns a value then the stack at the end of the function must have exactly 1 value on it. If the function doesn't return a value then the stack at the end of the function must be empty.
+Functions can return at most one value (although this restriction will be relaxed in the future). If the function returns a value then the stack at the end of the function must have exactly 1 value in it. If the function doesn't return a value then the stack at the end of the function must be empty.
 
-Functions can use `local.set <index or $label>` to pop the top value off the stack and store it in a local variable where `index` is the index of that variable within the list of local variables (including params) and `$label` is its optional label (if it was given one). Often we'd like to set a local variable while leaving its value on the stack, which is what the `local.tee` instruction is for, it's basically a shortcut for writing `local.set <index or $label>` immediately followed by `local.get <same index or $label>`.
+Functions can use `local.set <index or $label>` to pop a value off the stack and store it in a local variable where `index` is the index of that variable within the list of local variables (including params) and `$label` is its optional label (if it was given one). Often we'd like to set a local variable while leaving its value on the stack, which is what the `local.tee` instruction is for, it's basically a shortcut for writing `local.set <index or $label>` immediately followed by `local.get <same index or $label>`.
 
 ```wat
 ;; without labels
@@ -1212,7 +1212,7 @@ i32.const 5
 call $add_and_double    ;; pops 4 & 5 off stack & pushes 18 onto stack
 ```
 
-Like instructions, functions also cannot exist on their own and must be part of a module. A module is the fundamental unit of code in WebAssembly. Modules can define functions, memory segments, imports, and exports. Things that can be imported and exported include functions and memory segments. Here's a wasm32 module that defines a single function:
+Like instructions, functions also cannot exist on their own and must be inside a module. A module is the fundamental unit of code in WebAssembly. Modules can define functions, memory segments, imports, and exports. Things that can be imported and exported include functions and memory segments. Here's a wasm32 module that defines a single function:
 
 ```wat
 (module
@@ -1235,6 +1235,7 @@ Modules can also export functions and memory segments using `export "<exported n
 
 ```wat
 (module
+    ;; zero-initialized 65536 byte linear memory segment
     (memory 1)
 
     (func $_start
@@ -1305,7 +1306,7 @@ call $fd_write      ;; pop 4 values from stack, pushes error_number to stack
 drop                ;; discard error_number
 ```
 
-Okay, we've _finally_ established enough context that we can now port `switch_case.s` to wasm32-wasi. As a refresher, this program reads 1 character from stdin, switches its case, writes the character to stdout, and then exits.
+Okay, we've _finally_ established enough context that we can now port `switch_case.s` to wasm32-wasi. As a refresher, this program reads 1 character from stdin, switches its case, writes the character to stdout, and then exits:
 
 ```wat
 ;; ./examples/wasm32-wasi/switch_case.wat
@@ -1325,7 +1326,7 @@ Okay, we've _finally_ established enough context that we can now port `switch_ca
     (func $_start (local $char i32)
         ;; treat mem[0] as a 1 byte buffer
 
-        ;; setup iovec at mem[4-12] to point to buffer
+        ;; set up iovec at mem[4-12] to point to buffer
         i32.const 4     ;; memory address 4 (4 + 0 offset)
         i32.const 0     ;; memory address of buffer
         i32.store       ;; mem[4-8] = 0, 1st iovec member
@@ -1423,16 +1424,18 @@ Defining a zero-initialized memory segment in wasm32 is easy and we covered that
     (memory 1)
 
     (func $_start (local $ptr i32)
-        ;; setup array pointer
+        ;; set up array pointer
         i32.const 0
         local.set $ptr
 
-        ;; setup iovec
-        i32.const 30004     ;; 30004 offset
+        ;; set up 1st iovec member
+        i32.const 30004     ;; 30004 address (30004 + 0 offset)
         local.get $ptr      ;; initial index = 0
         i32.store           ;; mem[30004-30008] = 0
-        i32.const 30008     ;; 30008 offset
-        i32.const 1         ;; read/write 1 byte
+
+        ;; set up 2nd iovec member
+        i32.const 30008     ;; 30008 address (30004 + 4 offset)
+        i32.const 1         ;; buffer length is 1 byte
         i32.store           ;; mem[30008-30012] = 1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1595,6 +1598,8 @@ end
 end
 ```
 
+That was surprisingly way more work than the x86_64 and aarch64 compilers! Thankfully we're done.
+
 > If you're following along using the [companion code repository](https://github.com/pretzelhammer/brainfuck_compilers) the command we'll be using to compile brainfuck programs to WebAssembly and run them is `just carbw {{name}}` where `{{name}}` is the brainfuck source file in the `./input` directory.
 
 ```sh
@@ -1638,7 +1643,7 @@ user    0m1.429s
 sys     0m0.046s
 ```
 
-The compiled wasm32-wasi version is 3.3x faster than the interpreted version and only 0.8x as fast as the x86_64 version. Pretty good!
+The compiled wasm32-wasi version is 3.3x faster than the interpreted version and only 0.8x as fast as the x86_64 version. Pretty good! The promise that WASM programs execute at near-native speeds holds up!
 
 
 
@@ -1754,7 +1759,7 @@ Comparing values:
 ```ll
 %result = icmp <cond> <type> <op1>, <op2>
 
-; where %result is an i1, 1 = true, 0 = false
+; where %result is an i1 and 1 = true, 0 = false
 
 ; where <cond> can be
 ;   - eq                ; equal
@@ -1805,7 +1810,7 @@ define <return_type> @<name>(<args>) {
 ; where <args> is a comma-separated list of <type> %<name>
 ```
 
-LLVM refers to labeled blocks of instructions (note: the block of instructions inside a function body gets an implicit label) as _basic blocks_ and all _basic blocks_ must be terminated with a _terminator instruction_ that produces control flow to some other _basic block_ so _terminator instructions_ naturally include all the control flow instructions like `br` and `ret`. This is important to note because there's no "fall through" between blocks in LLVM IR like there is in x86_64 and aarch64. Example:
+LLVM refers to labeled blocks of instructions (note: the block of instructions inside a function body gets an implicit label) as _basic blocks_ and all _basic blocks_ must be terminated with a _terminator instruction_ that produces control flow to some other _basic block_ so _terminator instructions_ naturally include all the control flow instructions like `br` and `ret`. This is important to explain because there's no "fall through" between blocks in LLVM IR like there is in x86_64 and aarch64. Example:
 
 ```ll
 define i32 @max(i32 %a, i32 %b) {
@@ -1904,7 +1909,7 @@ We could maintain a pointer into this array but LLVM IR doesn't make that easy o
 ```ll
 @index = global i64 0
 
-; generic formula for getting a pointer into an array using an index
+; generic template for getting a pointer into an array using an index:
 ; %ptr = getelementptr <type>, <type>* <array>, i64 0, i64 <index>
 
 ; example
@@ -2107,7 +2112,7 @@ There's 3 ways we can massively improve the performance of all our compilers.
 
 ### Interpret during compilation and capture output
 
-Brainfuck programs that don't have any `,` (read byte from stdin) commands have deterministic outputs so if a brainfuck program completes in a finite amount of time (as some brainfuck programs are written to execute indefinitely until they get a SIGKILL) then we can interpret it during compilation, capture its output, and then write a compiled program that just prints that output to stdout. This is "the ultimate" optimization as all compiled programs, regardless of how complex their source was, will finish execution nearly instantly and no other optimizations are required. The following 2 optimizations are listed only to take into account brainfuck programs where this optimization cannot be applied (which are programs with `,` in their source or programs that run indefinitely).
+Brainfuck programs that don't have any `,` (read byte from stdin) commands have deterministic outputs so if a brainfuck program completes in a finite amount of time (as some brainfuck programs are written to execute indefinitely until they get a SIGKILL) then we can interpret it during compilation, capture its output, and then write a compiled program that just prints that output to stdout. This is "the ultimate" optimization as all compiled programs, regardless of how complex their source code was, will finish execution nearly instantly and no other optimizations are required. The following 2 optimizations are listed only to take into account brainfuck programs where this optimization cannot be applied (which are programs with `,` in their source code or programs that run indefinitely).
 
 
 ### Un-loop-ify simple loops
@@ -2132,10 +2137,11 @@ LOOP_END_2:
 When all it needs to generate is just this:
 
 ```s
+# [-]
 movb [r12], 0
 ```
 
-A slightly more complex command pattern is this `[->+<]` which zeros the byte at the pointer _and_ adds its value to its neighbor array cell. Our x86_64 compiler would generate the following instructions for this command pattern:
+A slightly more complex command pattern is this `[->+<]` which zeros the byte at the pointer _and_ adds its value to its neighbor in the array. Our x86_64 compiler would generate the following instructions for this command pattern:
 
 ```s
 # [
@@ -2164,6 +2170,7 @@ LOOP_END_5:
 However all it needs to generate is:
 
 ```s
+# [->+<]
 movb r13b, [r12]        # save current byte value
 addb [r12 + 1], r13b    # add current byte value to neighbor
 movb [r12], 0           # zero current byte
@@ -2183,11 +2190,11 @@ System calls are expensive, even without including the cost of switching from us
 
 I learned a lot and still far less than I thought I would. Remember that laundry list of fancy terms I mentioned back in the intro of this article? Yeah well, I still don't know what half of that stuff is.
 
-While doing the research and coding for this project I finally learned what _auto-vectorization_, _inlining_, _endianess_, _system calls_, _LLVM_, _SIMD_, and _ABI_ are. On one hand, I also think I kinda get what _linking_ is on a very basic level, but on the other hand, whenever I read anything about _linking_ I get confused because it seems like the linker actually does a whole bunch of really crazy complicated code manipulations other than just playing connect-the-dots with some global symbols, so I don't feel like I "fully get" what a linker does exactly just yet. I get what _custom allocators_ are in concept but I don't get why, for example, Allocator X is more performant than Allocator Y for certain workloads. I guess this project never forced me to figure out how heap allocations work in assembly so it makes sense that allocators are still a mystery to me. I know that _TLS_ stands for Thread Local Storage and people love talking about it but I don't know why. I know _padding_ is a thing that exists purely to serve _alignment_ but I have no clue why _alignment_ is so important. Apparently if the data in your program is _aligned_ everything is faster and if it's _unaligned_ it's either slow or completely unusable. But why? What is it with all this magical _alignment_ stuff?
+While doing the research and programming for this project I finally learned what _auto-vectorization_, _inlining_, _endianess_, _system calls_, _LLVM_, _SIMD_, and _ABI_ are. I kinda get what _linking_ is on a very basic level but I still get lost whenever I read anything about _linking_ because it seems like the linker does a whole bunch of really crazy complicated code manipulations other than just playing connect-the-dots with some global symbols, so I don't feel like I "fully get" what a linker actually does. I get what _custom allocators_ are in concept but I don't get why, for example, Allocator X is more performant than Allocator Y for certain workloads. This project never forced me to figure out how heap allocations work in assembly so it makes sense that allocators are still a mystery to me. I know that _TLS_ stands for Thread Local Storage and people love talking about it but I don't know why. I know _padding_ is a thing that exists purely to serve _alignment_ but I have no clue why _alignment_ is so important. Apparently if the data in your program is _aligned_ everything is faster and if it's _unaligned_ it's either slow or completely unusable. But why? What is it with all this magical _alignment_ stuff?
 
 I was very surprised by how much easier it was to write the x86_64 and aarch64 compilers compared to the WebAssembly and LLVM IR compilers. I think this mostly has to do with the fact that brainfuck is a super simple language that maps very cleanly to low-level assembly instructions and if I was writing compilers for a higher-level language it'd be easier to map higher-level constructs to WebAssembly and LLVM IR than x86_64 and aarch64 but I've never tried to do this so I can't say 100% for sure.
 
-The documentation online for x86_64 and aarch64 is pretty terrible. It seems like if you seriously want to get into x86_64 or aarch64 programming you're probably better off buying some assembly books on Amazon and downloading and reading the 5000+ page programming manual for x86_64 from Intel's website or the 8000+ page programming manual for aarch64 from ARM's website. It's not very beginner-friendly.
+The documentation online for x86_64 and aarch64 is pretty terrible. It seems like if you seriously want to get into x86_64 or aarch64 programming you're probably better off buying some assembly books on Amazon and reading the 5000+ page programming manual for x86_64 on Intel's website or the 8000+ page programming manual for aarch64 on ARM's website. It's not very beginner-friendly.
 
 The documentation online for WebAssembly is good _if you're writing a WASM VM_. If you're approaching WebAssembly as an application or compiler developer then it's terrible. There's no beginner-friendly tutorials on how to do anything and you have to figure everything out for yourself.
 
