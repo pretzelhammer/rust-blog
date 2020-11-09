@@ -17,7 +17,6 @@ _Nov 1st, 2020 · 50 minute read · #assembly · #compilers_
 - [Compiling brainfuck to LLVM](#compiling-brainfuck-to-llvm)
 - [Optimization opportunities](#optimization-opportunities)
 - [Concluding thoughts](#concluding-thoughts)
-- [Discuss](#discuss)
 - [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
@@ -2201,12 +2200,6 @@ The documentation online for WebAssembly is good _if you're writing a WASM VM_. 
 The documentation online for LLVM IR is by far the best. The [LLVM IR Language Reference](https://llvm.org/docs/LangRef.html) not only thoroughly explains every instruction but also shows example usages for all of the instructions! LLVM also maintains an official tutorial called [My First Language Frontend with LLVM](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html) that shows how to implement an LLVM IR compiler for a simple programming language in C++. I don't know C++ so I didn't read the tutorial but the fact they have an official maintained tutorial is nice. Also there's a free online ebook called [Mapping High Level Constructs to LLVM IR](https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/README.html) which is also pretty great.
 
 If I had to write a compiler in the future I think I'll definitely stick with LLVM IR. It has the best documentation, it has a kick-ass optimizer, and it can compile down to x86_64, aarch64, or WebAssembly (plus a whole bunch of other targets)!
-
-
-
-## Discuss
-
-This article hasn't been shared anywhere on the internet yet.
 
 
 
