@@ -69,7 +69,7 @@ Brainfuck commands:
 | `.` | write current byte to stdout |
 | `,` | read byte from stdin and store value in current byte |
 | `[` | jump past matching `]` if current byte is zero |
-| `[` | jump back to matching `[` if current byte is nonzero |
+| `]` | jump back to matching `[` if current byte is nonzero |
 | any other character | ignore, treat as comment |
 
 As is customary in introducing any new programming language, here's _"Hello world!"_ in brainfuck:
