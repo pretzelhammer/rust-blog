@@ -1,6 +1,6 @@
-# Learn Assembly with Entirely Too Many Brainfuck Compilers
+# Learn Assembly by Writing Entirely Too Many Brainfuck Compilers in Rust
 
-_Nov 1st, 2020 · 50 minute read · #assembly · #compilers_
+_Nov 1st, 2020 · 50 minute read · #assembly · #compilers · #rust_
 
 **Table of Contents**
 - [Intro](#intro)
