@@ -42,7 +42,7 @@ Exit now, the good part of the article is over.
 
 ## Practical Rust Resource Reviews
 
-_Alternative title: Reviews of Free Online Resources a Rust Beinnger can use to Practice Writing Small Simple Rust Programs_
+_Alternative title: Reviews of Free Online Resources a Rust Beginner can use to Practice Writing Small Simple Rust Programs_
 
 Most of these resources weren't specifically created for the purpose of teaching Rust, however they can all be used to learn and practice Rust and many of them explicitly support Rust submissions and provide Rust-specific versions of problems.
 
@@ -56,7 +56,7 @@ Rust is a supported language on HackerRank except you aren't allowed to submit R
 
 ![hackerrank more like failrank](../assets/hackerrank-more-like-failrank.png)
 
-This is really strange because I was able to browse Rust solutions for the problem above submitted by other HackerRank users, so it's possible to submit a Rust solution somehow. I tried Googling this issue and but Google didn't return any useful results. There's no way for me to evalute HackerRank other than to tell you not to waste your time with it like I did.
+This is really strange because I was able to browse Rust solutions for the problem above submitted by other HackerRank users, so it's possible to submit a Rust solution somehow. I tried Googling this issue and but Google didn't return any useful results. There's no way for me to evaluate HackerRank other than to tell you not to waste your time with it like I did.
 
 
 
