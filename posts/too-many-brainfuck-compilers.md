@@ -85,19 +85,27 @@ As is customary in introducing any new programming language, here's _"Hello worl
 Let's write a quick brainfuck interpreter first. We're going to parse brainfuck programs into an `Vec<Inst>` where `Inst` is defined as:
 
 ```rust
-pub enum Inst {
-    IncPtr(usize),
-    DecPtr(usize),
-    IncByte(usize),
-    DecByte(usize),
-    WriteByte(usize),
-    ReadByte(usize),
-    LoopStart(usize, usize),
-    LoopEnd(usize, usize),
+struct Inst {
+    idx: usize,         // index of instruction
+    kind: InstKind,     // kind of instruction
+    times: usize,       // run-length encoding of instruction
+}
+
+enum InstKind {
+    IncPtr,
+    DecPtr,
+    IncByte,
+    DecByte,
+    WriteByte,
+    ReadByte,
+    // end_idx = index of instruction after matching LoopEnd
+    LoopStart { end_idx: usize },
+    // start_idx = index of instruction after matching LoopStart
+    LoopEnd { start_idx: usize },
 }
 ```
 
-The first `usize` of every `Inst` is its run-length encoding. The second `usize` of `LoopStart` and `LoopEnd` is the index of the instruction after the matching `LoopEnd` or `LoopStart` within the `Vec<Inst>`. Keeping track of these little additional pieces of information will allow us to implement a much more efficient interpreter and also produce much more efficient assembly from our compilers.
+Parsing brainfuck programs into the above format, namely: keeping track of every instruction's run-length encoding and calculating the `start_idx` and `end_idx` of loop instructions ahead of time, will allow us to write a much more efficient interpreter and also produce much more efficient assembly from our compilers.
 
 We'll skip going over the remaining brainfuck interpreter code as it's very unexciting. Let's get to the fun part and try interpreting some brainfuck programs!
 
@@ -523,21 +531,33 @@ Generating matching labels for matching loops is a problem we already solved in 
 
 ```rust
 [
-    LoopStart(1, 3),    // index 0, goto 3
-    DecByte(1)          // index 1
-    LoopEnd(1, 1),      // index 2, goto 1
+    Inst {
+        idx: 0,
+        kind: InstKind::LoopStart { end_idx: 3 },
+        times: 1,
+    },
+    Inst {
+        idx: 1,
+        kind: InstKind::DecByte,
+        times: 1,
+    },
+    Inst {
+        idx: 2,
+        kind: InstKind::LoopEnd { start_idx: 1 },
+        times: 1,
+    },
 ]
 ```
 
-Using `LoopStart(n, goto)` and its `index` within our `Vec<Inst>` we can generate the following labels:
+Using the data available to us inside the `LoopStart` instruction we can generate the following labels:
 
-- `LOOP_START_<index>`
-- `LOOP_END_<goto-1>`
+- `LOOP_START_<idx>`
+- `LOOP_END_<end_idx-1>`
 
-And using `LoopEnd(n, goto)` and its `index` within our `Vec<Inst>` we can generate the following labels:
+Using the data available to us inside the `LoopEnd` instruction we can generate the following labels:
 
-- `LOOP_END_<index>`
-- `LOOP_START_<goto-1>`
+- `LOOP_END_<idx>`
+- `LOOP_START_<start_idx-1>`
 
 Following this label generation scheme we're guaranteed matching labels for matching loops.
 
