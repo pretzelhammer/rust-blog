@@ -1,6 +1,6 @@
-# Learn Assembly by Writing Entirely Too Many Brainfuck Compilers in Rust
+# Learn Assembly by Writing Entirely Too Many Brainfuck Compilers
 
-_Nov 1st, 2020 · 50 minute read · #assembly · #compilers · #rust_
+_Nov 1st, 2020 · 50 minute read · #assembly · #compilers_
 
 **Table of Contents**
 - [Intro](#intro)
@@ -17,6 +17,7 @@ _Nov 1st, 2020 · 50 minute read · #assembly · #compilers · #rust_
 - [Compiling brainfuck to LLVM](#compiling-brainfuck-to-llvm)
 - [Optimization opportunities](#optimization-opportunities)
 - [Concluding thoughts](#concluding-thoughts)
+- [Discuss](#discuss)
 - [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
@@ -810,11 +811,7 @@ We declare a zero-initialized array of 30k bytes with:
 .bss
 
 .lcomm ARRAY, 30000
-
-.p2align 12
 ```
-
-You may have noticed the new `.p2align` directive. Why does that need to be there? I have no clue, but if it's not there the program will segfault immediately.
 
 As for our pointer and memory storage registers let's use `x19` and `x20` as they are general-purpose callee-saved registers so we're guaranteed they won't be overwritten if we need to make any function or system calls.
 
@@ -839,8 +836,6 @@ Our aarch64 boilerplate:
 .bss
 
 .lcomm ARRAY, 30000
-
-.p2align 12
 
 .text
 
@@ -1863,7 +1858,7 @@ define i32 @max(i32 %a, i32 %b) {
 }
 ```
 
-Okay, so we could make direct system calls by writing inline assembly in LLVM IR but that beats the point of using LLVM IR so we're going to use functions from the standard C library, often just called libc. For my fellow web developers reading this, libc is like jQuery for systems developers, it abstracts away having to deal with all the individual quirks of system calls across different platforms and targets. Here's `switch_case.s` ported to LLVM IR:
+Okay, so we could make direct system calls by writing inline assembly in LLVM IR but that would beat the point of using LLVM IR in the first place so instead we're going to use functions from the standard C library, often just called libc, which abstract away having to deal with all the individual quirks of system calls across different platforms and targets. Here's `switch_case.s` ported to LLVM IR:
 
 ```ll
 ; ./examples/llvm_ir/switch_case.ll
@@ -2222,6 +2217,18 @@ The documentation online for LLVM IR is by far the best. The [LLVM IR Language R
 If I had to write a compiler in the future I think I'll definitely stick with LLVM IR. It has the best documentation, it has a kick-ass optimizer, and it can compile down to x86_64, aarch64, or WebAssembly (plus a whole bunch of other targets)!
 
 
+## Discuss
+
+Discuss this article on
+- [compilers subreddit](https://www.reddit.com/r/Compilers/comments/jpqnws/learn_assembly_with_entirely_too_many_brainfuck/)
+- [asm subreddit](https://www.reddit.com/r/asm/comments/jqbq47/learn_assembly_with_entirely_too_many_brainfuck/)
+- [coding subreddit](https://www.reddit.com/r/coding/comments/jqxl19/learn_assembly_with_entirely_too_many_brainfuck/)
+- [ProgrammingLanguages subreddit](https://www.reddit.com/r/ProgrammingLanguages/comments/jsf9cr/learn_assembly_by_writing_entirely_too_many/)
+- [programming subreddit](https://www.reddit.com/r/programming/comments/jrlljd/learn_assembly_with_entirely_too_many_brainfuck/)
+- [Twitter](https://twitter.com/pretzelhammer/status/1326531312900075520)
+- [Official Rust users forum](https://users.rust-lang.org/t/learn-assembly-by-writing-entirely-too-many-brainfuck-compilers-in-rust/51333?u=pretzelhammer)
+- [rust subreddit](https://www.reddit.com/r/rust/comments/jsvdsy/learn_assembly_by_writing_entirely_too_many/)
+- [Hackernews](https://news.ycombinator.com/item?id=25069243)
 
 ## Notifications
 
@@ -2237,6 +2244,9 @@ Rust
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
+
+ISAs
+- [What does RISC and CISC mean in 2020?](https://medium.com/swlh/what-does-risc-and-cisc-mean-in-2020-7b4d42c9a9de)
 
 GNU Assembler
 - [GNU Assembler Manual](https://sourceware.org/binutils/docs/as/)
