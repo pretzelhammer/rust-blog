@@ -1858,7 +1858,7 @@ define i32 @max(i32 %a, i32 %b) {
 }
 ```
 
-Okay, so we could make direct system calls by writing inline assembly in LLVM IR but that would beat the point of using LLVM IR in the first place so instead we're going to use functions from the standard C library, often just called libc, which abstract away having to deal with all the individual quirks of system calls across different platforms and targets. Here's `switch_case.s` ported to LLVM IR:
+Okay, so we could make direct system calls by writing inline assembly in LLVM IR but that would beat the point of using LLVM IR in the first place so instead we're going to use functions from the C standard library, often just called libc, which abstract away having to deal with all the individual quirks of system calls across different platforms and targets. Here's `switch_case.s` ported to LLVM IR:
 
 ```ll
 ; ./examples/llvm_ir/switch_case.ll
