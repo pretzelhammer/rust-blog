@@ -1066,7 +1066,7 @@ fn example2(nums: &[i32]) -> Vec<i32> {
 }
 ```
 
-The seconding interesting property of `!` allows us to mark certain states as impossible on a type level. Lets take this function signature as an example:
+The second interesting property of `!` allows us to mark certain states as impossible on a type level. Lets take this function signature as an example:
 
 ```rust
 fn function() -> Result<Success, Error>;
