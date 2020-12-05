@@ -1303,7 +1303,7 @@ i32.store
 i32.const 0         ;; 0 exit code means success
 call $proc_exit
 
-;; fd_read(fd, iovec[]*, iovec_len, bytes_read*) - error_number
+;; fd_read(fd, iovec[]*, iovec_len, bytes_read*) -> error_number
 i32.const 0         ;; file descriptor for stdin
 i32.const 3000      ;; memory address to array of iovec structs
 i32.const 1         ;; number of iovec structs in array
@@ -1311,7 +1311,7 @@ i32.const 5678      ;; memory address where to write bytes_read
 call $fd_read       ;; pop 4 values from stack, pushes error_number to stack
 drop                ;; discard error_number
 
-;; fd_write(fd, iovec[]*, iovec_len, bytes_written*) - error_number
+;; fd_write(fd, iovec[]*, iovec_len, bytes_written*) -> error_number
 i32.const 1         ;; file descriptor for stdout
 i32.const 3000      ;; memory address to array of iovec structs
 i32.const 1         ;; number of iovec structs in array
@@ -1372,7 +1372,6 @@ Okay, we've _finally_ established enough context that we can now port `switch_ca
             i32.const 32
             i32.sub
             i32.store8      ;; mem[0] = $char - 32
-
         else                ;; if false make $char lowercase
             i32.const 0
             local.get $char
