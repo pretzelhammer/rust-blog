@@ -263,7 +263,7 @@ This comforting misconception is kept alive thanks to Rust's lifetime elision ru
 - if there's multiple input lifetimes but one of them is `&self` or `&mut self` then the lifetime of `self` is applied to all output refs
 - otherwise output lifetimes have to be made explicit
 
-That's a lot to take in so lets look at some examples:
+That's a lot to take in so let's look at some examples:
 
 ```rust
 // elided
@@ -384,9 +384,9 @@ error[E0499]: cannot borrow `bytes` as mutable more than once at a time
    |        ------ first borrow later used here
 ```
 
-I guess we can copy each byte. Copying is okay when we're working with bytes but if we turned `ByteIter` into a generic slice iterator that can iterate over any `&'a [T]` then we might want to use it in the future with types that may be very expensive or impossible to copy / clone. Oh well, I guess there's nothing we can do about that, the code compiles so the lifetime annotations must be right, right?
+I guess we can copy each byte. Copying is okay when we're working with bytes but if we turned `ByteIter` into a generic slice iterator that can iterate over any `&'a [T]` then we might want to use it in the future with types that may be very expensive or impossible to copy and clone. Oh well, I guess there's nothing we can do about that, the code compiles so the lifetime annotations must be right, right?
 
-Nope, the current lifetime annotations are actually the source of the bug! It's particularly hard to spot because the buggy lifetime annotations are elided. Lets expand the elided lifetimes to get a clearer look at the problem:
+Nope, the current lifetime annotations are actually the source of the bug! It's particularly hard to spot because the buggy lifetime annotations are elided. Let's expand the elided lifetimes to get a clearer look at the problem:
 
 ```rust
 struct ByteIter<'a> {
@@ -406,7 +406,7 @@ impl<'a> ByteIter<'a> {
 }
 ```
 
-That didn't help at all. I'm still confused. Here's a hot tip that only Rust pros know: give your lifetime annotations descriptive names. Lets try again:
+That didn't help at all. I'm still confused. Here's a hot tip that only Rust pros know: give your lifetime annotations descriptive names. Let's try again:
 
 ```rust
 struct ByteIter<'remainder> {
@@ -426,7 +426,7 @@ impl<'remainder> ByteIter<'remainder> {
 }
 ```
 
-Each returned byte is annotated with `'mut_self` but the bytes are clearly coming from `'remainder`! Lets fix it.
+Each returned byte is annotated with `'mut_self` but the bytes are clearly coming from `'remainder`! Let's fix it.
 
 ```rust
 struct ByteIter<'remainder> {
@@ -610,7 +610,7 @@ note: ...so that the type `[closure@src/lib.rs:10:24: 12:6 t:T]` will meet its r
    |     ^^^^^^^^^^^^^^^^^^
 ```
 
-Okay great, the compiler tells us how to fix the issue so lets fix the issue.
+Okay great, the compiler tells us how to fix the issue so let's fix the issue.
 
 ```rust
 use std::fmt::Display;
@@ -705,7 +705,7 @@ fn box_displayable<'a, T: Display + 'a>(t: T) -> Box<dyn Display + 'a> {
 }
 ```
 
-This function accepts all the same arguments as the previous version plus a lot more! Does that make it better? Not necessarily, it depends on the requirements and constraints of our program. This example is a bit abstract so lets take a look at a simpler and more obvious case:
+This function accepts all the same arguments as the previous version plus a lot more! Does that make it better? Not necessarily, it depends on the requirements and constraints of our program. This example is a bit abstract so let's take a look at a simpler and more obvious case:
 
 ```rust
 fn return_first(a: &str, b: &str) -> &str {
@@ -1077,7 +1077,7 @@ fn get_str<'a>() -> &'a str; // generic version
 fn get_str() -> &'static str; // 'static version
 ```
 
-Several readers contacted me to ask if there was a practical difference between the two. At first I wasn't sure but after some investigation it unforuntately turns out that the answer is yes, there is a practical difference between these two functions.
+Several readers contacted me to ask if there was a practical difference between the two. At first I wasn't sure but after some investigation it unfortunately turns out that the answer is yes, there is a practical difference between these two functions.
 
 So ordinarily, when working with values, we can use a `'static` ref in place of an `'a` ref because Rust automatically coerces `'static` refs into `'a` refs. Intuitively this makes sense, since using a ref with a long lifetime where only a short lifetime is required will never cause any memory safety issues. The program below compiles as expected:
 
@@ -1202,6 +1202,7 @@ Discuss this article on
 - [Twitter](https://twitter.com/pretzelhammer/status/1263505856903163910)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/golrsx/common_rust_lifetime_misconceptions/)
 - [Hackernews](https://news.ycombinator.com/item?id=23279731)
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
 
@@ -1217,3 +1218,4 @@ Get notified when the next blog post get published by
 
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
+- [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

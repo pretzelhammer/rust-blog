@@ -2228,6 +2228,7 @@ Discuss this article on
 - [Official Rust users forum](https://users.rust-lang.org/t/learn-assembly-by-writing-entirely-too-many-brainfuck-compilers-in-rust/51333?u=pretzelhammer)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/jsvdsy/learn_assembly_by_writing_entirely_too_many/)
 - [Hackernews](https://news.ycombinator.com/item?id=25069243)
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 ## Notifications
 

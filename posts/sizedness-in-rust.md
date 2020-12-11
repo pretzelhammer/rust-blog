@@ -32,7 +32,7 @@ _July 22nd, 2020 · 35 minute read · #rust · #sizedness_
 
 Sizedness is lowkey one of the most important concepts to understand in Rust. It intersects a bunch of other language features in often subtle ways and only rears its ugly head in the form of _"x doesn't have size known at compile time"_ error messages which every Rustacean is all too familiar with. In this article we'll explore all flavors of sizedness from sized types, to unsized types, to zero-sized types while examining their use-cases, benefits, pain points, and workarounds.
 
-Table of phrases I use and what they're suppose to mean:
+Table of phrases I use and what they're supposed to mean:
 
 | Phrase | Shorthand for |
 |-|-|
@@ -478,7 +478,7 @@ error: `?Trait` is not permitted in supertraits
   = note: traits are `?Sized` by default
 ```
 
-We'll get into why traits are `?Sized` by default soon but first let's ask ourselves what are the implications of a trait being `?Sized`? Lets desugar the above example:
+We'll get into why traits are `?Sized` by default soon but first let's ask ourselves what are the implications of a trait being `?Sized`? Let's desugar the above example:
 
 ```rust
 trait Trait where Self: ?Sized {}
@@ -655,7 +655,7 @@ error[E0038]: the trait `Trait` cannot be made into an object
   |                ^^^^^^^^^^ the trait `Trait` cannot be made into an object
 ```
 
-Lets try to make an `?Sized` trait with a `Sized` method and see if we can cast it to a trait object:
+Let's try to make an `?Sized` trait with a `Sized` method and see if we can cast it to a trait object:
 
 ```rust
 trait Trait {
@@ -1066,13 +1066,13 @@ fn example2(nums: &[i32]) -> Vec<i32> {
 }
 ```
 
-The second interesting property of `!` allows us to mark certain states as impossible on a type level. Lets take this function signature as an example:
+The second interesting property of `!` allows us to mark certain states as impossible on a type level. Let's take this function signature as an example:
 
 ```rust
 fn function() -> Result<Success, Error>;
 ```
 
-We know that if the function returns and was successful the `Result` will contain some instance of type `Success` and if it errored `Result` will contain some instance of type `Error`. Now lets compare that to this function signature:
+We know that if the function returns and was successful the `Result` will contain some instance of type `Success` and if it errored `Result` will contain some instance of type `Error`. Now let's compare that to this function signature:
 
 ```rust
 fn function() -> Result<Success, !>;
@@ -1164,7 +1164,7 @@ pub enum Infallible {}
 
 ### PhantomData
 
-The third most commonly used ZST is probably `PhantomData`. `PhantomData` is a zero-sized marker struct which can be used to "mark" a containing struct as having certain properties. It's similar in purpose to its auto marker trait cousins such as `Sized`, `Send`, and `Sync` but being a marker struct is used a little bit differently. Giving a thorough explanation of `PhantomData` and exploring all of its use-cases is outside the scope of this article so lets only briefly go over a single simple example. Recall this code snippet presented earlier:
+The third most commonly used ZST is probably `PhantomData`. `PhantomData` is a zero-sized marker struct which can be used to "mark" a containing struct as having certain properties. It's similar in purpose to its auto marker trait cousins such as `Sized`, `Send`, and `Sync` but being a marker struct is used a little bit differently. Giving a thorough explanation of `PhantomData` and exploring all of its use-cases is outside the scope of this article so let's only briefly go over a single simple example. Recall this code snippet presented earlier:
 
 ```rust
 #![feature(negative_impls)]
@@ -1243,6 +1243,7 @@ Discuss this article on
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/hx2jd0/sizedness_in_rust/)
 - [Twitter](https://twitter.com/pretzelhammer/status/1286669073137491973)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/hxips7/sizedness_in_rust/)
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
 ## Notifications
@@ -1257,3 +1258,4 @@ Get notified when the next blog post get published by
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
+- [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

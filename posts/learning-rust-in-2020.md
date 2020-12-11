@@ -56,7 +56,7 @@ Rust is a supported language on HackerRank except you aren't allowed to submit R
 
 ![hackerrank more like failrank](../assets/hackerrank-more-like-failrank.png)
 
-This is really strange because I was able to browse Rust solutions for the problem above submitted by other HackerRank users, so it's possible to submit a Rust solution somehow. I tried Googling this issue and but Google didn't return any useful results. There's no way for me to evaluate HackerRank other than to tell you not to waste your time with it like I did.
+This is really strange because I was able to browse Rust solutions for the problem above submitted by other HackerRank users, so it's possible to submit a Rust solution somehow. I tried Googling this issue but Google didn't return any useful results. There's no way for me to evaluate HackerRank other than to tell you not to waste your time with it like I did.
 
 
 
@@ -97,7 +97,7 @@ Things LeetCode does right:
 
 ### [Codewars](https://www.codewars.com/join?language=rust)
 
-Codewars is a misleading name. There's no war going on at Codewars. There's no time limit to solve problems and your solutions aren't judged on their speed of execution or memory useage. You aren't in competition with anyone else. This isn't a bad thing, just worth pointing out.
+Codewars is a misleading name. There's no war going on at Codewars. There's no time limit to solve problems and your solutions aren't judged on their speed of execution or memory usage. You aren't in competition with anyone else. This isn't a bad thing, just worth pointing out.
 
 Rust is a supported language on Codewars. For every problem on Codewars you get a solution template which usually contains a single unimplemented function which you then have to implement and submit in order to solve the problem. These solution templates are created by humans, including humans who aren't familiar with Rust, so you occasionally get some awkward and unidiomatic Rust. Examples:
 
@@ -192,6 +192,7 @@ Discuss this article on
 - [Twitter](https://twitter.com/pretzelhammer/status/1259897499122360322)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/gie64f/learning_rust_in_2020/)
 - [Hackernews](https://news.ycombinator.com/item?id=23160975)
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
 
@@ -207,3 +208,4 @@ Get notified when the next blog post get published by
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
+- [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
