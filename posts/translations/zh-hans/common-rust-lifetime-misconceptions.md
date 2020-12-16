@@ -22,6 +22,7 @@ _2020 年 5 月 19 日 · 预计阅读 30 分钟 · #rust · #生命周期_
 - [讨论](#讨论)
 - [温馨提示](#温馨提示)
 - [拓展阅读](#拓展阅读)
+- [译者注](#译者注)
 
 
 
@@ -1225,4 +1226,9 @@ error[E0597]: `some_string` does not live long enough
 
 ## 译者注
 
-本文参考了[ whfuyn 的译文](https://github.com/whfuyn/rust-blog/blob/master/posts/Rust生命周期的常见误解.md)，[Rust 语言术语中英文对照表](https://rustwiki.org/zh-CN/rust-wiki/translate/english-chinese-glossary-of-rust.html)，[The book 中文版](https://kaisery.github.io/trpl-zh-cn/)，部分语句采用意译，部分单词不译。
+本文参考了
+- [whfuyn 的译文](https://github.com/whfuyn/rust-blog/blob/master/posts/Rust生命周期的常见误解.md)
+- [Rust 语言术语中英文对照表](https://rustwiki.org/zh-CN/rust-wiki/translate/english-chinese-glossary-of-rust.html)
+- [The book 中文版](https://kaisery.github.io/trpl-zh-cn/)
+
+文中部分语句采用意译，部分单词不译。
