@@ -18,7 +18,7 @@ Note: Translations are community-maintained.
 
 Get notified when a blog post get published by
 - [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- Watching this repo's releases (click on `Watch` dropdown and select `Releases only`)
+- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
 
 ## Feedback
 
