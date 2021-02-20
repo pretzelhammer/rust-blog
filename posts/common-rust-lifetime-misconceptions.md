@@ -129,6 +129,11 @@ fn main() {
 They get told that `"str literal"` is hardcoded into the compiled binary and is loaded into read-only memory at run-time so it's immutable and valid for the entire program and that's what makes it `'static`. These concepts are further reinforced by the rules surrounding defining `static` variables using the `static` keyword.
 
 ```rust
+// Note: This example is purely for illustrative purposes.
+// Never use `static mut`. It's a footgun. There are
+// safe patterns for global mutable singletons in Rust but
+// those are outside the scope of this article.
+
 static BYTES: [u8; 3] = [1, 2, 3];
 static mut MUT_BYTES: [u8; 3] = [1, 2, 3];
 
