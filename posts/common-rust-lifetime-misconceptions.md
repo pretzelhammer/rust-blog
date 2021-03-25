@@ -922,7 +922,7 @@ struct Struct;
 
 impl Struct {
     // downgrades mut self to shared self
-    fn some_method(&mut self) -> &self;
+    fn some_method(&mut self) -> &Self;
 
     // downgrades mut self to shared T
     fn other_method(&mut self) -> &T;
