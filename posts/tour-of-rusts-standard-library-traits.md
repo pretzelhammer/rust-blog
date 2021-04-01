@@ -326,10 +326,10 @@ trait Trait {
 Both generic types and associated types defer the decision to the implementer on which concrete types should be used in the trait's functions and methods, so this section seeks to explain when to use one over the other.
 
 The general rule-of-thumb is:
-- Use associated types when there should only be a single implementation of the trait per type.
-- Use generic types when there can be many possible implementations of the trait per type.
+- Use associated types when there should only be a single impl of the trait per type.
+- Use generic types when there can be many possible impls of the trait per type.
 
-Let's say we want to define a trait called `Add` which allows us to add values together. Here's an initial design and implementation that only uses associated types:
+Let's say we want to define a trait called `Add` which allows us to add values together. Here's an initial design and impl that only uses associated types:
 
 ```rust
 trait Add {
@@ -427,7 +427,7 @@ error[E0119]: conflicting implementations of trait `Add` for type `Point`:
    | ^^^^^^^^^^^^^^^^^^ conflicting implementation for `Point`
 ```
 
-Since the `Add` trait is not parameterized by any generic types we can only implement it once per type, which means we can only pick the types for both `Rhs` and `Output` once! To allow adding both `Points`s and `i32`s to `Point` we have to refactor `Rhs` from an associated type to a generic type, which would allow us to impl the trait multiple times for `Point` with different type arguments for `Rhs`:
+Since the `Add` trait is not parameterized by any generic types we can only impl it once per type, which means we can only pick the types for both `Rhs` and `Output` once! To allow adding both `Points`s and `i32`s to `Point` we have to refactor `Rhs` from an associated type to a generic type, which would allow us to impl the trait multiple times for `Point` with different type arguments for `Rhs`:
 
 ```rust
 trait Add<Rhs> {
@@ -557,7 +557,7 @@ fn main() -> Result<(), io::Error> {
 }
 ```
 
-`read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and implemented by the `std::fs::File` struct but in order to call it `std::io::Read` must be in scope:
+`read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and impl'd by the `std::fs::File` struct but in order to call it `std::io::Read` must be in scope:
 
 ```rust
 use std::fs::File;
@@ -599,7 +599,7 @@ struct SomeType;
 
 ### Default Impls
 
-Traits can provide default implementations for their functions and methods.
+Traits can provide default impls for their functions and methods.
 
 ```rust
 trait Trait {
@@ -627,7 +627,7 @@ fn main() {
 }
 ```
 
-This is especially handy if some of the trait methods can be implemented solely using other trait methods.
+This is especially handy if some of the trait methods can be impl'd solely using other trait methods.
 
 ```rust
 trait Greet {
@@ -709,7 +709,7 @@ fn test_is_even() {
 }
 ```
 
-Obviously, this is very verbose. Also, all of our implementations are almost identical. Furthermore, in the unlikely but still possible event that Rust decides to add more number types in the future we have to remember to come back to this code and update it with the new number types. We can solve all these problems using a generic blanket impl:
+Obviously, this is very verbose. Also, all of our impls are almost identical. Furthermore, in the unlikely but still possible event that Rust decides to add more number types in the future we have to remember to come back to this code and update it with the new number types. We can solve all these problems using a generic blanket impl:
 
 ```rust
 use std::fmt::Debug;
@@ -742,7 +742,7 @@ fn test_is_even() {
 }
 ```
 
-Unlike default impls, which provide _an_ implementation, generic blanket impls provide _the_ implementation, so they are not overridable.
+Unlike default impls, which provide _an_ impl, generic blanket impls provide _the_ impl, so they are not overridable.
 
 ```rust
 use std::fmt::Debug;
@@ -790,7 +790,7 @@ error[E0119]: conflicting implementations of trait `Even` for type `u8`:
    |   ^^^^^^^^^^^^^^^^ conflicting implementation for `u8`
 ```
 
-These impls overlap, hence they conflict, hence Rust rejects the code to ensure trait coherence. Trait coherence is the property that there exists at most one implementation of a trait for any given type. The rules Rust uses to enforce trait coherence, the implications of those rules, and workarounds for the implications are outside the scope of this article.
+These impls overlap, hence they conflict, hence Rust rejects the code to ensure trait coherence. Trait coherence is the property that there exists at most one impl of a trait for any given type. The rules Rust uses to enforce trait coherence, the implications of those rules, and workarounds for the implications are outside the scope of this article.
 
 
 
@@ -810,7 +810,7 @@ Also, the above is just syntax sugar for:
 trait Subtrait where Self: Supertrait {}
 ```
 
-It's a subtle yet important distinction to understand that the bound is on `Self`, i.e. the type implementing `Subtrait`, and not on `Subtrait` itself. The latter would not make any sense, since trait bounds can only be applied to concrete types which can impl traits. Traits cannot impl other traits:
+It's a subtle yet important distinction to understand that the bound is on `Self`, i.e. the type impling `Subtrait`, and not on `Subtrait` itself. The latter would not make any sense, since trait bounds can only be applied to concrete types which can impl traits. Traits cannot impl other traits:
 
 ```rust
 trait Supertrait {
@@ -926,11 +926,11 @@ Hopefully the examples above show that the relationship between subtraits and su
 
 ```rust
 fn function<T: Clone>(t: T) {
-    // implementation
+    // impl
 }
 ```
 
-Without knowing anything about the implementation of this function we could reasonably guess that `t.clone()` gets called at some point because when a generic type is bounded by a trait that strongly implies it has a dependency on the trait. The mental model for understanding the relationship between generic types and their trait bounds is a simple and intuitive one: generic types _depend on_ their trait bounds.
+Without knowing anything about the impl of this function we could reasonably guess that `t.clone()` gets called at some point because when a generic type is bounded by a trait that strongly implies it has a dependency on the trait. The mental model for understanding the relationship between generic types and their trait bounds is a simple and intuitive one: generic types _depend on_ their trait bounds.
 
 Now let's look the trait declaration for `Copy`:
 
@@ -941,8 +941,8 @@ trait Copy: Clone {}
 The syntax above looks very similar to the syntax for applying a trait bound on a generic type and yet `Copy` doesn't depend on `Clone` at all. The mental model we developed earlier doesn't help us here. In my opinion, the most simple and elegant mental model for understanding the relationship between subtraits and supertraits is: subtraits _refine_ their supertraits.
 
 "Refinement" is intentionally kept somewhat vague because it can mean different things in different contexts:
-- a subtrait might make its supertrait's methods' implementations more specialized, faster, use less memory, e.g. `Copy: Clone`
-- a subtrait might make additional guarantees about the supertrait's methods' implementations, e.g. `Eq: PartialEq`, `Ord: PartialOrd`, `ExactSizeIterator: Iterator`
+- a subtrait might make its supertrait's methods' impls more specialized, faster, use less memory, e.g. `Copy: Clone`
+- a subtrait might make additional guarantees about the supertrait's methods' impls, e.g. `Eq: PartialEq`, `Ord: PartialOrd`, `ExactSizeIterator: Iterator`
 - a subtrait might make the supertrait's methods more flexible or easier to call, e.g. `FnMut: FnOnce`, `Fn: FnMut`
 - a subtrait might extend a supertrait and add new methods, e.g. `DoubleEndedIterator: Iterator`, `ExactSizeIterator: Iterator`
 
@@ -1045,10 +1045,10 @@ Understanding why the requirements are what they are is not relevant to the rest
 
 ### Marker Traits
 
-Marker traits are traits that have no trait items. Their job is to "mark" an implementing type as having some property which is otherwise not possible to represent using the type system.
+Marker traits are traits that have no trait items. Their job is to "mark" the implementing type as having some property which is otherwise not possible to represent using the type system.
 
 ```rust
-// Implementing PartialEq for a type promises
+// Impling PartialEq for a type promises
 // that equality for the type has these properties:
 // - symmetry: a == b implies b == a, and
 // - transitivity: a == b && b == c implies a == c
@@ -1059,7 +1059,7 @@ trait PartialEq {
 }
 
 // Eq has no trait items! The eq method is already
-// declared by PartialEq, but "implementing" Eq
+// declared by PartialEq, but "impling" Eq
 // for a type promises this additional equality property:
 // - reflexivity: a == a
 trait Eq: PartialEq {}
@@ -1072,17 +1072,17 @@ trait Eq: PartialEq {}
 
 ### Auto Traits
 
-Auto traits are traits that get automatically implemented for a type if all of its members also implement the trait. What "members" means depends on the type, for example: fields of a struct, variants of an enum, elements of an array, items of a tuple, and so on.
+Auto traits are traits that get automatically impl'd for a type if all of its members also impl the trait. What "members" means depends on the type, for example: fields of a struct, variants of an enum, elements of an array, items of a tuple, and so on.
 
-All auto traits are marker traits but not all marker traits are auto traits. Auto traits must be marker traits so the compiler can provide an automatic default implementation for them, which would not be possible if they had any trait items.
+All auto traits are marker traits but not all marker traits are auto traits. Auto traits must be marker traits so the compiler can provide an automatic default impl for them, which would not be possible if they had any trait items.
 
 Examples of auto traits:
 
 ```rust
-// implemented for types which are safe to send between threads
+// impl'd for types which are safe to send between threads
 unsafe auto trait Send {}
 
-// implemented for types whose references are safe to send between threads
+// impl'd for types whose references are safe to send between threads
 unsafe auto trait Sync {}
 ```
 
@@ -1090,7 +1090,7 @@ unsafe auto trait Sync {}
 
 ### Unsafe Traits
 
-Traits can be marked unsafe to indicate that implementing the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically implemented for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
+Traits can be marked unsafe to indicate that impling the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically impl'd for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
 
 ```rust
 // SomeType is not Send or Sync
@@ -1098,7 +1098,7 @@ struct SomeType {
     not_send_or_sync: *const (),
 }
 
-// but if we're confident that our implementation doesn't have any data
+// but if we're confident that our impl doesn't have any data
 // races we can explicitly mark it as Send and Sync using unsafe
 unsafe impl Send for SomeType {}
 unsafe impl Sync for SomeType {}
@@ -1221,7 +1221,7 @@ trait Trait {}
 trait Trait: ?Sized {}
 ```
 
-This is so that trait objects can implement the trait. Again, all of the nitty gritty details are in [Sizedness in Rust](./sizedness-in-rust.md).
+This is so that trait objects can impl the trait. Again, all of the nitty gritty details are in [Sizedness in Rust](./sizedness-in-rust.md).
 
 
 
@@ -1681,7 +1681,7 @@ trait ToString {
 }
 ```
 
-There's no need for us to implement this ourselves. In fact we can't, because of this generic blanket impl that automatically impls `ToString` for any type which impls `Display`:
+There's no need for us to impl this ourselves. In fact we can't, because of this generic blanket impl that automatically impls `ToString` for any type which impls `Display`:
 
 ```rust
 impl<T: Display + ?Sized> ToString for T;
@@ -1786,7 +1786,7 @@ The only downside is that `dbg!` isn't automatically stripped in release builds 
 
 ## Operator Traits
 
-All operators in Rust are associated with traits. If we'd like to implement operators for our types we have to implement the associated traits.
+All operators in Rust are associated with traits. If we'd like to impl operators for our types we have to impl the associated traits.
 
 | Trait(s) | Category | Operator(s) | Description |
 |----------|----------|-------------|-------------|
@@ -1862,7 +1862,7 @@ All `PartialEq<Rhs>` impls must ensure that equality is symmetric and transitive
 - `a == b` implies `b == a` (symmetry)
 - `a == b && b == c` implies `a == c` (transitivity) 
 
-By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our implementation is symmetric and transitive.
+By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
 
 ```rust
 struct Point {
@@ -1897,7 +1897,7 @@ enum Suit {
 }
 ```
 
-Once we implement `PartialEq` for our type we also get equality comparisons between references of our type for free thanks to these generic blanket impls:
+Once we impl `PartialEq` for our type we also get equality comparisons between references of our type for free thanks to these generic blanket impls:
 
 ```rust
 // this impl only gives us: Point == Point
@@ -2260,7 +2260,7 @@ fn must_always_agree<T: PartialOrd + PartialEq>(t1: T, t2: T) {
 
 `PartialOrd` refines `PartialEq` in the sense that when comparing `PartialEq` types we can check if they are equal or not equal, but when comparing `PartialOrd` types we can check if they are equal or not equal, and if they are not equal we can check if they are unequal because the first item is less than or greater than the second item.
 
-By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our implementation is symmetric and transitive.
+By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
 
 ```rust
 #[derive(PartialEq)]
@@ -2576,7 +2576,7 @@ fn main() {
 Our current impl of `Add` for `&Point` creates an unnecessary maintenance burden, we want the impl to match `Point`'s impl without having to manually update it every time we change `Point`'s impl. We'd like to keep our code as DRY (Don't Repeat Yourself) as possible. Luckily this is achievable:
 
 ```rust
-// updated, DRY implementation
+// updated, DRY impl
 impl Add for &Point {
     type Output = <Point as Add>::Output;
     fn add(self, rhs: &Point) -> Self::Output {
@@ -2980,7 +2980,7 @@ fn example(mut mage: Mage, mut wizard: Wizard, spell: Spell) {
 }
 ```
 
-In languages with OOP-style data inheritance the value of `self` within a method is always equal to the type which called the method but in the case of Rust the value of `self` is always equal to the type which implemented the method:
+In languages with OOP-style data inheritance the value of `self` within a method is always equal to the type which called the method but in the case of Rust the value of `self` is always equal to the type which impl'd the method:
 
 ```rust
 struct Human {
@@ -3242,7 +3242,7 @@ trait Drop {
 }
 ```
 
-If a type impls `Drop` then `drop` will be called on the type when it goes out of scope but before it's destroyed. We will rarely need to implement this for our types but a good example of where it's useful is if a type holds on to some external resources which needs to be cleaned up when the type is destroyed.
+If a type impls `Drop` then `drop` will be called on the type when it goes out of scope but before it's destroyed. We will rarely need to impl this for our types but a good example of where it's useful is if a type holds on to some external resources which needs to be cleaned up when the type is destroyed.
 
 There's a `BufWriter` type in the standard library that allows us to buffer writes to `Write` types. However, what if the `BufWriter` gets destroyed before the content in its buffer has been flushed to the underlying `Write` type? Thankfully that's not possible! The `BufWriter` impls the `Drop` trait so that `flush` is always called on it whenever it goes out of scope!
 
@@ -3266,7 +3266,7 @@ impl<T: ?Sized> Drop for MutexGuard<'_, T> {
 }
 ```
 
-In general, if you're implementing an abstraction over some resource that needs to be cleaned up after use then that's a great reason to make use of the `Drop` trait.
+In general, if you're impling an abstraction over some resource that needs to be cleaned up after use then that's a great reason to make use of the `Drop` trait.
 
 
 
@@ -3709,7 +3709,7 @@ fn sum_file(path: &Path) -> Result<i32, Box<dyn error::Error>> {
 }
 ```
 
-While being more concise, this seems to suffer from the same downside of the previous approach by throwing away type information. This is mostly true, but if the caller is aware of the implementation details of our function they can still handle the different errors types using the `downcast_ref()` method on `error::Error` which works the same as it does on `dyn Any` types:
+While being more concise, this seems to suffer from the same downside of the previous approach by throwing away type information. This is mostly true, but if the caller is aware of the impl details of our function they can still handle the different errors types using the `downcast_ref()` method on `error::Error` which works the same as it does on `dyn Any` types:
 
 ```rust
 fn handle_sum_file_errors(path: &Path) {
