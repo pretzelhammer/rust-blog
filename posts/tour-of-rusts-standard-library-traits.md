@@ -208,7 +208,7 @@ fn main() {
 
 #### Associated Types
 
-A trait can have associated types. This is useful when we need to use some type other than `Self` within function signatures but would still like the type to be chosen by the implementor rather than being hardcoded in the trait declaration:
+A trait can have associated types. This is useful when we need to use some type other than `Self` within function signatures but would still like the type to be chosen by the implementer rather than being hardcoded in the trait declaration:
 
 ```rust
 trait Trait {
@@ -323,7 +323,7 @@ trait Trait {
 
 #### Generic Types vs Associated Types
 
-Both generic types and associated types defer the decision to the implementor on which concrete types should be used in the trait's functions and methods, so this section seeks to explain when to use one over the other.
+Both generic types and associated types defer the decision to the implementer on which concrete types should be used in the trait's functions and methods, so this section seeks to explain when to use one over the other.
 
 The general rule-of-thumb is:
 - Use associated types when there should only be a single implementation of the trait per type.
@@ -1090,7 +1090,7 @@ unsafe auto trait Sync {}
 
 ### Unsafe Traits
 
-Traits can be marked unsafe to indicate that implementing the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically implemented for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementors to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
+Traits can be marked unsafe to indicate that implementing the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically implemented for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
 
 ```rust
 // SomeType is not Send or Sync
