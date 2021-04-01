@@ -1232,7 +1232,7 @@ This is so that trait objects can impl the trait. Again, all of the nitty gritty
 ### Default
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Functions](#functions)
 - [Derive Macros](#derive-macros)
 
@@ -1359,7 +1359,7 @@ struct Color {
 ### Clone
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Default Impls](#default-impls)
 - [Derive Macros](#derive-macros)
@@ -1505,7 +1505,7 @@ Although `Copy` could be an auto trait the Rust language designers decided it's 
 ### Any
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Generic Blanket Impls](#generic-blanket-impls)
 - [Subtraits & Supertraits](#subtraits--supertraits)
 - [Trait Objects](#trait-objects)
@@ -1635,7 +1635,7 @@ We can serialize types into strings using the formatting macros in `std::fmt`, t
 ### Display & ToString
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Generic Blanket Impls](#generic-blanket-impls)
 - [Default](#default)
@@ -1714,7 +1714,7 @@ fn display_equals_to_string() {
 ### Debug
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Derive Macros](#derive-macros)
 - [Display & ToString](#display--tostring)
@@ -1835,7 +1835,7 @@ All operators in Rust are associated with traits. If we'd like to impl operators
 #### PartialEq & Eq
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
 - [Default Impls](#default-impls)
@@ -2143,7 +2143,7 @@ fn example_compare_collections<T: PartialEq>(vec1: Vec<T>, vec2: Vec<T>) {
 #### Hash
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
 - [Default Impls](#default-impls)
@@ -2214,7 +2214,7 @@ fn example_hashset() {
 #### PartialOrd & Ord
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
 - [Default Impls](#default-impls)
@@ -2433,7 +2433,7 @@ Going over all of these would be very redundant. Most of these only apply to num
 #### Add & AddAssign
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
 - [Generic Parameters](#generic-parameters)
@@ -2651,7 +2651,7 @@ fn main() {
 #### FnOnce, FnMut, & Fn
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
 - [Generic Parameters](#generic-parameters)
@@ -2787,7 +2787,7 @@ fn main() {
 #### Deref & DerefMut
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
 - [Subtraits & Supertraits](#subtraits--supertraits)
@@ -3081,7 +3081,7 @@ The main takeaway from this section is do not try to be cute or clever with `Der
 #### Index & IndexMut
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
 - [Generic Parameters](#generic-parameters)
@@ -3233,7 +3233,7 @@ impl Index<BasketballPosition> for BasketballTeam {
 #### Drop
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 
 ```rust
@@ -3277,7 +3277,7 @@ In general, if you're impling an abstraction over some resource that needs to be
 ### From & Into
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Functions](#functions)
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
@@ -3542,7 +3542,7 @@ The best time to talk about error handling and the `Error` trait is after going 
 ### Error
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Default Impls](#default-impls)
 - [Generic Blanket Impls](#generic-blanket-impls)
@@ -3810,7 +3810,7 @@ fn handle_sum_file_errors(path: &Path) {
 ### TryFrom & TryInto
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Functions](#functions)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
@@ -3955,7 +3955,7 @@ fn example() -> Result<Triangle, OutOfBounds> {
 ### FromStr
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Functions](#functions)
 - [Associated Types](#associated-types)
 - [Error](#error)
@@ -4085,7 +4085,7 @@ impl TryFrom<&str> for Point {
 ### AsRef & AsMut
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Sized](#sized)
 - [Generic Parameters](#generic-parameters)
@@ -4414,7 +4414,7 @@ fn example(human: Human, soldier: Soldier, knight: Knight, mage: Mage, wizard: W
 ### Borrow & BorrowMut
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
 - [Subtraits & Supertraits](#subtraits--supertraits)
@@ -4510,7 +4510,7 @@ It's good to be aware of these traits and understand why they exist since it hel
 ### ToOwned
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Default Impls](#default-impls)
 - [Clone](#clone)
@@ -4541,7 +4541,7 @@ For similar reasons as `Borrow` and `BorrowMut`, it's good to be aware of this t
 ### Iterator
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
 - [Default Impls](#default-impls)
@@ -4904,7 +4904,7 @@ fn receivers_can_be_iterated() {
 ### IntoIterator
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
 - [Iterator](#iterator)
@@ -4951,7 +4951,7 @@ for v in (&mut vec).into_iter() {}
 ### FromIterator
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Functions](#functions)
 - [Generic Parameters](#generic-parameters)
 - [Iterator](#iterator)
@@ -5013,7 +5013,7 @@ fn entry_list<K, V>(map: HashMap<K, V>) -> LinkedList<(K, V)> {
 ### Read & Write
 
 Prerequisites
-- [`Self`](#self)
+- [Self](#self)
 - [Methods](#methods)
 - [Scope](#scope)
 - [Generic Blanket Impls](#generic-blanket-impls)
