@@ -1,6 +1,6 @@
 # Tour of Rust's Standard Library Traits
 
-_March 31st, 2021 · 75 minute read · #rust · #traits_
+_March 31st, 2021 · 65 minute read · #rust · #traits_
 
 **Table of Contents**
 - [Intro](#intro)
@@ -85,7 +85,7 @@ Or ever asked yourself the questions:
 
 Well then this is the article for you! It answers all of the above questions and much much more. Together we'll do a quick flyby tour of all of the most common and popular traits from the Rust standard library!
 
-You can read this article in order section by section or jump around to whichever traits interest you the most because each trait section begins with a list of links to **Prerequisite** sections such that you will know if you have adequate context to understand the explanations in each trait section, and can quickly do the minimal prerequisite reading if necessary. 
+You can read this article in order section by section or jump around to whichever traits interest you the most because each trait section begins with a list of links to **Prerequisite** sections that you should read to have adequate context to understand the current section's explanations.
 
 
 
