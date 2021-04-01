@@ -587,7 +587,7 @@ The standard library exports a handful of derive macros which we can use to quic
 - PartialEq
 - PartialOrd
 
-Example useage:
+Example usage:
 
 ```rust
 // macro derives Copy & Clone impl for SomeType
@@ -847,7 +847,7 @@ fn main() {
 }
 ```
 
-Furthermore, there's no rules for how a type must impl both a subtrait and a supertrait. It can use the methods from either in the impl of the other.
+Furthermore, there are no rules for how a type must impl both a subtrait and a supertrait. It can use the methods from either in the impl of the other.
 
 ```rust
 trait Supertrait {
@@ -1182,7 +1182,7 @@ fn main() {
 }
 ```
 
-This is why most types are `Sync` without requiring any explicit synchronization. In the event we need to simultaneously mutate some data `T` across multiple threads the compiler won't let us until we wrap the data in a `Arc<Mutxex<T>>` or `Arc<RwLock<T>>` so the compiler enforces that explicit synchronization is used when it's needed.
+This is why most types are `Sync` without requiring any explicit synchronization. In the event we need to simultaneously mutate some data `T` across multiple threads the compiler won't let us until we wrap the data in a `Arc<Mutex<T>>` or `Arc<RwLock<T>>` so the compiler enforces that explicit synchronization is used when it's needed.
 
 
 
@@ -1194,7 +1194,7 @@ Prerequisites
 
 If a type is `Sized` that means its size in bytes is known at compile-time and it's possible to put instances of the type on the stack.
 
-Sizedness of types and its implications is lowkey a huge topic that affects a lot of different aspects of the language. It's so important that I wrote an entire article on it called [Sizedness in Rust](./sizedness-in-rust.md) which I highly recommend reading for anyone who would like to understand sizedness in-depth. I'll summarize a few key things which are relevant to this article.
+Sizedness of types and its implications is a subtle yet huge topic that affects a lot of different aspects of the language. It's so important that I wrote an entire article on it called [Sizedness in Rust](./sizedness-in-rust.md) which I highly recommend reading for anyone who would like to understand sizedness in-depth. I'll summarize a few key things which are relevant to this article.
 
 1. All generic types get an implicit `Sized` bound.
 
@@ -1420,7 +1420,7 @@ struct SomeStruct {
 }
 ```
 
-If we're working a program where performance is not the utmost concern then we don't need to sweat cloning data. Rust is a low-level language that exposes a lot of low-level details so it's easy to get caught up in premature optimizations instead of actually solving the problem at hand. For many programs the best order of priorities is usually to build for correctness first, elegance second, and performance third, and only focus on performance after the program has been profiled and the performance bottlenecks have been identified. This is good general advice to follow, and if it doesn't apply to your particular program then you would know.
+If we're working on a program where performance is not the utmost concern then we don't need to sweat cloning data. Rust is a low-level language that exposes a lot of low-level details so it's easy to get caught up in premature optimizations instead of actually solving the problem at hand. For many programs the best order of priorities is usually to build for correctness first, elegance second, and performance third, and only focus on performance after the program has been profiled and the performance bottlenecks have been identified. This is good general advice to follow, and if it doesn't apply to your particular program then you would know.
 
 
 
@@ -1454,7 +1454,7 @@ impl<T: Copy> Clone for T {
 }
 ```
 
-Impling `Copy` for a type changes its behavior when it gets moved. By default all types have _move semantics_ but once a type impls `Copy` it gets _copy semantics_. To explain the difference between the two lets examine these simple scenarios:
+Impling `Copy` for a type changes its behavior when it gets moved. By default all types have _move semantics_ but once a type impls `Copy` it gets _copy semantics_. To explain the difference between the two let's examine these simple scenarios:
 
 ```rust
 // a "move", src: !Copy
@@ -1464,7 +1464,7 @@ let dest = src;
 let dest = src;
 ```
 
-In both cases, `dest = src` performs a simple bitwise copy of `src`'s contents and moves the result into `dest`, the only difference is that in the case of _"a move"_ the borrow checker invalidates the `src` variable and makes sure it's not used anywhere else later and in the case of _"a copy"_ `src` remains valid and useable.
+In both cases, `dest = src` performs a simple bitwise copy of `src`'s contents and moves the result into `dest`, the only difference is that in the case of _"a move"_ the borrow checker invalidates the `src` variable and makes sure it's not used anywhere else later and in the case of _"a copy"_ `src` remains valid and usable.
 
 In a nutshell: Copies _are_ moves. Moves _are_ copies. Only the borrow checker knows the difference.
 
@@ -1496,7 +1496,7 @@ src = { is_valid: bool, data: i32 }
 dest = { is_valid: bool, data: i32 }
 ```
 
-These are both useable simultaneously! Hence `Option<i32>` is `Copy`.
+These are both usable simultaneously! Hence `Option<i32>` is `Copy`.
 
 Although `Copy` could be an auto trait the Rust language designers decided it's simpler and safer for types to explicitly opt into copy semantics rather than silently inheriting copy semantics whenever the type is eligible, as the latter can cause surprising confusing behavior which often leads to bugs.
 
@@ -1516,7 +1516,7 @@ trait Any: 'static {
 }
 ```
 
-Rust's style of polymorphism is parametric, but if we're looking to use a more ad-hoc style of polymorphism similiar to dynamically-typed languages then we can emulate that using the `Any` trait. We don't have to manually impl this trait for our types because that's already covered by this generic blanket impl:
+Rust's style of polymorphism is parametric, but if we're looking to use a more ad-hoc style of polymorphism similar to dynamically-typed languages then we can emulate that using the `Any` trait. We don't have to manually impl this trait for our types because that's already covered by this generic blanket impl:
 
 ```rust
 impl<T: 'static + ?Sized> Any for T {
@@ -1627,7 +1627,7 @@ We can serialize types into strings using the formatting macros in `std::fmt`, t
 | `UpperHex` | `{:X}` | uppercase hex representation |
 | `Pointer` | `{:p}` | memory address |
 | `Binary` | `{:b}` | binary representation |
-| `LowerExp` | `{:e}` | lowercase exponetial representation |
+| `LowerExp` | `{:e}` | lowercase exponential representation |
 | `UpperExp` | `{:E}` | uppercase exponential representation |
 
 
@@ -2111,7 +2111,7 @@ fn main() {
 trait Eq: PartialEq<Self> {}
 ```
 
-If we impl `Eq` for a type, on top of the symmetry & transtivity properties required by `PartialEq`, we're also guaranting reflexivity, i.e. `a == a` for all `a`. In this sense `Eq` refines `PartialEq` because it represents a stricter version of equality. If all members of a type impl `Eq` then the `Eq` impl can be derived for the type.
+If we impl `Eq` for a type, on top of the symmetry & transitivity properties required by `PartialEq`, we're also guaranteeing reflexivity, i.e. `a == a` for all `a`. In this sense `Eq` refines `PartialEq` because it represents a stricter version of equality. If all members of a type impl `Eq` then the `Eq` impl can be derived for the type.
 
 Floats are `PartialEq` but not `Eq` because `NaN != NaN`. Almost all other `PartialEq` types are trivially `Eq`, unless of course if they contain floats.
 
@@ -2298,7 +2298,7 @@ enum Stoplight {
 }
 ```
 
-The `PartialOrd` derive macro orders types based on the lexographical order of their members:
+The `PartialOrd` derive macro orders types based on the lexicographical order of their members:
 
 ```rust
 // generates PartialOrd impl which orders
@@ -2334,7 +2334,7 @@ trait Ord: Eq + PartialOrd<Self> {
 }
 ```
 
-If we impl `Ord` for a type, on top of the asymmetry & transitivity properties required by `PartialOrd`, we're also guaranting that the asymmetry is total, i.e. exactly one of `a < b`, `a == b` or `a > b` is true for any given `a` and `b`. In this sense `Ord` refines `Eq` and `PartialOrd` because it represents a stricter version of comparisons. If a type impls `Ord` we can use that impl to trivially impl `PartialOrd`, `PartialEq`, and `Eq`:
+If we impl `Ord` for a type, on top of the asymmetry & transitivity properties required by `PartialOrd`, we're also guaranteeing that the asymmetry is total, i.e. exactly one of `a < b`, `a == b` or `a > b` is true for any given `a` and `b`. In this sense `Ord` refines `Eq` and `PartialOrd` because it represents a stricter version of comparisons. If a type impls `Ord` we can use that impl to trivially impl `PartialOrd`, `PartialEq`, and `Eq`:
 
 ```rust
 use std::cmp::Ordering;
@@ -2347,7 +2347,7 @@ struct Point {
 }
 
 // note: as with PartialOrd, the Ord derive macro
-// orders a type based on the lexographical order
+// orders a type based on the lexicographical order
 // of its members
 
 // but here's the impls if we wrote them out by hand
@@ -2573,7 +2573,7 @@ fn main() {
 }
 ```
 
-Our current impl of `Add` for `&Point` creates an unnecessary maintanence burden, we want the impl to match `Point`'s impl without having to manually update it every time we change `Point`'s impl. We'd like to keep our code as DRY (Don't Repeat Yourself) as possible. Luckily this is achievable:
+Our current impl of `Add` for `&Point` creates an unnecessary maintenance burden, we want the impl to match `Point`'s impl without having to manually update it every time we change `Point`'s impl. We'd like to keep our code as DRY (Don't Repeat Yourself) as possible. Luckily this is achievable:
 
 ```rust
 // updated, DRY implementation
@@ -2753,7 +2753,7 @@ fn main() {
     let mut fn_ptr: fn(i32) -> i32 = add_one;
     assert_eq!(fn_ptr(1), 2); // ✅
     
-    // captureless closure cast to fn pointer
+    // capture-less closure cast to fn pointer
     fn_ptr = |x| x + 1; // same as add_one
     assert_eq!(fn_ptr(1), 2); // ✅
 }
@@ -2808,7 +2808,7 @@ trait DerefMut: Deref {
 
 Rust automatically dereferences types when they're being passed as function arguments, returned from a function, or used as part of a method call. This is the reason why we can pass `&String` and `&Vec<T>` to functions expecting `&str` and `&[T]` because `String` impls `Deref<Target = str>` and `Vec<T>` impls `Deref<Target = [T]>`.
 
-`Deref` and `DerefMut` should only be impled for smart pointer types. The most common way people attempt to misuse and abuse these traits is to try to shoehorn some kind of OOP-style data inheritance into Rust. This does not work. Rust is not OOP. Let's examine a few different situations where, how, and why it does not work. Let's start with this example:
+`Deref` and `DerefMut` should only be impl'd for smart pointer types. The most common way people attempt to misuse and abuse these traits is to try to shoehorn some kind of OOP-style data inheritance into Rust. This does not work. Rust is not OOP. Let's examine a few different situations where, how, and why it does not work. Let's start with this example:
 
 ```rust
 use std::ops::Deref;
@@ -3059,7 +3059,7 @@ fn main() {
 }
 ```
 
-We never impled `Clone` for `SortedVec` so when we call the `.clone()` method the compiler is using deref coercion to resolve that method call on `Vec` and so it returns a `Vec` and not a `SortedVec`!
+We never impl'd `Clone` for `SortedVec` so when we call the `.clone()` method the compiler is using deref coercion to resolve that method call on `Vec` and so it returns a `Vec` and not a `SortedVec`!
 
 ```rust
 fn main() {
@@ -3074,7 +3074,7 @@ fn main() {
 
 Anyway, none of the above limitations, constraints, or gotchas are faults of Rust because Rust was never designed to be an OO language or to support any OOP patterns in the first place.
 
-The main takeaway from this section is do not try to be cute or clever with `Deref` and `DerefMut` impls. They're really only appropriate for smart pointer types, which can only can be impled within the standard library for now as smart pointer types currently require unstable features and compiler magic to work. If we want functionality and behavior similar to `Deref` and `DerefMut` then what we're actually probably looking for is `AsRef` and `AsMut` which we'll get to later.
+The main takeaway from this section is do not try to be cute or clever with `Deref` and `DerefMut` impls. They're really only appropriate for smart pointer types, which can only be impl'd within the standard library for now as smart pointer types currently require unstable features and compiler magic to work. If we want functionality and behavior similar to `Deref` and `DerefMut` then what we're actually probably looking for is `AsRef` and `AsMut` which we'll get to later.
 
 
 
@@ -3120,7 +3120,7 @@ fn main() {
 
 It's kinda confusing at first, because it seems like the `Index` trait does not follow its own method signature, but really it's just questionable syntax sugar.
 
-Since `Idx` is a generic type the `Index` trait can be impled many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into its using `Range<usize>`s to get slices.
+Since `Idx` is a generic type the `Index` trait can be impl'd many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into its using `Range<usize>`s to get slices.
 
 ```rust
 fn main() {
@@ -3501,7 +3501,7 @@ fn example() {
 }
 ```
 
-There's no rules for when, how, or why we should impl `From<T>` for our types so it's up to us to use our best judgement for every situation.
+There are no rules for when, how, or why we should impl `From<T>` for our types so it's up to us to use our best judgement for every situation.
 
 One popular use of `Into<T>` is to make functions which need owned values generic over whether they take owned or borrowed values:
 
@@ -3849,7 +3849,7 @@ where
 }
 ```
 
-Let's say that in the context of our program it doesn't make sense for `Point`s to have `x` and `y` values that are less than `-1000` or greater than `1000`. This is how we'd re-write our earlier `From` impls using `TryFrom` to signal to the users of our type that this conversion can now fail:
+Let's say that in the context of our program it doesn't make sense for `Point`s to have `x` and `y` values that are less than `-1000` or greater than `1000`. This is how we'd rewrite our earlier `From` impls using `TryFrom` to signal to the users of our type that this conversion can now fail:
 
 ```rust
 use std::convert::TryFrom;
@@ -4407,7 +4407,7 @@ fn example(human: Human, soldier: Soldier, knight: Knight, mage: Mage, wizard: W
 }
 ```
 
-`Deref` didn't work in prior version of the example above because deref coercion is an implicit conversion between types which leaves room for people to mistakenly formulate the wrong ideas and expectations for how it will behave. `AsRef` works above because it makes the conversion between types explicit and there's no room leftover to develop any wrong ideas or expectations.
+`Deref` didn't work in the prior version of the example above because deref coercion is an implicit conversion between types which leaves room for people to mistakenly formulate the wrong ideas and expectations for how it will behave. `AsRef` works above because it makes the conversion between types explicit and there's no room leftover to develop any wrong ideas or expectations.
 
 
 
@@ -4503,7 +4503,7 @@ where
 }
 ```
 
-It's good to be aware of these traits and understand why they exist since it helps demystify some of the methods on `HashSet`, `HashMap`, `BTreeSet`, and `BTreeMap` but it's very rare that we would ever need to impl these traits for any of our types because it's very rare that we would ever need create a pair of types where one is the "borrowed" version of the other in the first place. If we have some `T` then `&T` will get the job done 99.99% of the time, and `T: Borrow<T>` is already impled for all `T` because of a generic blanket impl, so we don't need to manually impl it and we don't need to create some `U` such that `T: Borrow<U>`.
+It's good to be aware of these traits and understand why they exist since it helps demystify some of the methods on `HashSet`, `HashMap`, `BTreeSet`, and `BTreeMap` but it's very rare that we would ever need to impl these traits for any of our types because it's very rare that we would ever need create a pair of types where one is the "borrowed" version of the other in the first place. If we have some `T` then `&T` will get the job done 99.99% of the time, and `T: Borrow<T>` is already impl'd for all `T` because of a generic blanket impl, so we don't need to manually impl it and we don't need to create some `U` such that `T: Borrow<U>`.
 
 
 
@@ -4872,7 +4872,7 @@ fn example<I: Iterator<Item = i32>>(mut iter: I) {
 
 Not very easy to discover. But anyway, now we know.
 
-Also, there's no rules or conventions on what can or cannot be an iterator. If the type impls `Iterator` then it's an iterator. Some creative examples from the standard library:
+Also, there are no rules or conventions on what can or cannot be an iterator. If the type impls `Iterator` then it's an iterator. Some creative examples from the standard library:
 
 ```rust
 use std::sync::mpsc::channel;
