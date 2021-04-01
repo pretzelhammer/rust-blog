@@ -6,7 +6,7 @@ _March 31st, 2021 · 65 minute read · #rust · #traits_
 - [Intro](#intro)
 - [Trait Basics](#trait-basics)
     - [Trait Items](#trait-items)
-        - [`Self`](#self)
+        - [Self](#self)
         - [Functions](#functions)
         - [Methods](#methods)
         - [Associated Types](#associated-types)
@@ -101,7 +101,7 @@ Trait items are any items that are part of a trait declaration.
 
 
 
-#### `Self`
+#### Self
 
 `Self` always refers to the implementing type.
 
