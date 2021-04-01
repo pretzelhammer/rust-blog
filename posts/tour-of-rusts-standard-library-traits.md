@@ -4102,7 +4102,7 @@ trait AsMut<T: ?Sized> {
 }
 ```
 
-`AsRef` is for cheap reference to reference conversions. However, one of the most common ways its used is to make functions generic over whether they take ownership or not:
+`AsRef` is for cheap reference to reference conversions. However, one of the most common ways it's used is to make functions generic over whether they take ownership or not:
 
 ```rust
 // accepts:
