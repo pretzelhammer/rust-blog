@@ -5120,7 +5120,8 @@ We've all learned a lot together! Too much in fact. This is us now:
 
 ## Discuss
 
-This article has yet to be shared anywhere on the internet.
+Discuss this article on
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
 
