@@ -16,13 +16,13 @@ _March 31st, 2021 · 85 minute read · #rust · #traits_
     - [Derive Macros](#derive-macros)
     - [Default Impls](#default-impls)
     - [Generic Blanket Impls](#generic-blanket-impls)
-    - [Subtraits & Supertraits](#subtraits-&-supertraits)
+    - [Subtraits & Supertraits](#subtraits--supertraits)
     - [Trait Objects](#trait-objects)
     - [Marker Traits](#marker-traits)
     - [Auto Traits](#auto-traits)
     - [Unsafe Traits](#unsafe-traits)
 - [Auto Traits](#auto-traits)
-    - [Send & Sync](#send-&-sync)
+    - [Send & Sync](#send--sync)
     - [Sized](#sized)
 - [General Traits](#general-traits)
     - [Default](#default)
@@ -30,37 +30,37 @@ _March 31st, 2021 · 85 minute read · #rust · #traits_
     - [Copy](#copy)
     - [Any](#any)
 - [Formatting Traits](#formatting-traits)
-    - [Display & ToString](#display-&-tostring)
+    - [Display & ToString](#display--tostring)
     - [Debug](#debug)
 - [Operator Traits](#operator-traits)
     - [Comparison Traits](#comparison-traits)
-        - [PartialEq & Eq](#partialeq-&-eq)
+        - [PartialEq & Eq](#partialeq--eq)
         - [Hash](#hash)
-        - [PartialOrd & Ord](#partialord-&-ord)
+        - [PartialOrd & Ord](#partialord--ord)
     - [Arithmetic Traits](#arithmetic-traits)
-        - [Add & AddAssign](#add-&-addassign)
+        - [Add & AddAssign](#add--addassign)
     - [Closure Traits](#closure-traits)
-        - [FnOnce, FnMut, & Fn](#fnonce,-fnmut,-&-fn)
+        - [FnOnce, FnMut, & Fn](#fnonce,-fnmut,--fn)
     - [Other Traits](#other-traits)
-        - [Deref & DerefMut](#deref-&-derefmut)
-        - [Index & IndexMut](#index-&-indexmut)
+        - [Deref & DerefMut](#deref--derefmut)
+        - [Index & IndexMut](#index--indexmut)
         - [Drop](#drop)
 - [Conversion Traits](#conversion-traits)
-    - [From & Into](#from-&-into)
+    - [From & Into](#from--into)
 - [Error Handling](#error-handling)
     - [Error](#error)
 - [Conversion Traits Continued](#conversion-traits-continued)
-    - [TryFrom & TryInto](#tryfrom-&-tryinto)
+    - [TryFrom & TryInto](#tryfrom--tryinto)
     - [FromStr](#fromstr)
-    - [AsRef & AsMut](#asref-&-asmut)
-    - [Borrow & BorrowMut](#borrow-&-borrowmut)
+    - [AsRef & AsMut](#asref--asmut)
+    - [Borrow & BorrowMut](#borrow--borrowmut)
     - [ToOwned](#toowned)
 - [Iteration Traits](#iteration-traits)
     - [Iterator](#iterator)
     - [IntoIterator](#intoiterator)
     - [FromIterator](#fromiterator)
 - [I/O Traits](#io-traits)
-    - [Read & Write](#read-&-write)
+    - [Read & Write](#read--write)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
 - [Notifications](#notifications)
@@ -1428,7 +1428,7 @@ If we're working a program where performance is not the utmost concern then we d
 
 Prerequisites
 - [Marker Traits](#marker-traits)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Derive Macros](#derive-macros)
 
 ```rust
@@ -1507,7 +1507,7 @@ Although `Copy` could be an auto trait the Rust language designers decided it's 
 Prerequisites
 - [`Self`](#self)
 - [Generic Blanket Impls](#generic-blanket-impls)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Trait Objects](#trait-objects)
 
 ```rust
@@ -1717,7 +1717,7 @@ Prerequisites
 - [`Self`](#self)
 - [Methods](#methods)
 - [Derive Macros](#derive-macros)
-- [Display & ToString](#display-&-tostring)
+- [Display & ToString](#display--tostring)
 
 ```rust
 trait Debug {
@@ -1841,7 +1841,7 @@ Prerequisites
 - [Default Impls](#default-impls)
 - [Generic Blanket Impls](#generic-blanket-impls)
 - [Marker Traits](#marker-traits)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Sized](#sized)
 
 ```rust
@@ -2148,7 +2148,7 @@ Prerequisites
 - [Generic Parameters](#generic-parameters)
 - [Default Impls](#default-impls)
 - [Derive Macros](#derive-macros)
-- [PartialEq & Eq](#partialeq-&-eq)
+- [PartialEq & Eq](#partialeq--eq)
 
 ```rust
 trait Hash {
@@ -2218,10 +2218,10 @@ Prerequisites
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
 - [Default Impls](#default-impls)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Derive Macros](#derive-macros)
 - [Sized](#sized)
-- [PartialEq & Eq](#partialeq-&-eq)
+- [PartialEq & Eq](#partialeq--eq)
 
 ```rust
 enum Ordering {
@@ -2656,7 +2656,7 @@ Prerequisites
 - [Associated Types](#associated-types)
 - [Generic Parameters](#generic-parameters)
 - [Generic Types vs Associated Types](#generic-types-vs-associated-types)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 
 ```rust
 trait FnOnce<Args> {
@@ -2790,7 +2790,7 @@ Prerequisites
 - [`Self`](#self)
 - [Methods](#methods)
 - [Associated Types](#associated-types)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Sized](#sized)
 
 ```rust
@@ -3086,7 +3086,7 @@ Prerequisites
 - [Associated Types](#associated-types)
 - [Generic Parameters](#generic-parameters)
 - [Generic Types vs Associated Types](#generic-types-vs-associated-types)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Sized](#sized)
 
 ```rust
@@ -3546,12 +3546,12 @@ Prerequisites
 - [Methods](#methods)
 - [Default Impls](#default-impls)
 - [Generic Blanket Impls](#generic-blanket-impls)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Trait Objects](#trait-objects)
-- [Display & ToString](#display-&-tostring)
+- [Display & ToString](#display--tostring)
 - [Debug](#debug)
 - [Any](#any)
-- [From & Into](#from-&-into)
+- [From & Into](#from--into)
 
 ```rust
 trait Error: Debug + Display {
@@ -3817,7 +3817,7 @@ Prerequisites
 - [Generic Parameters](#generic-parameters)
 - [Generic Types vs Associated Types](#generic-types-vs-associated-types)
 - [Generic Blanket Impls](#generic-blanket-impls)
-- [From & Into](#from-&-into)
+- [From & Into](#from--into)
 - [Error](#error)
 
 `TryFrom` and `TryInto` are the fallible versions of `From` and `Into`.
@@ -3959,7 +3959,7 @@ Prerequisites
 - [Functions](#functions)
 - [Associated Types](#associated-types)
 - [Error](#error)
-- [TryFrom & TryInto](#tryfrom-&-tryinto)
+- [TryFrom & TryInto](#tryfrom--tryinto)
 
 ```rust
 trait FromStr {
@@ -4090,7 +4090,7 @@ Prerequisites
 - [Sized](#sized)
 - [Generic Parameters](#generic-parameters)
 - [Sized](#sized)
-- [Deref & DerefMut](#deref-&-derefmut)
+- [Deref & DerefMut](#deref--derefmut)
 
 ```rust
 trait AsRef<T: ?Sized> {
@@ -4417,12 +4417,12 @@ Prerequisites
 - [`Self`](#self)
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
-- [Subtraits & Supertraits](#subtraits-&-supertraits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
 - [Sized](#sized)
-- [AsRef & AsMut](#asref-&-asmut)
-- [PartialEq & Eq](#partialeq-&-eq)
+- [AsRef & AsMut](#asref--asmut)
+- [PartialEq & Eq](#partialeq--eq)
 - [Hash](#hash)
-- [PartialOrd & Ord](#partialord-&-ord)
+- [PartialOrd & Ord](#partialord--ord)
 
 ```rust
 trait Borrow<Borrowed> 
@@ -4514,7 +4514,7 @@ Prerequisites
 - [Methods](#methods)
 - [Default Impls](#default-impls)
 - [Clone](#clone)
-- [Borrow & BorrowMut](#borrow-&-borrowmut)
+- [Borrow & BorrowMut](#borrow--borrowmut)
 
 ```rust
 trait ToOwned {
