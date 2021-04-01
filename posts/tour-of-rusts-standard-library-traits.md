@@ -1,6 +1,6 @@
 # Tour of Rust's Standard Library Traits
 
-_March 31st, 2021 · 85 minute read · #rust · #traits_
+_March 31st, 2021 · 75 minute read · #rust · #traits_
 
 **Table of Contents**
 - [Intro](#intro)
@@ -21,7 +21,7 @@ _March 31st, 2021 · 85 minute read · #rust · #traits_
     - [Marker Traits](#marker-traits)
     - [Auto Traits](#auto-traits)
     - [Unsafe Traits](#unsafe-traits)
-- [Auto Traits](#auto-traits)
+- [Auto Traits](#auto-traits-1)
     - [Send & Sync](#send--sync)
     - [Sized](#sized)
 - [General Traits](#general-traits)
@@ -40,7 +40,7 @@ _March 31st, 2021 · 85 minute read · #rust · #traits_
     - [Arithmetic Traits](#arithmetic-traits)
         - [Add & AddAssign](#add--addassign)
     - [Closure Traits](#closure-traits)
-        - [FnOnce, FnMut, & Fn](#fnonce,-fnmut,--fn)
+        - [FnOnce, FnMut, & Fn](#fnonce-fnmut--fn)
     - [Other Traits](#other-traits)
         - [Deref & DerefMut](#deref--derefmut)
         - [Index & IndexMut](#index--indexmut)
@@ -2648,7 +2648,7 @@ fn main() {
 
 
 
-#### FnOnce, FnMut, Fn
+#### FnOnce, FnMut, & Fn
 
 Prerequisites
 - [`Self`](#self)
