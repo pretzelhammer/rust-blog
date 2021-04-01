@@ -3068,7 +3068,7 @@ fn main() {
 
     // calling clone on SortedVec actually returns a Vec 🤦
     let sortedClone: Vec<i32> = sorted.clone();
-    sortedClone.push(4); // invariant broken ☠️
+    sortedClone.push(4); // invariant broken 💀
 }
 ```
 
