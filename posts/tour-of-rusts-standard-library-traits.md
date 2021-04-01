@@ -1035,6 +1035,7 @@ Arc<dyn Trait>
 Not all traits can be converted into trait objects. A trait is object-safe if it meets these requirements:
 - trait doesn't require `Self: Sized`
 - all of the trait's methods are object-safe
+
 A trait method is object-safe if it meets these requirements:
 - method requires `Self: Sized` or
 - method does not use `Self` anywhere other than the first argument
