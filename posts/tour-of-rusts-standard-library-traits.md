@@ -2264,7 +2264,9 @@ fn must_always_agree<T: PartialOrd + PartialEq>(t1: T, t2: T) {
 By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
 
 ```rust
-#[derive(PartialEq)]
+use std::cmp::Ordering;
+
+#[derive(PartialEq, PartialOrd)]
 struct Point {
     x: i32,
     y: i32
@@ -2273,7 +2275,7 @@ struct Point {
 // Rhs == Self == Point
 impl PartialOrd for Point {
     // impl automatically symmetric & transitive
-    fn partial_cmp(&self, other: &Point) -> bool {
+    fn partial_cmp(&self, other: &Point) -> Option<Ordering> {
         Some(match self.x.cmp(&other.x) {
             Ordering::Equal => self.y.cmp(&other.y),
             ordering => ordering,
