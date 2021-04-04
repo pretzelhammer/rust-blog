@@ -1484,7 +1484,7 @@ dest = { data: *mut [i32], length: usize, capacity: usize }
 
 At this point both `src` and `dest` have aliased mutable references to the same data, which is a big no-no, so the borrow checker invalidates the `src` variable so it can't be used again without throwing a compile error.
 
-For a more concrete example of a copy, imagine `src` was an `Option<i32>` and its contents looks something like this:
+For a more concrete example of a copy, imagine `src` was an `Option<i32>` and its contents looked something like this:
 
 ```rust
 { is_valid: bool, data: i32 }
