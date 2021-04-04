@@ -4984,7 +4984,7 @@ fn filter_letters(string: &str) -> String {
 }
 ```
 
-All the collections in the standard library impl `IntoIterato` and `FromIterator` so that makes it easier to convert between them:
+All the collections in the standard library impl `IntoIterator` and `FromIterator` so that makes it easier to convert between them:
 
 ```rust
 use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
