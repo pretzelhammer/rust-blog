@@ -5141,7 +5141,7 @@ fn example_test() {
 
 ## Conclusion
 
-We've all learned a lot together! Too much in fact. This is us now:
+We learned a lot together! Too much in fact. This is us now:
 
 ![rust standard library traits](../assets/jason-jarvis-stdlib-traits.png)
 
