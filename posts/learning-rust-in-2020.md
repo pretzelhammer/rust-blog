@@ -1,6 +1,6 @@
 # Learning Rust in 2020
 
-_May 9th, 2020 · 15 minute read · #rust_
+_09 May 2020 · 15 minute read · #rust_
 
 **Table of Contents**
 - [Intro](#intro)

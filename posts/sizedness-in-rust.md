@@ -1,6 +1,6 @@
 # Sizedness in Rust
 
-_July 22nd, 2020 · 35 minute read · #rust · #sizedness_
+_22 July 2020 · 35 minute read · #rust · #sizedness_
 
 **Table of Contents**
 

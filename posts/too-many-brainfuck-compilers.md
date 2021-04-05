@@ -1,6 +1,6 @@
 # Learn Assembly by Writing Entirely Too Many Brainfuck Compilers
 
-_Nov 1st, 2020 · 50 minute read · #assembly · #compilers_
+_01 November 2020 · 50 minute read · #assembly · #compilers_
 
 **Table of Contents**
 - [Intro](#intro)

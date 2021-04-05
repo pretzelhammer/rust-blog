@@ -1,6 +1,6 @@
 # Tour of Rust's Standard Library Traits
 
-_March 31st, 2021 · #rust · #traits_
+_31 March 2021 · #rust · #traits_
 
 **Table of Contents**
 - [Intro](#intro)
