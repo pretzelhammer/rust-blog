@@ -208,4 +208,5 @@ Get notified when the next blog post get published by
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
+- [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

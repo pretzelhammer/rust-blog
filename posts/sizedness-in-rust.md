@@ -1257,5 +1257,6 @@ Get notified when the next blog post get published by
 ## Further Reading
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
+- [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

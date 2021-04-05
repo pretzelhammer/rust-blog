@@ -2243,6 +2243,7 @@ Get notified when the next article gets published by
 Rust
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
+- [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 
 ISAs

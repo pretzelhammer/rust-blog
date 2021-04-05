@@ -8,7 +8,7 @@ Also I saw this comic which was pretty encouraging:
 
 ![holy shit two cakes](../assets/holy-shit-two-cakes.png)
 
-_artist credit: [stuffman](https://stuffman.tumblr.com/)_
+_Artist credit: [stuffman](https://stuffman.tumblr.com/)_
 
 
 
@@ -35,4 +35,5 @@ Get notified when the next blog post get published by
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
+- [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
