@@ -6,7 +6,7 @@ My posts are listed below in reverse chronological order.
 
 | Date | Title | Translations |
 |-|-|-|
-| 2021-03-21 | [Tour of Rust's Standard Library Traits](./posts/tour-of-rusts-standard-library-traits.md) | |
+| 2021-03-31 | [Tour of Rust's Standard Library Traits](./posts/tour-of-rusts-standard-library-traits.md) | |
 | 2020-11-01 | [Learn Assembly with Entirely Too Many Brainfuck Compilers](./posts/too-many-brainfuck-compilers.md) | |
 | 2020-07-22 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | |
 | 2020-05-19 | [Common Rust Lifetime Misconceptions](./posts/common-rust-lifetime-misconceptions.md) | [русский](./posts/translations/rus/common-rust-lifetime-misconceptions.md) · [日本語](./posts/translations/jp/common-rust-lifetime-misconceptions.md) · [中文](./posts/translations/zh-hans/common-rust-lifetime-misconceptions.md)|
