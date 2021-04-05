@@ -1,6 +1,6 @@
 # Tour of Rust's Standard Library Traits
 
-_March 31st, 2021 · 65 minute read · #rust · #traits_
+_March 31st, 2021 · #rust · #traits_
 
 **Table of Contents**
 - [Intro](#intro)
@@ -572,11 +572,33 @@ fn main() -> Result<(), io::Error> {
 }
 ```
 
+The standard library prelude is a module in the standard library, i.e. `std::prelude::v1`, that gets auto imported at the top of every other module, i.e. `use std::prelude::v1::*`. Thus the following traits are always in scope and we never have to explicitly import them ourselves because they're part of the prelude:
+- Send
+- Sync
+- Sized
+- Default
+- Copy
+- Clone
+- ToString
+- PartialEq
+- Eq
+- PartialOrd
+- Ord
+- FnOnce
+- FnMut
+- Fn
+- Drop
+- From
+- Into
+- AsRef
+- AsMut
+- ToOwned
+- Iterator
 
 
 ### Derive Macros
 
-The standard library exports a handful of derive macros which we can use to quickly and conveniently impl a trait on a type if all the members within the type also impl the trait. The derive macros are named after the traits they impl:
+The standard library exports a handful of derive macros which we can use to quickly and conveniently impl a trait on a type if all of its members also impl the trait. The derive macros are named after the traits they impl:
 - Clone
 - Copy
 - Debug
@@ -594,6 +616,8 @@ Example usage:
 #[derive(Copy, Clone)]
 struct SomeType;
 ```
+
+Note: derive macros are just procedural macros and can do anything, there's no hard rule that they must impl a trait or that they can only work if all the members of the type impl a trait, these are just the conventions followed by the derive macros in the standard library.
 
 
 
@@ -1467,7 +1491,7 @@ let dest = src;
 
 In both cases, `dest = src` performs a simple bitwise copy of `src`'s contents and moves the result into `dest`, the only difference is that in the case of _"a move"_ the borrow checker invalidates the `src` variable and makes sure it's not used anywhere else later and in the case of _"a copy"_ `src` remains valid and usable.
 
-In a nutshell: Copies _are_ moves. Moves _are_ copies. Only the borrow checker knows the difference.
+In a nutshell: Copies _are_ moves. Moves _are_ copies. The only difference is how they're treated by the borrow checker.
 
 For a more concrete example of a move, imagine `src` was a `Vec<i32>` and its contents looked something like this:
 
@@ -1726,20 +1750,24 @@ trait Debug {
 }
 ```
 
-`Debug` has an identical signature to `Display`. The only difference is that the `Debug` impl is called when we use the `{:?}` formatting specifier. `Debug` also comes with a derive macro which does a pretty fantastic job serializing the type into a `String`, so it's not uncommon to want to reuse the `Debug` impl as the `Display` impl as well, and this is how we'd do that:
+`Debug` has an identical signature to `Display`. The only difference is that the `Debug` impl is called when we use the `{:?}` formatting specifier. `Debug` can be derived:
 
 ```rust
 use std::fmt;
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 struct Point {
     x: i32,
     y: i32,
 }
 
-impl fmt::Display for Point {
+// derive macro generates impl below
+impl fmt::Debug for Point {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        <Self as fmt::Debug>::fmt(self, f)
+        f.debug_struct("Point")
+            .field("x", &self.x)
+            .field("y", &self.y)
+            .finish()
     }
 }
 ```
@@ -3029,7 +3057,7 @@ impl<T: Ord> SortedVec<T> {
 }
 ```
 
-Obviously we cannot impl `DerefMut<Target = Vec<T>>` here or anyone using `SortedVec` would be able to trivially break the invariant. However, impling `Deref<Target = Vec<T>>` surely must be safe, right? Try to spot the bug in the program below:
+Obviously we cannot impl `DerefMut<Target = Vec<T>>` here or anyone using `SortedVec` would be able to trivially break the sorted order. However, impling `Deref<Target = Vec<T>>` surely must be safe, right? Try to spot the bug in the program below:
 
 ```rust
 use std::ops::Deref;
@@ -3071,7 +3099,7 @@ fn main() {
 
     // calling clone on SortedVec actually returns a Vec 🤦
     let sortedClone: Vec<i32> = sorted.clone();
-    sortedClone.push(4); // invariant broken 💀
+    sortedClone.push(4); // sortedClone no longer sorted 💀
 }
 ```
 
@@ -3579,7 +3607,7 @@ struct DivByZero;
 
 impl fmt::Display for DivByZero {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        <Self as fmt::Debug>::fmt(self, f)
+        write!(f, "division by zero error")
     }
 }
 
