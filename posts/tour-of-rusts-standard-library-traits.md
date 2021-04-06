@@ -242,7 +242,7 @@ fn main() {
 
 #### Generic Parameters
 
-"Generic parameters" broadly refers to both generic type parameters and generic lifetime parameters. Since those are a mouthful to say people commonly abbreviate the former to "generic types" and the latter to "lifetimes" which is the convention we're going to follow for the rest of this article.
+_"Generic parameters"_ broadly refers to generic type parameters, generic lifetime parameters, and generic const parameters. Since all of those are a mouthful to say people commonly abbreviate them to _"generic types"_, _"lifetimes"_, and _"generic consts"_. Since generic consts are not used in any of the standard library traits we'll be covering they're outside the scope of this article.
 
 We can generalize a trait declaration using parameters:
 
