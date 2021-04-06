@@ -573,42 +573,43 @@ fn main() -> Result<(), io::Error> {
 ```
 
 The standard library prelude is a module in the standard library, i.e. `std::prelude::v1`, that gets auto imported at the top of every other module, i.e. `use std::prelude::v1::*`. Thus the following traits are always in scope and we never have to explicitly import them ourselves because they're part of the prelude:
-- Send
-- Sync
-- Sized
-- Default
-- Copy
-- Clone
-- ToString
-- PartialEq
-- Eq
-- PartialOrd
-- Ord
-- FnOnce
-- FnMut
-- Fn
-- Drop
-- From
-- Into
-- AsRef
-- AsMut
-- ToOwned
-- Iterator
-- IntoIterator
+- [AsMut](#asref--asmut)
+- [AsRef](#asref--asmut)
+- [Clone](#clone)
+- [Copy](#copy)
+- [Default](#default)
+- [Drop](#drop)
+- [Eq](#partialeq--eq)
+- [Fn](#fnonce-fnmut--fn)
+- [FnMut](#fnonce-fnmut--fn)
+- [FnOnce](#fnonce-fnmut--fn)
+- [From](#from--into)
+- [Into](#from--into)
+- [ToOwned](#toowned)
+- [IntoIterator](#intoiterator)
+- [Iterator](#iterator)
+- [PartialEq](#partialeq--eq)
+- [PartialOrd](#partialord--ord)
+- [Send](#send--sync)
+- [Sized](#sized)
+- [Sync](#send--sync)
+- [ToString](#display--tostring)
+- [Ord](#partialord--ord)
+
 
 
 ### Derive Macros
 
 The standard library exports a handful of derive macros which we can use to quickly and conveniently impl a trait on a type if all of its members also impl the trait. The derive macros are named after the traits they impl:
-- Clone
-- Copy
-- Debug
-- Default
-- Eq
-- Hash
-- Ord
-- PartialEq
-- PartialOrd
+- [Clone](#clone)
+- [Copy](#copy)
+- [Debug](#debug)
+- [Default](#default)
+- [Eq](#partialeq--eq)
+- [Hash](#hash)
+- [Ord](#partialord--ord)
+- [PartialEq](#partialeq--eq)
+- [PartialOrd](#partialord--ord)
 
 Example usage:
 
