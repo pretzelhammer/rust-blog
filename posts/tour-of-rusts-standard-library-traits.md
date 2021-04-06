@@ -1663,7 +1663,6 @@ Prerequisites
 - [Self](#self)
 - [Methods](#methods)
 - [Generic Blanket Impls](#generic-blanket-impls)
-- [Default](#default)
 
 ```rust
 trait Display {
