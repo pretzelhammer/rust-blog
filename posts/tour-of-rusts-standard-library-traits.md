@@ -5153,6 +5153,7 @@ _Artist credit: [The Jenkins Comic](https://thejenkinscomic.wordpress.com/2020/0
 
 Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
+- [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/ml9shl/tour_of_rusts_standard_library_traits/)
 
 
 
