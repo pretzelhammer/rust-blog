@@ -3800,6 +3800,8 @@ impl fmt::Display for SumFileError {
 }
 
 impl error::Error for SumFileError {
+    // the default impl for this method always returns None
+    // but we can now override it to make it way more useful!
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         Some(match self {
             SumFileError::Io(err) => err,
@@ -4799,7 +4801,7 @@ trait Iterator {
 }
 ```
 
-An `Iterator<Item = T>` type can be iterated and will produce `T` types. There's no `IteratorMut` trait. Each `Iterator` impl can specify whether it returns immutable references, mutable references, or owned values via the `Item` associated type.
+`Iterator<Item = T>` types can be iterated and will produce `T` types. There's no `IteratorMut` trait. Each `Iterator` impl can specify whether it returns immutable references, mutable references, or owned values via the `Item` associated type.
 
 | `Vec<T>` method | Returns |
 |-----------------|-------------------|
