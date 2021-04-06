@@ -4868,7 +4868,7 @@ As an example, imagine we have a function which processes an iterator of more th
 
 ```rust
 fn example<I: Iterator<Item = i32>>(mut iter: I) {
-    let first3: Vec<_> = iter.take(3).collect();
+    let first3: Vec<i32> = iter.take(3).collect();
     for item in iter { // ❌ iter consumed in line above
         // process remaining items
     }
@@ -4879,7 +4879,7 @@ Well that's annoying. The `take` method has a `self` receiver so it seems like w
 
 ```rust
 fn example<I: Iterator<Item = i32>>(mut iter: I) {
-    let first3: Vec<_> = vec![
+    let first3: Vec<i32> = vec![
         iter.next().unwrap(),
         iter.next().unwrap(),
         iter.next().unwrap(),
@@ -4894,7 +4894,7 @@ Which is okay. However, the idiomatic refactor is actually:
 
 ```rust
 fn example<I: Iterator<Item = i32>>(mut iter: I) {
-    let first3: Vec<_> = (&mut iter).take(3).collect();
+    let first3: Vec<i32> = iter.by_ref().take(3).collect();
     for item in iter { // ✅
         // process remaining items
     }
