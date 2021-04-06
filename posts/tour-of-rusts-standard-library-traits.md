@@ -195,7 +195,7 @@ fn main() {
 }
 ```
 
-However methods are just functions with syntax sugar and can still be called like regular functions:
+However, similarly to functions, they can also be called namespaced by the trait or implementing type:
 
 ```rust
 fn main() {
@@ -557,7 +557,7 @@ fn main() -> Result<(), io::Error> {
 }
 ```
 
-`read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and impl'd by the `std::fs::File` struct but in order to call it `std::io::Read` must be in scope:
+`read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and implemented by the `std::fs::File` struct but in order to call it `std::io::Read` must be in scope:
 
 ```rust
 use std::fs::File;
@@ -652,7 +652,7 @@ fn main() {
 }
 ```
 
-This is especially handy if some of the trait methods can be impl'd solely using other trait methods.
+This is especially handy if some of the trait methods can be implemented solely using other trait methods.
 
 ```rust
 trait Greet {
@@ -1098,17 +1098,17 @@ trait Eq: PartialEq {}
 
 ### Auto Traits
 
-Auto traits are traits that get automatically impl'd for a type if all of its members also impl the trait. What "members" means depends on the type, for example: fields of a struct, variants of an enum, elements of an array, items of a tuple, and so on.
+Auto traits are traits that get automatically implemented for a type if all of its members also impl the trait. What "members" means depends on the type, for example: fields of a struct, variants of an enum, elements of an array, items of a tuple, and so on.
 
 All auto traits are marker traits but not all marker traits are auto traits. Auto traits must be marker traits so the compiler can provide an automatic default impl for them, which would not be possible if they had any trait items.
 
 Examples of auto traits:
 
 ```rust
-// impl'd for types which are safe to send between threads
+// implemented for types which are safe to send between threads
 unsafe auto trait Send {}
 
-// impl'd for types whose references are safe to send between threads
+// implemented for types whose references are safe to send between threads
 unsafe auto trait Sync {}
 ```
 
@@ -1116,7 +1116,7 @@ unsafe auto trait Sync {}
 
 ### Unsafe Traits
 
-Traits can be marked unsafe to indicate that impling the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically impl'd for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
+Traits can be marked unsafe to indicate that impling the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically implemented for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
 
 ```rust
 // SomeType is not Send or Sync
@@ -2839,7 +2839,7 @@ trait DerefMut: Deref {
 
 Rust automatically dereferences types when they're being passed as function arguments, returned from a function, or used as part of a method call. This is the reason why we can pass `&String` and `&Vec<T>` to functions expecting `&str` and `&[T]` because `String` impls `Deref<Target = str>` and `Vec<T>` impls `Deref<Target = [T]>`.
 
-`Deref` and `DerefMut` should only be impl'd for smart pointer types. The most common way people attempt to misuse and abuse these traits is to try to shoehorn some kind of OOP-style data inheritance into Rust. This does not work. Rust is not OOP. Let's examine a few different situations where, how, and why it does not work. Let's start with this example:
+`Deref` and `DerefMut` should only be implemented for smart pointer types. The most common way people attempt to misuse and abuse these traits is to try to shoehorn some kind of OOP-style data inheritance into Rust. This does not work. Rust is not OOP. Let's examine a few different situations where, how, and why it does not work. Let's start with this example:
 
 ```rust
 use std::ops::Deref;
@@ -3011,7 +3011,7 @@ fn example(mut mage: Mage, mut wizard: Wizard, spell: Spell) {
 }
 ```
 
-In languages with OOP-style data inheritance the value of `self` within a method is always equal to the type which called the method but in the case of Rust the value of `self` is always equal to the type which impl'd the method:
+In languages with OOP-style data inheritance the value of `self` within a method is always equal to the type which called the method but in the case of Rust the value of `self` is always equal to the type which implemented the method:
 
 ```rust
 struct Human {
@@ -3090,7 +3090,7 @@ fn main() {
 }
 ```
 
-We never impl'd `Clone` for `SortedVec` so when we call the `.clone()` method the compiler is using deref coercion to resolve that method call on `Vec` and so it returns a `Vec` and not a `SortedVec`!
+We never implemented `Clone` for `SortedVec` so when we call the `.clone()` method the compiler is using deref coercion to resolve that method call on `Vec` and so it returns a `Vec` and not a `SortedVec`!
 
 ```rust
 fn main() {
@@ -3105,7 +3105,7 @@ fn main() {
 
 Anyway, none of the above limitations, constraints, or gotchas are faults of Rust because Rust was never designed to be an OO language or to support any OOP patterns in the first place.
 
-The main takeaway from this section is do not try to be cute or clever with `Deref` and `DerefMut` impls. They're really only appropriate for smart pointer types, which can only be impl'd within the standard library for now as smart pointer types currently require unstable features and compiler magic to work. If we want functionality and behavior similar to `Deref` and `DerefMut` then what we're actually probably looking for is `AsRef` and `AsMut` which we'll get to later.
+The main takeaway from this section is do not try to be cute or clever with `Deref` and `DerefMut` impls. They're really only appropriate for smart pointer types, which can only be implemented within the standard library for now as smart pointer types currently require unstable features and compiler magic to work. If we want functionality and behavior similar to `Deref` and `DerefMut` then what we're actually probably looking for is `AsRef` and `AsMut` which we'll get to later.
 
 
 
@@ -3151,7 +3151,7 @@ fn main() {
 
 It's kinda confusing at first, because it seems like the `Index` trait does not follow its own method signature, but really it's just questionable syntax sugar.
 
-Since `Idx` is a generic type the `Index` trait can be impl'd many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into its using `Range<usize>`s to get slices.
+Since `Idx` is a generic type the `Index` trait can be implemented many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into its using `Range<usize>`s to get slices.
 
 ```rust
 fn main() {
@@ -4534,7 +4534,7 @@ where
 }
 ```
 
-It's good to be aware of these traits and understand why they exist since it helps demystify some of the methods on `HashSet`, `HashMap`, `BTreeSet`, and `BTreeMap` but it's very rare that we would ever need to impl these traits for any of our types because it's very rare that we would ever need create a pair of types where one is the "borrowed" version of the other in the first place. If we have some `T` then `&T` will get the job done 99.99% of the time, and `T: Borrow<T>` is already impl'd for all `T` because of a generic blanket impl, so we don't need to manually impl it and we don't need to create some `U` such that `T: Borrow<U>`.
+It's good to be aware of these traits and understand why they exist since it helps demystify some of the methods on `HashSet`, `HashMap`, `BTreeSet`, and `BTreeMap` but it's very rare that we would ever need to impl these traits for any of our types because it's very rare that we would ever need create a pair of types where one is the "borrowed" version of the other in the first place. If we have some `T` then `&T` will get the job done 99.99% of the time, and `T: Borrow<T>` is already implemented for all `T` because of a generic blanket impl, so we don't need to manually impl it and we don't need to create some `U` such that `T: Borrow<U>`.
 
 
 
