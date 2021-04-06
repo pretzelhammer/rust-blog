@@ -144,7 +144,7 @@ impl Trait for OtherType {
 
 #### Functions
 
-A trait function is any function whose first argument is not of type `Self` or some type which dereferences to `Self`, e.g. `&Self`, `&mut Self`, `Box<Self>`.
+A trait function is any function whose first parameter does not use the `self` keyword.
 
 ```rust
 trait Default {
@@ -166,7 +166,7 @@ fn main() {
 
 #### Methods
 
-A trait method is any function whose first argument is of type `Self` or some type which dereferences to `Self`, e.g. `&Self`, `&mut Self`, `Box<Self>`.
+A trait method is any function whose first parameter uses the `self` keyword and is of type `Self`, `&Self`, `&mut Self`. The former types can also be wrapped with a `Box`, `Rc`, `Arc`, or `Pin`.
 
 ```rust
 trait Trait {
@@ -594,6 +594,7 @@ The standard library prelude is a module in the standard library, i.e. `std::pre
 - AsMut
 - ToOwned
 - Iterator
+- IntoIterator
 
 
 ### Derive Macros
@@ -1062,7 +1063,7 @@ Not all traits can be converted into trait objects. A trait is object-safe if it
 
 A trait method is object-safe if it meets these requirements:
 - method requires `Self: Sized` or
-- method does not use `Self` anywhere other than the first argument
+- method only uses a `Self` type in receiver position
 
 Understanding why the requirements are what they are is not relevant to the rest of this article, but if you're still curious it's covered in [Sizedness in Rust](./sizedness-in-rust.md).
 
