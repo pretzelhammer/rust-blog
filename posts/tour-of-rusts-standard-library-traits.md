@@ -2071,58 +2071,58 @@ fn main() {
 }
 ```
 
-A good example of impling `PartialEq` to check equality between different types would be a program that works with temperature data and uses different types to represent different units of temperature measurement.
+A good example of impling `PartialEq` to check equality between different types would be a program that works with distances and uses different types to represent different units of measurement.
 
 ```rust
 #[derive(PartialEq)]
-struct Celsius(f64);
+struct Foot(u32);
 
 #[derive(PartialEq)]
-struct Kelvin(f64);
+struct Yard(u32);
 
 #[derive(PartialEq)]
-struct Fahrenheit(f64);
+struct Mile(u32);
 
-impl PartialEq<Fahrenheit> for Celsius {
-    fn eq(&self, other: &Fahrenheit) -> bool {
-        self.0 == (other.0 - 32.0) * 5.0 / 9.0
+impl PartialEq<Mile> for Foot {
+    fn eq(&self, other: &Mile) -> bool {
+        self.0 == other.0 * 5280
     }
 }
 
-impl PartialEq<Celsius> for Fahrenheit {
-    fn eq(&self, other: &Celsius) -> bool {
-        self.0 == (other.0 * 9.0 / 5.0) + 32.0
+impl PartialEq<Foot> for Mile {
+    fn eq(&self, other: &Foot) -> bool {
+        self.0 * 5280 == other.0
     }    
 }
 
-impl PartialEq<Fahrenheit> for Kelvin {
-    fn eq(&self, other: &Fahrenheit) -> bool {
-        self.0 == ((other.0 - 32.0) * 5.0 / 9.0) + 273.15
+impl PartialEq<Mile> for Yard {
+    fn eq(&self, other: &Mile) -> bool {
+        self.0 == other.0 * 1760
     }
 }
 
-impl PartialEq<Kelvin> for Fahrenheit {
-    fn eq(&self, other: &Kelvin) -> bool {
-        self.0 == ((other.0 - 273.15) * 9.0 / 5.0) + 32.0
+impl PartialEq<Yard> for Mile {
+    fn eq(&self, other: &Yard) -> bool {
+        self.0 * 1760 == other.0
     }    
 }
 
-impl PartialEq<Celsius> for Kelvin {
-    fn eq(&self, other: &Celsius) -> bool {
-        self.0 == (other.0 + 273.15)
+impl PartialEq<Foot> for Yard {
+    fn eq(&self, other: &Foot) -> bool {
+        self.0 * 3 == other.0
     }
 }
 
-impl PartialEq<Kelvin> for Celsius {
-    fn eq(&self, other: &Kelvin) -> bool {
-        self.0 == (other.0 - 273.15)
+impl PartialEq<Yard> for Foot {
+    fn eq(&self, other: &Yard) -> bool {
+        self.0 == other.0 * 3
     }
 }
 
 fn main() {
-    let a = Celsius(0.0);
-    let b = Kelvin(273.15);
-    let c = Fahrenheit(32.0);
+    let a = Foot(5280);
+    let b = Yard(1760);
+    let c = Mile(1);
     
     // symmetry
     assert!(a == b && b == a); // ✅
