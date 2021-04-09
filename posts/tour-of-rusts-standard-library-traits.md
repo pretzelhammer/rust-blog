@@ -2385,8 +2385,8 @@ struct Point {
 // but here's the impls if we wrote them out by hand
 impl Ord for Point {
     fn cmp(&self, other: &Self) -> Ordering {
-        match self.x.cmp(&self.y) {
-            Ordering::Equal => self.y.cmp(&self.y),
+        match self.x.cmp(&other.x) {
+            Ordering::Equal => self.y.cmp(&other.y),
             ordering => ordering,
         }
     }
