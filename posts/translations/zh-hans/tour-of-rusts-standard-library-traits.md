@@ -62,7 +62,7 @@ _2021年 3月 31日 · #rust · #traits_
     - [FromIterator](#fromiterator)
 - [输入输出特性 I/O Traits](#io-traits)
     - [Read & Write](#read--write)
-- [总结 Conclusion](#conclusion)
+- [结语 Conclusion](#conclusion)
 - [讨论 Discuss](#discuss)
 - [通告 Notifications](#notifications)
 - [更多资料 Further Reading](#further-reading)
@@ -80,11 +80,11 @@ _2021年 3月 31日 · #rust · #traits_
 >
 
 你是否曾对以下特性的区别感到困惑：
-- `Deref<Target = T>` ， `AsRef<T>` ，和 `Borrow<T>`？
+- `Deref<Target = T>` ， `AsRef<T>` 和 `Borrow<T>`？
 - `Clone` ， `Copy` 和 `ToOwned`？
 - `From<T>` 和 `Into<T>`？
 - `TryFrom<&str>` 和 `FromStr`？
-- `FnOnce` ， `FnMut` ， `Fn` ，和 `fn`？
+- `FnOnce` ， `FnMut` ， `Fn` 和 `fn`？
 
 > Or ever asked yourself the questions:
 > - _"When do I use associated types vs generic types in my trait?"_
@@ -103,12 +103,12 @@ _2021年 3月 31日 · #rust · #traits_
 > Well then this is the article for you! It answers all of the above questions and much much more. Together we'll do a quick flyby tour of all of the most popular and commonly used traits from the Rust standard library!
 >
 
-这篇文章正是为你解决以上困惑而撰写！而且本文绝不仅仅回答了以上问题。我们将一起对 Rust 标准库中所有最常用的特性做一个走马观花般的概览。
+本文正是为你解答以上困惑而撰写！而且本文绝不仅仅只回答了以上问题。下面，我们将一起对 Rust 标准库中所有最流行、最常用的特性做一个走马观花般的概览！
 
 > You can read this article in order section by section or jump around to whichever traits interest you the most because each trait section begins with a list of links to **Prerequisite** sections that you should read to have adequate context to understand the current section's explanations.
 >
 
-你可以按顺序阅读本文，也可以直接跳读至你感兴趣的特性。每章都会提供**预备知识**列表，它会帮助你获得相应的背景知识，不必担心跳读带来的理解困难。
+你可以按顺序阅读本文，也可以直接跳读至你最感兴趣的特性。每节都会提供**预备知识**列表，它会帮助你获得相应的背景知识，不必担心跳读带来的理解困难。
 
 
 
@@ -117,7 +117,7 @@ _2021年 3月 31日 · #rust · #traits_
 > We'll cover just enough of the basics so that the rest of the article can be streamlined without having to repeat the same explanations of the same concepts over and over as they reappear in different traits.
 >
 
-本章覆盖了特性的基本知识，在以后的章节中不再赘述。
+本章覆盖了特性的基础知识，相应内容在以后的章节中不再赘述。
 
 
 
@@ -125,7 +125,7 @@ _2021年 3月 31日 · #rust · #traits_
 
 > Trait items are any items that are part of a trait declaration.
 
-特性的记号指的是，所有在特性的声明中使用的记号。
+特性的记号指的是，在特性的声明中可使用的记号。
 
 
 
@@ -140,9 +140,11 @@ _2021年 3月 31日 · #rust · #traits_
 ```rust
 trait Trait {
     // always returns i32
+    // 总是返回 i32
     fn returns_num() -> i32;
 
     // returns implementing type
+    // 总是返回正被实现的类型
     fn returns_self() -> Self;
 }
 
@@ -183,6 +185,7 @@ impl Trait for OtherType {
 ```rust
 trait Default {
     // function
+    // 函数
     fn default() -> Self;
 }
 ```
@@ -209,18 +212,20 @@ fn main() {
 ```rust
 trait Trait {
     // methods
+    // 方法
     fn takes_self(self);
     fn takes_immut_self(&self);
     fn takes_mut_self(&mut self);
 
     // above methods desugared
-    // 以上方法声明中的语法糖等价于以下
+    // 以上代码等价于
     fn takes_self(self: Self);
     fn takes_immut_self(self: &Self);
     fn takes_mut_self(self: &mut Self);
 }
 
 // example from standard library
+// 来自于标准库的示例
 trait ToString {
     fn to_string(&self) -> String;
 }
@@ -238,7 +243,7 @@ fn main() {
 
 > However, similarly to functions, they can also be called namespaced by the trait or implementing type:
 
-但是，与函数相似地，方法也声明在特性本身以及具体实现类型的命名空间中。
+并且，与函数相似地，方法也声明在特性本身以及具体实现类型的命名空间中。
 
 ```rust
 fn main() {
@@ -253,7 +258,7 @@ fn main() {
 
 > A trait can have associated types. This is useful when we need to use some type other than `Self` within function signatures but would still like the type to be chosen by the implementer rather than being hardcoded in the trait declaration:
 
-特性可以具有关联类型。当我们希望在特性的函数的签名中使用某种类型，又不希望硬编码这种类型，而是希望后来的实现该特性的程序员来选择该类型具体是什么的时候，关联类型会很有用。（我们以上所说的关联类型不可以是 `Self` ）
+特性内部可以声明关联类型。当我们希望在特性函数的签名中使用某种 `Self` 以外的类型，又不希望硬编码这种类型，而是希望后来的实现该特性的程序员来选择该类型具体是什么的时候，关联类型会很有用。
 
 ```rust
 trait Trait {
@@ -266,9 +271,9 @@ struct OtherType;
 
 // any type implementing Trait can
 // choose the type of AssociatedType
-
-// 我们可以在为其它任何类型实现 Trait 特性的时候
+// 我们可以在实现 Trait 特性的时候
 // 再决定 AssociatedType 的具体类型
+// 而不必是在声明 Trait 特性的时候
 
 impl Trait for SomeType {
     type AssociatedType = i8; // chooses i8
@@ -294,7 +299,7 @@ fn main() {
 > _"Generic parameters"_ broadly refers to generic type parameters, generic lifetime parameters, and generic const parameters. Since all of those are a mouthful to say people commonly abbreviate them to _"generic types"_, _"lifetimes"_, and _"generic consts"_. Since generic consts are not used in any of the standard library traits we'll be covering they're outside the scope of this article.
 >
 
-“泛型参数”是泛型类型参数、泛型寿命参数以及泛型常量参数的统称。由于这些术语过于佶屈聱牙，我们通常将他们缩略为“泛型类型”，“泛型寿命”和“泛型常量”。鉴于标准库中的特性无一采用泛型常量，本文也略过不讲。
+“泛型参数” 是泛型类型参数、泛型寿命参数以及泛型常量参数的统称。由于这些术语过于佶屈聱牙，我们通常将他们缩略为“泛型类型”，“泛型寿命”和“泛型常量”。鉴于标准库中的特性无一采用泛型常量，本文也略过不讲。
 
 > We can generalize a trait declaration using parameters:
 
@@ -338,11 +343,13 @@ impl<'b> Trait<'b, u8> for SomeType {
 
 ```rust
 // make T = Self by default
+// T 的默认值是 Self
 trait Trait<T = Self> {
     fn func(t: T) {}
 }
 
 // any type can be used as the default
+// 任何其它类型都可用作默认值
 trait Trait2<T = i32> {
     fn func2(t: T) {}
 }
@@ -358,17 +365,19 @@ impl Trait for SomeType {
 }
 
 // default value here is i32
+// 这里的默认值是 i32
 impl Trait2 for SomeType {
     fn func2(t: i32) {}
 }
 
 // the default is overridable as we'd expect
-// 默认值可以被覆盖，正如我们希望的那样
+// 默认值可以被重写，正如我们希望的那样
 impl Trait<String> for SomeType {
     fn func(t: String) {}
 }
 
 // overridable here too
+// 这里也可以重写
 impl Trait2<String> for SomeType {
     fn func2(t: String) {}
 }
@@ -621,7 +630,7 @@ fn main() {
 
 > So which `Add` trait above is the best? It really depends on the requirements of your program! They're all good in the right situations.
 
-哪一种 `Add` 特性最好？答案是具体问题具体分析！不管白猫黑猫，会捉老鼠就是好猫。
+所以说，哪一种 `Add` 特性最好？答案是具体问题具体分析！不管白猫黑猫，会捉老鼠就是好猫。
 
 
 
@@ -629,7 +638,7 @@ fn main() {
 
 > Trait items cannot be used unless the trait is in scope. Most Rustaceans learn this the hard way the first time they try to write a program that does anything with I/O because the `Read` and `Write` traits are not in the standard library prelude:
 
-特性仅当被引入当前作用域时才可以使用。绝大多数的 Rustaceans 要在编写 I/O 程序时经历一番痛苦挣扎后，才能领悟到这一点，原因是 `Read` 和 `Write` 两个特性并未包含在标准库的 prelude 模块中。
+特性仅当被引入当前作用域时才可以使用。绝大多数的初学者要在编写 I/O 程序时经历一番痛苦挣扎后，才能领悟到这一点，原因是 `Read` 和 `Write` 两个特性并未包含在标准库的 prelude 模块中。
 
 ```rust
 use std::fs::File;
@@ -639,13 +648,14 @@ fn main() -> Result<(), io::Error> {
     let mut file = File::open("Cargo.toml")?;
     let mut buffer = String::new();
     file.read_to_string(&mut buffer)?; // ❌ read_to_string not found in File
+                                       // ❌ 当前文件中找不到 read_to_string
     Ok(())
 }
 ```
 
 > `read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and implemented by the `std::fs::File` struct but in order to call it `std::io::Read` must be in scope:
 
-`read_to_string(buf: &mut String)` 声明于 `std::io::Read` 特性，并实现于 `std::fs::File` 结构体，若要调用该函数须得 `std::io::Read` 处于当前作用域中：
+`read_to_string(buf: &mut String)` 声明于 `std::io::Read` 特性，并实现于 `std::fs::File` 类型，若要调用该函数还须得 `std::io::Read` 特性处于当前作用域中：
 
 ```rust
 use std::fs::File;
@@ -705,7 +715,8 @@ fn main() -> Result<(), io::Error> {
 - [PartialEq](#partialeq--eq)
 - [PartialOrd](#partialord--ord)
 
-Example usage:
+> Example usage:
+>
 
 用例：
 
@@ -719,7 +730,7 @@ struct SomeType;
 > Note: derive macros are just procedural macros and can do anything, there's no hard rule that they must impl a trait or that they can only work if all the members of the type impl a trait, these are just the conventions followed by the derive macros in the standard library.
 >
 
-注意：衍生宏仅是一种机械的过程，宏展开之后发生的事情并无一定之规。并没有绝对的规定要求衍生宏展开之后必须要为类型实现某种特性，又或者它们必须要求该类型的所有成员都必须实现某种特性才能为当前类型实现该特性，这仅仅是在标准库衍生宏的编纂过程中逐渐约定俗成而形成的规则。
+注意：衍生宏仅是一种机械的过程，宏展开之后发生的事情并无一定之规。并没有绝对的规定要求衍生宏展开之后必须要为类型实现某种特性，又或者它们必须要求该类型的所有成员都必须实现某种特性才能为当前类型实现该特性，这仅仅是在标准库衍生宏的编纂过程中逐渐约定俗成的规则。
 
 
 
@@ -870,6 +881,7 @@ where
 {
     fn is_even(self) -> bool {
         // these unwraps will never panic
+        // 以下 unwrap 永远不会 panic
         self % 2.try_into().unwrap() == 0.try_into().unwrap()
     }
 }
@@ -957,7 +969,7 @@ trait Subtrait: Supertrait {}
 
 > Also, the above is just syntax sugar for:
 
-以上记法的语法糖等同于：
+以上代码等价于：
 
 ```rust
 trait Subtrait where Self: Supertrait {}
@@ -995,7 +1007,7 @@ impl Subtrait for SomeType {}
 
 // both methods exist on SomeType simultaneously
 // neither overriding or shadowing the other
-// 两个同名方法同时存在，既不重写也不影射
+// 两个同名方法同时存在于同一类型时，既不重写也不影射
 
 fn main() {
     SomeType.method(); // ❌ ambiguous method call
@@ -1108,7 +1120,7 @@ trait Copy: Clone {}
 
 > The syntax above looks very similar to the syntax for applying a trait bound on a generic type and yet `Copy` doesn't depend on `Clone` at all. The mental model we developed earlier doesn't help us here. In my opinion, the most simple and elegant mental model for understanding the relationship between subtraits and supertraits is: subtraits _refine_ their supertraits.
 
-以上的记号和之前我们为泛型添加特性约束的记号非常相似，但是 `Copy` 却完全不依赖 `Clone` 。早前建立的心智模型现在不适用了。在我看来，理解子特性与超特性的关系的最简单和最优雅的心智模型莫过于 —— 子特性*改良*了超特性。
+以上的记号和之前我们为泛型添加特性约束的记号非常相似，但是 `Copy` 却完全不依赖 `Clone` 。早前建立的心智模型现在不适用了。在我看来，理解子特性与超特性的关系的最简单和最优雅的心智模型莫过于 —— 子特性 *改良* 了超特性。
 
 > "Refinement" is intentionally kept somewhat vague because it can mean different things in different contexts:
 > - a subtrait might make its supertrait's methods' impls more specialized, faster, use less memory, e.g. `Copy: Clone`
@@ -1147,7 +1159,7 @@ fn example(condition: bool, vec: Vec<i32>) -> Box<dyn Iterator<Item = i32>> {
         Box::new(iter.filter(|&n| n >= 2))
     }
 }
-        // 以上函数中，两种不同的指针类型转换成相同的指针类型
+        // 以上代码中，两种不同的指针类型转换成相同的指针类型
 ```
 
 > Trait objects also allow us to store heterogeneous types in collections:
@@ -1196,19 +1208,21 @@ fn example() {
 
 > Trait objects are unsized so they must always be behind a pointer. We can tell the difference between a concrete type and a trait object at the type level based on the presence of the `dyn` keyword within the type:
 
-特性对象的结构体的大小是未知的，所以必须要通过指针来引用它们。具体类型与特性对象在字面上的区别在于，特性对象必须要用 `dyn` 关键字来修饰前缀，了解了这一点我们可以轻松辨别二者。
+特性对象的结构体大小是未知的，所以必须要通过指针来引用它们。具体类型与特性对象在字面上的区别在于，特性对象必须要用 `dyn` 关键字来修饰前缀，了解了这一点我们可以轻松辨别二者。
 
 ```rust
 struct Struct;
 trait Trait {}
 
 // regular struct
+// 这是一般的结构
 &Struct
 Box<Struct>
 Rc<Struct>
 Arc<Struct>
 
 // trait objects
+// 这是特性对象
 &dyn Trait
 Box<dyn Trait>
 Rc<dyn Trait>
@@ -1220,10 +1234,10 @@ Arc<dyn Trait>
 > - all of the trait's methods are object-safe
 >
 
-并非全部的特性都可以转换为特性对象，一个“对象安全”的特性必须满足：
+并非全部的特性都可以转换为特性对象，一个 “对象安全” 的特性必须满足：
 
 - 该特性不要求 `Self: Sized`
-- 该特性的所有方法都是“对象安全”的
+- 该特性的所有方法都是 “对象安全” 的
 
 > A trait method is object-safe if it meets these requirements:
 >
@@ -1231,14 +1245,14 @@ Arc<dyn Trait>
 > - method only uses a `Self` type in receiver position
 >
 
-一个特性的方法若要是“对象安全”的，必须满足：
+一个特性的方法若要是 “对象安全” 的，必须满足：
 
 - 该方法要求 `Self: Sized` 
-- 该方法仅在接收器位置使用 `Self` 类型
+- 该方法仅在接收参数中使用 `Self` 类型
 
-Understanding why the requirements are what they are is not relevant to the rest of this article, but if you're still curious it's covered in [Sizedness in Rust](./sizedness-in-rust.md).
+Understanding why the requirements are what they are is not relevant to the rest of this article, but if you're still curious it's covered in [Sizedness in Rust](../../sizedness-in-rust.md).
 
-关于具有这些限制条件的原因超出了本文的讨论范围且与下文无关，如果你对此深感兴趣不妨阅读 [Sizedness in Rust](./sizedness-in-rust.md) 以了解详情。
+关于具有这些限制条件的原因超出了本文的讨论范围且与下文无关，如果你对此深感兴趣不妨阅读 [Sizedness in Rust](../../sizedness-in-rust.md) 以了解详情。
 
 
 
@@ -1246,7 +1260,7 @@ Understanding why the requirements are what they are is not relevant to the rest
 
 > Marker traits are traits that have no trait items. Their job is to "mark" the implementing type as having some property which is otherwise not possible to represent using the type system.
 
-仅用于标记的特性，即是某种声明体为空的特性。它们存在的意义在于“标记”所实现的类型，且该类型具有某种类型系统所无法表达的属性。
+仅用于标记的特性，即是某种声明体为空的特性。它们存在的意义在于 “标记” 所实现的类型，且该类型具有某种类型系统所无法表达的属性。
 
 ```rust
 // Impling PartialEq for a type promises
@@ -1285,7 +1299,7 @@ trait Eq: PartialEq {}
 
 > Auto traits are traits that get automatically implemented for a type if all of its members also impl the trait. What "members" means depends on the type, for example: fields of a struct, variants of an enum, elements of an array, items of a tuple, and so on.
 
-可自动实现的特性指的是，存在这样一种特性，若给定类型的成员都实现了该特性，那么该类型就隐式地自动实现该特性。这里所说的“成员”依据上下文而具有不同的含义，包括而又不限于结构体的字段、枚举的变量、数组的元素和元组的内容物等等。
+可自动实现的特性指的是，存在这样一种特性，若给定类型的成员都实现了该特性，那么该类型就隐式地自动实现该特性。这里所说的 “成员” 依据上下文而具有不同的含义，包括而又不限于结构体的字段、枚举的变量、数组的元素和元组的内容等等。
 
 > All auto traits are marker traits but not all marker traits are auto traits. Auto traits must be marker traits so the compiler can provide an automatic default impl for them, which would not be possible if they had any trait items.
 
@@ -1315,6 +1329,7 @@ unsafe auto trait Sync {}
 
 ```rust
 // SomeType is not Send or Sync
+// SomeType 没有实现 Send 和 Sync
 struct SomeType {
     not_send_or_sync: *const (),
 }
@@ -1322,7 +1337,7 @@ struct SomeType {
 // but if we're confident that our impl doesn't have any data
 // races we can explicitly mark it as Send and Sync using unsafe
 // 倘若我们得以社会主义伟大成就的庇佑自信地写出没有数据竞争的代码
-// 可以使用 unsafe 来显示地手动标记以实现 Send 特性与 Sync 特性
+// 可以使用 unsafe 来修饰前缀，以显式地实现 Send 特性与 Sync 特性
 unsafe impl Send for SomeType {}
 unsafe impl Sync for SomeType {}
 ```
@@ -1347,11 +1362,11 @@ unsafe auto trait Sync {}
 
 > If a type is `Send` that means it's safe to send between threads. If a type is `Sync` that means it's safe to share references of it between threads. In more precise terms some type `T` is `Sync` if and only if `&T` is `Send`.
 
-实现 `Send` 特性的类型可以安全地往返于多线程。实现 `sync` 特性的类型其引用可以安全地往返于多线程。用更加准确的术语来讲，当且仅当 `&T` 实现 `Send` 特性时，`T` 才能实现 `Sync` 特性。
+实现 `Send` 特性的类型可以安全地往返于多线程。实现 `sync` 特性的类型，其引用可以安全地往返于多线程。用更加准确的术语来讲，当且仅当 `&T` 实现 `Send` 特性时，`T` 才能实现 `Sync` 特性。
 
 > Almost all types are `Send` and `Sync`. The only notable `Send` exception is `Rc` and the only notable `Sync` exceptions are `Rc`, `Cell`, `RefCell`. If we need a `Send` version of `Rc` we can use `Arc`. If we need a `Sync` version of `Cell` or `RefCell` we can `Mutex` or `RwLock`. Although if we're using the `Mutex` or `RwLock` to just wrap a primitive type it's often better to use the atomic primitive types provided by the standard library such as `AtomicBool`, `AtomicI32`, `AtomicUsize`, and so on.
 
-几乎所有类型都实现了 `Send` 特性和 `Sync` 特性。对于 `Send` 唯一需要注意的例外是 `Rc` ，对于 `Sync` 唯三需要注意的例外是 `Rc` , `Cell` 和 `RefCell` 。如果我们需要 `Send` 版的 `Rc` ，可以使用 `Arc` 。如果我们需要 `Sync` 版的 `Cell` 或 `RefCell` ，可以使用 `Mutex` 或 `RwLock` 。尽管我们可以使用 `Mutex` 或 `RwLock` 来包裹住原语类型，但通常使用标准库提供的原子原语类型会更好，诸如 `AtomicBool` ，`AtomicI32` 和 `AtomicUsize` 等等。
+几乎所有类型都实现了 `Send` 特性和 `Sync` 特性。对于 `Send` 唯一需要注意的例外是 `Rc` ，对于 `Sync` 唯三需要注意的例外是 `Rc`，`Cell` 和 `RefCell` 。如果我们需要 `Send` 版的 `Rc` ，可以使用 `Arc` 。如果我们需要 `Sync` 版的 `Cell` 或 `RefCell` ，可以使用 `Mutex` 或 `RwLock` 。尽管我们可以使用 `Mutex` 或 `RwLock` 来包裹住原语类型，但通常使用标准库提供的原子原语类型会更好，诸如 `AtomicBool` ，`AtomicI32` 和 `AtomicUsize` 等等。
 
 > That almost all types are `Sync` might be a surprise to some people, but yup, it's true even for types without any internal synchronization. This is possible thanks to Rust's strict borrowing rules.
 
@@ -1370,6 +1385,7 @@ fn main() {
     
     thread::scope(|scoped_thread| {
         // spawn 3 threads
+        // 产生三个线程
         for n in 1..=3 {
             // greeting_ref copied into every thread
             // greeting_ref 被拷贝到每个线程
@@ -1442,9 +1458,9 @@ fn main() {
 
 如果一个类型实现了 `Sized` ，那么说明该类型具体大小的字节数在编译时可以确定，并且也就说明该类型的实例可以存放在栈上。
 
-> Sizedness of types and its implications is a subtle yet huge topic that affects a lot of different aspects of the language. It's so important that I wrote an entire article on it called [Sizedness in Rust](./sizedness-in-rust.md) which I highly recommend reading for anyone who would like to understand sizedness in-depth. I'll summarize a few key things which are relevant to this article.
+> Sizedness of types and its implications is a subtle yet huge topic that affects a lot of different aspects of the language. It's so important that I wrote an entire article on it called [Sizedness in Rust](../../sizedness-in-rust.md) which I highly recommend reading for anyone who would like to understand sizedness in-depth. I'll summarize a few key things which are relevant to this article.
 
-类型的大小以及其所带来的潜在影响，是一个易于忽略但是又十分宏大的话题，它深刻地影响着本门语言的诸多方面。鉴于它的重要性，我已经写了一整篇文章（[Sizedness in Rust](./sizedness-in-rust.md)）来具体阐述其内容，我高度推荐对于希望深入 sizedness 的人阅读此篇文章。下面是此篇文章的要点：
+类型的大小以及其所带来的潜在影响，是一个易于忽略但是又十分宏大的话题，它深刻地影响着本门语言的诸多方面。鉴于它的重要性，我已经写了一整篇文章（[Sizedness in Rust](../../sizedness-in-rust.md)）来具体阐述其内容，我高度推荐对于希望深入 sizedness 的人阅读此篇文章。下面是此篇文章的要点：
 
 > 1. All generic types get an implicit `Sized` bound.
 
@@ -1454,15 +1470,17 @@ fn main() {
 fn func<T>(t: &T) {}
 
 // example above desugared
+// 以上代码等价于
 fn func<T: Sized>(t: &T) {}
 ```
 
 > 2. Since there's an implicit `Sized` bound on all generic types, if we want to opt-out of this implicit bound we need to use the special _"relaxed bound"_ syntax `?Sized` which currently only exists for the `Sized` trait:
 
-2. 由于所有的泛型类型都具有隐式的 `Sized` 约束，如果我们希望摆脱这样的隐式约束，那么我们需要使用特殊的*“宽松约束”*记号 `?Sized` ，目前这样的记号仅适用于 `Sized` 特性：
+2. 由于所有的泛型类型都具有隐式的 `Sized` 约束，如果我们希望摆脱这样的隐式约束，那么我们需要使用特殊的 *“宽松约束”* 记号 `?Sized` ，目前这样的记号仅适用于 `Sized` 特性：
 
 ```rust
 // now T can be unsized
+// 现在 T 的大小可以是未知的
 fn func<T: ?Sized>(t: &T) {}
 ```
 
@@ -1474,13 +1492,13 @@ fn func<T: ?Sized>(t: &T) {}
 trait Trait {}
 
 // example above desugared
-// 以上记法等价于
+// 以上代码等价于
 trait Trait: ?Sized {}
 ```
 
-> This is so that trait objects can impl the trait. Again, all of the nitty gritty details are in [Sizedness in Rust](./sizedness-in-rust.md).
+> This is so that trait objects can impl the trait. Again, all of the nitty gritty details are in [Sizedness in Rust](../../sizedness-in-rust.md).
 
-这就是为什么特性对象可以实现具体特性。再次，向您推荐关于一切真相的[Sizedness in Rust](./sizedness-in-rust.md)。
+这就是为什么特性对象可以实现具体特性。再次，向您推荐关于一切真相的[Sizedness in Rust](../../sizedness-in-rust.md)。
 
 
 
@@ -1514,6 +1532,7 @@ struct Color {
 
 impl Default for Color {
     // default color is black
+    // 默认颜色是黑色
     fn default() -> Self {
         Color {
             r: 0,
@@ -1560,7 +1579,7 @@ impl Canvas {
 
 > `Default` is also useful in generic contexts where we need to construct generic types:
 
-在泛型编程的语境中，`Default` 特性也可显威力。
+在泛型编程的语境中，`Default` 特性也可显其威力。
 
 ```rust
 fn guarantee_length<T: Default>(mut vec: Vec<T>, min_len: usize) -> Vec<T> {
@@ -1621,6 +1640,8 @@ impl Color {
 ```rust
 // default color is still black
 // because u8::default() == 0
+// 默认颜色仍旧是黑色
+// 因为 u8::default() == 0
 #[derive(Default)]
 struct Color {
     r: u8,
@@ -1707,7 +1728,7 @@ struct SomeStruct {
 
 > If we're working on a program where performance is not the utmost concern then we don't need to sweat cloning data. Rust is a low-level language that exposes a lot of low-level details so it's easy to get caught up in premature optimizations instead of actually solving the problem at hand. For many programs the best order of priorities is usually to build for correctness first, elegance second, and performance third, and only focus on performance after the program has been profiled and the performance bottlenecks have been identified. This is good general advice to follow, and if it doesn't apply to your particular program then you would know.
 
-如果性能因素微不足道，我们不必羞于使用克隆。Rust 是一门底层语言，人们可以自由地控制程序行为的方方面面，这就很容易令人陷入过度优化的陷阱，而不是专注于着手解决问题。对此我给出的建议是：正确第一，优雅第二，性能第三。只有程序初具雏形后，性能瓶颈的问题才可能凸显，这时我们再解决性能问题也不迟。与其说这是一条编程建议，更不如说这是一条人生建议，万事万物大抵如此，如果你现在不信，总有一天你会的。
+如果性能因素微不足道，我们不必羞于使用克隆。Rust 是一门底层语言，人们可以自由地控制程序行为的方方面面，这就很容易令人陷入盲目追求优化的陷阱，而不是专注于着手解决问题。对此我给出的建议是：正确第一，优雅第二，性能第三。只有程序初具雏形后，性能瓶颈的问题才可能凸显，这时我们再解决性能问题也不迟。与其说这是一条编程建议，更不如说这是一条人生建议，万事万物大抵如此，如果你现在不信，总有一天你会的。
 
 
 
@@ -1749,7 +1770,7 @@ impl<T: Copy> Clone for T {
 
 > Impling `Copy` for a type changes its behavior when it gets moved. By default all types have _move semantics_ but once a type impls `Copy` it gets _copy semantics_. To explain the difference between the two let's examine these simple scenarios:
 
-实现了 `Copy` 特性的类型，其移动时的特性就会发生变化。默认情况下，所有的类型都具有 _移动语义_ ，但是一旦该类型实现了 `Copy` 特性，则会变为 _拷贝语义_。 请考虑下例中语义的不同：
+实现了 `Copy` 特性的类型，其在移动时的行为会发生变化。默认情况下，所有的类型都具有 _移动语义_ ，但是一旦该类型实现了 `Copy` 特性，则会变为 _拷贝语义_。 请考虑下例中语义的不同：
 
 ```rust
 // a "move", src: !Copy
@@ -1812,7 +1833,7 @@ dest = { is_valid: bool, data: i32 }
 
 > Although `Copy` could be an auto trait the Rust language designers decided it's simpler and safer for types to explicitly opt into copy semantics rather than silently inheriting copy semantics whenever the type is eligible, as the latter can cause surprising confusing behavior which often leads to bugs.
 
-或许你已经注意到，令 `Copy` 特性成为可自动实现的特性在理论上是可行的。但是 Rust 语言的设计者认为，比之于在恰当时隐式地继承拷贝语义，显示地声明为拷贝语义更加的简单和安全。前者可能会导致 Rust 语言逐渐变得反人类，也更容易出现 bug 。
+或许你已经注意到，令 `Copy` 特性成为可自动实现的特性在理论上是可行的。但是 Rust 语言的设计者认为，比之于在恰当时隐式地继承拷贝语义，显示地声明为拷贝语义更加的简单和安全。前者可能会导致 Rust 语言产生十分反人类的行为，也更容易出现 bug 。
 
 
 
@@ -1993,6 +2014,7 @@ fn main() {
     // prints "origin: (0, 0)"
 
     // get Point's Display representation as a String
+    // Point 表达为可显示的 String
     let stringified_point = format!("{}", Point::default());
     assert_eq!("(0, 0)", stringified_point); // ✅
 }
@@ -2082,13 +2104,11 @@ impl fmt::Debug for Point {
 ```
 
 > Impling `Debug` for a type also allows it to be used within the `dbg!` macro which is superior to `println!` for quick and dirty print logging. Some of its advantages:
-
-为特定类型实现 `Debug` 特性的同时，这也使得我们可以使用 `dbg!` 宏来快速地调试程序，这种方式要优于 `println!` 。其优点在于：
-
 > 1. `dbg!` prints to stderr instead of stdout so the debug logs are easy to separate from the actual stdout output of our program.
 > 2. `dbg!` prints the expression passed to it as well as the value the expression evaluated to.
 > 3. `dbg!` takes ownership of its arguments and returns them so you can use it within expressions:
 
+为特定类型实现 `Debug` 特性的同时，这也使得我们可以使用 `dbg!` 宏来快速地调试程序，这种方式要优于 `println!` 。其优点在于：
 1. `dbg!` 输出到标准错误流而不是标准输出流，所以我们能够很容易地将调试信息提取出来。
 2. `dbg!` 同时输出值和值的求值表达式。
 3. `dbg!` 接管参数的属权，但不会吞掉参数，而是再抛出来，所以可以将它用在表达式中：
@@ -2123,7 +2143,7 @@ fn example_println() {
 fn example_dbg() {
     // 😍
     if dbg!(some_condition()) { // prints "[src/main.rs:22] some_condition() = true"
-                                // 打印出丰富的调试信息
+                                // 太棒了！打印出丰富的调试信息
         // some code
     }
 }
@@ -2131,13 +2151,15 @@ fn example_dbg() {
 
 > The only downside is that `dbg!` isn't automatically stripped in release builds so we have to manually remove it from our code if we don't want to ship it in the final executable.
 
-`dbg!` 唯一的缺点是，它不能在构建最终的 release 二级制文件时自动删除，我们不得不手动删除相关代码。
+`dbg!` 宏唯一的缺点是，它不能在构建最终发布的二进制文件时自动删除，我们不得不手动删除相关代码。
+
+
 
 ## 算符重载特性 Operator Traits
 
 > All operators in Rust are associated with traits. If we'd like to impl operators for our types we have to impl the associated traits.
 
-在 Rust 中所有的算符都与相应的特性相关联。为特定类型实现相应特性，即为该类型实现了相应算符。
+在 Rust 中，所有的算符都与相应的特性相关联。为特定类型实现相应特性，即为该类型实现了相应算符。
 
 | 特性 | 类别 | 算符 | 描述 |
 |----------|----------|-------------|-------------|
@@ -2220,7 +2242,8 @@ where
 - 若 `a == b` 则 `b == a` （对称性）
 - 若 `a == b && b == c` 则 `a == c` （传递性）
 
-By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
+> By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
+>
 
 默认情况下 `Rhs = Self` 是因为我们几乎总是在相同类型之间进行比较。这也自动地确保了我们的实现是对称的、可传递的。
 
@@ -2233,6 +2256,7 @@ struct Point {
 // Rhs == Self == Point
 impl PartialEq for Point {
     // impl automatically symmetric & transitive
+    // 该实现自动确保了对称性于传递性
     fn eq(&self, other: &Point) -> bool {
         self.x == other.x && self.y == other.y
     }
@@ -2342,6 +2366,7 @@ struct Card {
 }
 
 // check equality of Card's suit
+// 检查花色的相等性
 impl PartialEq<Suit> for Card {
     fn eq(&self, other: &Suit) -> bool {
         self.suit == *other
@@ -2349,6 +2374,7 @@ impl PartialEq<Suit> for Card {
 }
 
 // check equality of Card's rank
+// 检查牌序的相等性
 impl PartialEq<Rank> for Card {
     fn eq(&self, other: &Rank) -> bool {
         self.rank == *other
@@ -2371,6 +2397,7 @@ fn main() {
 
 ```rust
 // check equality of Card's suit
+// 检查花色的相等性
 impl PartialEq<Suit> for Card {
     fn eq(&self, other: &Suit) -> bool {
         self.suit == *other
@@ -2378,6 +2405,7 @@ impl PartialEq<Suit> for Card {
 }
 
 // added for symmetry
+// 增加对称性
 impl PartialEq<Card> for Suit {
     fn eq(&self, other: &Card) -> bool {
         *self == other.suit
@@ -2385,6 +2413,7 @@ impl PartialEq<Card> for Suit {
 }
 
 // check equality of Card's rank
+// 检查牌序的相等性
 impl PartialEq<Rank> for Card {
     fn eq(&self, other: &Rank) -> bool {
         self.rank == *other
@@ -2392,6 +2421,7 @@ impl PartialEq<Rank> for Card {
 }
 
 // added for symmetry
+// 增加对称性
 impl PartialEq<Card> for Rank {
     fn eq(&self, other: &Card) -> bool {
         *self == other.rank
@@ -2406,12 +2436,14 @@ impl PartialEq<Card> for Rank {
 ```rust
 fn main() {
     // Ace of Spades
+    // ♠A
     let a = Card {
         suit: Suit::Spade,
         rank: Rank::Ace,
     };
     let b = Suit::Spade;
     // King of Spades
+    // ♠K
     let c = Card {
         suit: Suit::Spade,
         rank: Rank::King,
@@ -2554,7 +2586,7 @@ trait Hash {
 
 > This trait is not associated with any operator, but the best time to talk about it is right after `PartialEq` & `Eq` so here it is. `Hash` types can be hashed using a `Hasher`.
 
-本特性并未关联到任何算符，之所以在这里提及，是因为它与 `PartialEq` 与 `Eq` 密切的关系。实现 `Hash` 特性的类型可以通过 `Hasher` 特性作哈希运算。
+本特性并未关联到任何算符，之所以在这里提及，是因为它与 `PartialEq` 与 `Eq` 密切的关系。实现 `Hash` 特性的类型可以通过 `Hasher` 作哈希运算。
 
 ```rust
 use std::hash::Hasher;
@@ -2598,6 +2630,7 @@ use std::collections::HashSet;
 
 // now our type can be stored
 // in HashSets and HashMaps!
+// 现在我们的类型可以存储于 HashSet 和 HashMap 中了！
 #[derive(PartialEq, Eq, Hash)]
 struct Point {
     x: i32,
@@ -2638,6 +2671,7 @@ where
     fn partial_cmp(&self, other: &Rhs) -> Option<Ordering>;
 
     // provided default impls
+    // 提供默认实现
     fn lt(&self, other: &Rhs) -> bool;
     fn le(&self, other: &Rhs) -> bool;
     fn gt(&self, other: &Rhs) -> bool;
@@ -2689,6 +2723,7 @@ struct Point {
 // Rhs == Self == Point
 impl PartialOrd for Point {
     // impl automatically symmetric & transitive
+    // 该实现自动确保了对称性与传递性
     fn partial_cmp(&self, other: &Point) -> Option<Ordering> {
         Some(match self.x.cmp(&other.x) {
             Ordering::Equal => self.y.cmp(&other.y),
@@ -2719,7 +2754,7 @@ enum Stoplight {
 
 > The `PartialOrd` derive macro orders types based on the lexicographical order of their members:
 
-`PartialOrd` 衍生宏依据 **类型的成员的定义顺序** 对类型进行排序：
+`PartialOrd` 衍生宏依据 **类型成员的定义顺序** 对类型进行排序：
 
 ```rust
 // generates PartialOrd impl which orders
@@ -2739,7 +2774,7 @@ struct Point {
 // which orders Points based on y member
 // first and x member second
 // 这里宏展开的 PartialOrd 实现排序时
-// 首先考虑 y 在考虑 x
+// 首先考虑 y 再考虑 x
 #[derive(PartialOrd, PartialEq)]
 struct Point {
     y: i32,
@@ -2756,6 +2791,7 @@ trait Ord: Eq + PartialOrd<Self> {
     fn cmp(&self, other: &Self) -> Ordering;
 
     // provided default impls
+    // 提供默认实现
     fn max(self, other: Self) -> Self;
     fn min(self, other: Self) -> Self;
     fn clamp(self, min: Self, max: Self) -> Self;
@@ -2819,6 +2855,7 @@ use std::collections::BTreeSet;
 
 // now our type can be stored
 // in BTreeSets and BTreeMaps!
+// 现在我们的类型可以存储于 BTreeSet 和 BTreeMap 中了！
 #[derive(Ord, PartialOrd, PartialEq, Eq)]
 struct Point {
     x: i32,
@@ -2831,6 +2868,7 @@ fn example_btreeset() {
 }
 
 // we can also .sort() Ord types in collections!
+// 对于实现了 Ord 特性的类型，我们可以使用 .sort() 方法来对集合进行排序！
 fn example_sort<T: Ord>(mut sortable: Vec<T>) -> Vec<T> {
     sortable.sort();
     sortable
@@ -2864,7 +2902,8 @@ fn example_sort<T: Ord>(mut sortable: Vec<T>) -> Vec<T> {
 | `Sub`          | 算数 | `-`   | 减           |
 | `SubAssign`    | 算数 | `-=`  | 减等于       |
 
-Going over all of these would be very redundant. Most of these only apply to number types anyway. We'll only go over `Add` and `AddAssign` since the `+` operator is commonly overloaded to do other stuff like adding items to collections or concatenating things together, that way we cover the most interesting ground and don't repeat ourselves.
+> Going over all of these would be very redundant. Most of these only apply to number types anyway. We'll only go over `Add` and `AddAssign` since the `+` operator is commonly overloaded to do other stuff like adding items to collections or concatenating things together, that way we cover the most interesting ground and don't repeat ourselves.
+>
 
 详解以上所有算术特性未免显得多余，且其大多仅用于操作数字类型。本文仅就最常见被重载的 `Add` 和 `AddAssign` 特性，亦即 `+` 和 `+=` 算符，进行说明，其重载广泛用于为集合增加内容或对不同事物的连接。这样，我们多侧重于最有趣的地方，而不是无趣枯燥地重复。
 
@@ -2948,7 +2987,8 @@ error[E0369]: cannot add `&Point` to `&Point`
    = note: an implementation of `std::ops::Add` might be missing for `&Point`
 ```
 
-Within Rust's type system, for some type `T`, the types `T`, `&T`, and `&mut T` are all treated as unique distinct types which means we have to provide trait impls for each of them separately. Let's define an `Add` impl for `&Point`:
+> Within Rust's type system, for some type `T`, the types `T`, `&T`, and `&mut T` are all treated as unique distinct types which means we have to provide trait impls for each of them separately. Let's define an `Add` impl for `&Point`:
+>
 
 在 Rust 的类型系统中，对于特定类型 `T` 来讲，`T` ，`&T` ，`&mut T` 三者本身是具有不同类型的，这意味着我们需要对它们分别实现相应特性。下面我们对 `&Point` 实现 `Add` 特性：
 
@@ -3231,6 +3271,7 @@ fn main() {
     assert_eq!(fn_ptr(1), 2); // ✅
     
     // capture-less closure cast to fn pointer
+    // 不捕获环境的闭包可转换为普通函数指针
     fn_ptr = |x| x + 1; // same as add_one
     assert_eq!(fn_ptr(1), 2); // ✅
 }
@@ -3624,7 +3665,7 @@ fn main() {
     let num_ref: &i32 = vec[0]; // ❌ expected &i32 found i32
     
     // above line actually desugars to
-    // 上一行代码的语法糖相当于
+    // 以上代码等价于
     let num_ref: &i32 = *vec[0]; // ❌ expected &i32 found i32
 
     // both of these alternatives work
@@ -5822,13 +5863,13 @@ fn example_test() {
 
 
 
-## 总结 Conclusion
+## 结语 Conclusion
 
 > We learned a lot together! Too much in fact. This is us now:
 
 我们真是学习了太多！太多了！可能这就是我们现在的样子：
 
-![rust standard library traits](../assets/jason-jarvis-stdlib-traits.png)
+![rust standard library traits](../../../assets/jason-jarvis-stdlib-traits.png)
 
 _该漫画的创作者: [The Jenkins Comic](https://thejenkinscomic.wordpress.com/2020/05/06/memory/)_
 
@@ -5859,9 +5900,24 @@ _该漫画的创作者: [The Jenkins Comic](https://thejenkinscomic.wordpress.co
 
 ## 更多资料 Further Reading
 
-- [Sizedness in Rust](./sizedness-in-rust.md)
+- [Sizedness in Rust](../../sizedness-in-rust.md)
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Learning Rust in 2020](./learning-rust-in-2020.md)
-- [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
+- [Learning Rust in 2020](../../learning-rust-in-2020.md)
+- [Learn Assembly with Entirely Too Many Brainfuck Compilers](../../too-many-brainfuck-compilers.md)
 
+
+
+## 翻译 Translation
+
+鉴于水平所限，
+
+难免出现翻译错误，
+
+如发现错误还请告知！
+
+
+
+skanfd 译
+
+2021年4月21日
 
