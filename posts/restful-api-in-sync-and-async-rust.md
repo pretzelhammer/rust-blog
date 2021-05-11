@@ -1,7 +1,7 @@
 
 # RESTful API in Sync & Async Rust
 
-_10 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
+_11 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
 
 **Table of Contents**
 
