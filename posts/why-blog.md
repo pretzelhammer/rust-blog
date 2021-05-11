@@ -26,14 +26,16 @@ One small final note: I plan to focus this blog entirely around Rust. Aside from
 
 Get notified when the next blog post get published by
 - [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
+- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
 - Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
 
 
 
 ## Further Reading
 
-- [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
+- [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

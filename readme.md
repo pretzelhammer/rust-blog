@@ -6,6 +6,7 @@ My posts are listed below in reverse chronological order.
 
 | Date | Title | Translations |
 |-|-|-|
+| 2021-05-10 | [RESTful API in Sync & Async Rust](./posts/restful-api-in-sync-and-async-rust.md) | |
 | 2021-03-31 | [Tour of Rust's Standard Library Traits](./posts/tour-of-rusts-standard-library-traits.md) | [中文](./posts/translations/zh-hans/tour-of-rusts-standard-library-traits.md) |
 | 2020-11-01 | [Learn Assembly with Entirely Too Many Brainfuck Compilers](./posts/too-many-brainfuck-compilers.md) | |
 | 2020-07-22 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | |
@@ -19,6 +20,7 @@ Note: Translations are community-maintained.
 
 Get notified when a blog post get published by
 - [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
+- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
 - Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
 
 ## Feedback

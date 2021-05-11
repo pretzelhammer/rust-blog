@@ -1,6 +1,6 @@
 # Sizedness in Rust
 
-_22 July 2020 · 35 minute read · #rust · #sizedness_
+_22 July 2020 · #rust · #sizedness_
 
 **Table of Contents**
 
@@ -1250,6 +1250,7 @@ Discuss this article on
 
 Get notified when the next blog post get published by
 - [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
+- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
 - Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
 
 
@@ -1258,5 +1259,6 @@ Get notified when the next blog post get published by
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

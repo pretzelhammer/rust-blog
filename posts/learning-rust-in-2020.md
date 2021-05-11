@@ -1,6 +1,6 @@
 # Learning Rust in 2020
 
-_09 May 2020 · 15 minute read · #rust_
+_09 May 2020 · #rust_
 
 **Table of Contents**
 - [Intro](#intro)
@@ -200,6 +200,7 @@ Discuss this article on
 
 Get notified when the next blog post get published by
 - [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
+- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
 - Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
 
 
@@ -209,4 +210,5 @@ Get notified when the next blog post get published by
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
