@@ -8,22 +8,22 @@ _10 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
 - [Intro](#intro)
 - [General](#general)
     - [Project Setup](#project-setup)
-    - [Loading Env Variables w/dotenv](#loading-env-variables-w--dotenv)
-    - [Handling Dates & Times w/chrono](#handling-dates--times-w--chrono)
-    - [Logging w/fern](#logging-w--fern)
-    - [JSON Serialization w/serde](#json-serialization-w--serde)
+    - [Loading Environment Variables w/dotenv](#loading-environment-variables-wdotenv)
+    - [Handling Dates & Times w/chrono](#handling-dates--times-wchrono)
+    - [Logging w/fern](#logging-wfern)
+    - [JSON Serialization w/serde](#json-serialization-wserde)
     - [Domain Modeling](#domain-modeling)
 - [Sync Implementation](#sync-implementation)
-    - [SQL Schema Migrations w/diesel-cli](#sql-schema-migrations-w--diesel-cli)
-    - [Executing SQL Queries w/Diesel](#executing-sql-queries-w--diesel)
+    - [SQL Schema Migrations w/diesel-cli](#sql-schema-migrations-wdiesel-cli)
+    - [Executing SQL Queries w/Diesel](#executing-sql-queries-wdiesel)
         - [Mapping DB Enums to Rust Enums](#mapping-db-enums-to-rust-enums)
         - [Fetching Data](#fetching-data)
         - [Inserting Data](#inserting-data)
         - [Updating Data](#updating-data)
         - [Deleting Data](#deleting-data)
-        - [Using a Connection Pool w/r2d2](#using-a-connection-pool-w--r2d2)
+        - [Using a Connection Pool w/r2d2](#using-a-connection-pool-wr2d2)
         - [Refactoring DB Operations Into a Module](#refactoring-db-operations-into-a-module)
-    - [HTTP Routing w/Rocket](#http-routing-w--rocket)
+    - [HTTP Routing w/Rocket](#http-routing-wrocket)
         - [Routing Basics](#routing-basics)
         - [GET Requests](#get-requests)
         - [POST & PATCH Requests](#post--patch-requests)
@@ -31,15 +31,15 @@ _10 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
         - [Refactoring API Routes Into a Module](#refactoring-api-routes-into-a-module)
         - [Authentication](#authentication)
 - [Async Implementation](#async-implementation)
-    - [SQL Schema Migrations w/sqlx-cli](#sql-schema-migrations-w--sql-cli)
-    - [Executing SQL Queries w/sqlx](#executing-sql-queries-w--sqlx)
+    - [SQL Schema Migrations w/sqlx-cli](#sql-schema-migrations-wsql-cli)
+    - [Executing SQL Queries w/sqlx](#executing-sql-queries-wsqlx)
         - [Fetching Data](#fetching-data-1)
         - [Inserting Data](#inserting-data-1)
         - [Updating Data](#updating-data-1)
         - [Deleting Data](#deleting-data-1)
-        - [Using a Connection Pool w/sqlx](#using-a-connection-pool-w--sqlx)
+        - [Using a Connection Pool w/sqlx](#using-a-connection-pool-wsqlx)
         - [Refactoring DB Operations Into a Module](#refactoring-db-operations-into-a-module-1)
-    - [HTTP Routing w/actix-web](#http-routing-w--actix-web)
+    - [HTTP Routing w/actix-web](#http-routing-wactix-web)
         - [Routing Basics](#routing-basics-1)
         - [GET Requests](#get-requests-1)
         - [POST & PATCH Requests](#post--patch-requests-1)
@@ -118,7 +118,7 @@ After finishing both sync and async implementations we'll run some benchmarks to
 
 
 
-### Project setup
+### Project Setup
 
 All of the boring instructions for setting this project up, like installing Docker and running PostgresQL locally, are in the [companion code repository](https://github.com/pretzelhammer/kanban). For this article let's focus entirely on the fun part: the Rust!
 
@@ -144,7 +144,7 @@ fn main() {
 ```
 
 
-### Loading Env Variables w/dotenv
+### Loading Environment Variables w/dotenv
 
 crates
 - dotenv
