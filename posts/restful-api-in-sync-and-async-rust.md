@@ -4241,6 +4241,9 @@ In the future, if I find myself writing another RESTful API server in Rust, I'm 
 
 Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
+- [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/nanar9/restful_api_in_sync_async_rust/)
+- [official Rust users forum](https://users.rust-lang.org/t/blog-post-restful-api-in-sync-async-rust/59713)
+- [Twitter](https://twitter.com/pretzelhammer/status/1392825891428909062)
 
 
 
