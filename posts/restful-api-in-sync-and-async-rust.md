@@ -2949,40 +2949,22 @@ async fn echo_path(Path((string, num, maybe)): Path<(String, usize, bool)>) -> S
 // custom type example
 struct EvenNumber(i32);
 
-// oof, a bunch of ugly serde boilerplate:
-
-struct EvenNumberVisitor;
-
-impl Visitor<'_> for EvenNumberVisitor {
-    type Value = EvenNumber;
-
-    fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "expecting an even i32")
-    }
-
-    fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
-    where
-        E: serde::de::Error,
-    {
-        if v % 2 == 0 {
-            Ok(EvenNumber(v))
-        } else {
-            Err(E::custom("not even"))
-        }
-    }
-}
-
+// hand-written deserialize impl, mostly deferring to i32::deserialize
 impl<'de> Deserialize<'de> for EvenNumber {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        deserializer.deserialize_i32(EvenNumberVisitor)
+        let value = i32::deserialize(deserializer)?;
+        if value % 2 == 0 {
+            Ok(EvenNumber(value))
+        } else {
+            Err(D::Error::custom("not even"))
+        }
     }
 }
 
 // but now we can extract EvenNumbers directly from the Path:
-
 #[actix_web::get("/even/{even_num}")]
 async fn echo_even(Path(even_num): Path<EvenNumber>) -> String {
     format!("got even number {}", even_num.0)
