@@ -313,7 +313,7 @@ $ cargo run
 ```
 
 
-### JSON serialization w/serde
+### JSON Serialization w/serde
 
 crates
 - serde
