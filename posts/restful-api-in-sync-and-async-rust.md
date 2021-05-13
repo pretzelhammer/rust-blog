@@ -236,7 +236,7 @@ chrono = "0.4"
 +fern = "0.6"
 ```
 
-Log is Rust's logging facade library. It provides the high-level logging API but we still need to pick an implemention, and the implementation we're going to use is the fern crate. Fern allows us to easily customize the logging format and also chain multiple outputs so we can log to stderr and a file if we wanted to. After adding log and fern let's encapsulate all of the logging configuration and initialization into its own module:
+Log is Rust's logging facade library. It provides the high-level logging API but we still need to pick an implementation, and the implementation we're going to use is the fern crate. Fern allows us to easily customize the logging format and also chain multiple outputs so we can log to stderr and a file if we wanted to. After adding log and fern let's encapsulate all of the logging configuration and initialization into its own module:
 
 ```rust
 // src/logger.rs
@@ -724,7 +724,7 @@ Uhh, what?
 
 #### Mapping DB Enums to Rust Enums
 
-As you may recall from the preceeding section we defined an enum type in PostgresQL like so:
+As you may recall from the preceding section we defined an enum type in PostgresQL like so:
 
 ```sql
 CREATE TYPE STATUS_ENUM AS ENUM ('todo', 'doing', 'done');
@@ -858,7 +858,7 @@ fn get_connection() -> PgConnection {
     PgConnection::establish(&db_url).unwrap()
 }
 
-// fetchs all boards from the boards table,
+// fetches all boards from the boards table,
 // diesel can map the DB rows to the Board model
 // because we derived Queryable for it and the
 // DB row data matches the Board's members
@@ -1248,7 +1248,7 @@ fn delete_card_by_id(conn: &PgConnection, card_id: i64) {
         .unwrap();
 }
 
-// delete all the cards on a baord
+// delete all the cards on a board
 fn delete_cards_by_board(conn: &PgConnection, board_id: i64) {
     diesel::delete(cards::table.filter(cards::board_id.eq(board_id)))
         .execute(conn)
@@ -1721,7 +1721,7 @@ fn main() -> Result<(), StdErr> {
 }
 ```
 
-Then we can retrieve the managed application state from Rocket in our request handlers by wrapping the data type we wish to recieve with `rocket::State` as one of our function parameters:
+Then we can retrieve the managed application state from Rocket in our request handlers by wrapping the data type we wish to receive with `rocket::State` as one of our function parameters:
 
 ```rust
 use rocket::State;
@@ -1966,7 +1966,7 @@ We're almost there! Only one small piece of the puzzle is missing: authenticatio
 
 Let's implement token-based authentication for our RESTful API server. When a request comes in, we'll first check if it has a `Authorization: Bearer <token>` header, and if not reject it immediately. Otherwise, we validate the `<token>` by checking that it exists in a `tokens` DB table, and if it's valid we respond to the request.
 
-Since this is a toy project we're not going to implement different access permissions per token, all tokens will have access to the all boards and all cards. Also, let's skip the implementing the handler which generates and returns tokens because it's mostly boilerplate and not actually relevant to us implementing authentication.
+Since this is a toy project we're not going to implement different access permissions per token, all tokens will have access to all boards and all cards. Also, let's skip the implementing the handler which generates and returns tokens because it's mostly boilerplate and not relevant to us implementing authentication.
 
 Anyway, we're gonna need to create a `tokens` table first:
 
@@ -2704,7 +2704,7 @@ fn delete_done_cards_by_board(conn: &mut PgConnection, board_id: i64) {
 }
 ```
 
-You may have noticed we switched from using `sqlx::query_as` to `sqlx::query`. The difference between the two is that the former attempts to map the result rows into some type which impls `sqlx::FromRow` whereas the latter doesn't, so the latter is more approach for `DELETE` queries that don't return any rows.
+You may have noticed we switched from using `sqlx::query_as` to `sqlx::query`. The difference between the two is that the former attempts to map the result rows into some type which impls `sqlx::FromRow` whereas the latter doesn't, so the latter is more appropriate for `DELETE` queries that don't return any rows.
 
 
 #### Compile-Time Verification of SQL Queries
@@ -2913,7 +2913,7 @@ type StdErr = Box<dyn std::error::Error>;
 }
 ```
 
-We have to make our main function async and decorate with with the `actix_web::main` procedural macro to tell actix-web to start a runtime and execute our main function as the first task.
+We have to make our main function async and decorate it with the `actix_web::main` procedural macro to tell actix-web to start a runtime and execute our main function as the first task.
 
 
 
@@ -2929,7 +2929,7 @@ async fn index() -> &'static str {
 
 #[actix_web::get("/nested/route")]
 async fn nested_route() -> &'static str {
-    "I'm some nested route!"
+    "I'm a nested route!"
 }
 ```
 
@@ -3543,7 +3543,7 @@ impl Db {
 }
 ```
 
-There's a couple ways we can implement authentication in actix-web. We can implement it as middleware or as an extractor. Extractors are the actix-web equivalent to Rocket's request guards, and since we implemented authentication using a request guard in Rocket let's use an extractor for actix-web.
+There's a couple ways we can implement authentication in actix-web. We can implement it as middleware or as an extractor. Extractors are the actix-web equivalent to Rocket's request guards, and since we implemented authentication using a request guard in Rocket, let's use an extractor for actix-web.
 
 Since everything in actix-web is async, including the `actix_web::FromRequest` method signature, let's add the `futures` crate to our project for some handy utility future traits and functions:
 
@@ -3879,7 +3879,7 @@ Test Machine: MacBook Pro (2019)
 
 ### Methodology
 
-The tools we're going to use for benchmarking and profiling are vegeta and psutil. Vegeta is HTTP load testing command line tool written in Go. We can give it list of targets, a duration, and a number of workers and it will pummel the targets for the given duration using the given number of workers while recording statistics like the number of requests successfully processed, their response times, their status codes, and so on. Psutil is a Python library that we can use to easily write a script that queries the system every second to check how much CPU and memory a process is using.
+The tools we're going to use for benchmarking and profiling are vegeta and psutil. Vegeta is an HTTP load testing command line tool written in Go. We can give it a list of targets, a duration, and a number of workers and it will pummel the targets for the given duration using the given number of workers while recording statistics like the number of requests successfully processed, their response times, their status codes, and so on. Psutil is a Python library that we can use to easily write a script that queries the system every second to check how much CPU and memory a process is using.
 
 Let's run all of the HTTP load tests for 60 seconds and use up to a max of 40 workers. Vegeta will naturally scale the workers if the HTTP server can handle the load. Also, let's use two different sets of targets, the first set is going to represent a read-only (RO) workload and the second set is going to represent a more realistic reads + writes (RW) workload.
 
@@ -3965,7 +3965,7 @@ Also, let's disable the logging in the Rust servers for the benchmarks because I
 
 ### Calculating Best Possible Performance
 
-Since all of our servers are connecting to the same PostgresQL database it's possible that PostgresQL might become the common bottleneck between them all and our benchmarks essentially become useless. For starters, let's run PostgresQL entirely in memory. Second, let's benchmark PostgresQL itself so we can determine the theoretical upperbound for the performance of our RESTful API servers.
+Since all of our servers are connecting to the same PostgresQL database it's possible that PostgresQL might become the common bottleneck between them all and our benchmarks essentially become useless. For starters, let's run PostgresQL entirely in memory. Second, let's benchmark PostgresQL itself so we can determine the theoretical upper bound for the performance of our RESTful API servers.
 
 So benchmarking PostgresQL is really easy! If we have PostgresQL installed on a machine it also comes with a command line tool called `pgbench` that does all the hard work for us. Initializing the benchmark tables is as easy as:
 
@@ -4019,7 +4019,7 @@ tps = 3162.045587 (including connections establishing)
 tps = 3168.014678 (excluding connections establishing)
 ```
 
-That number is not quite as big or mind-blowing as the previous number, but almost ~3.2k transactions per second (tps) for workload of reads and writes still seems pretty good.
+That number is not quite as big or mind-blowing as the previous number, but almost ~3.2k transactions per second (tps) for a workload of reads and writes still seems pretty good.
 
 Okay, so we know that every API request to our servers performs exactly two SQL queries: the first to validate the bearer token in the authorization header and the second to select, insert, update, or delete some data. The math's really simple, but here's a table anyway:
 
@@ -4034,7 +4034,7 @@ Okay, so we know that every API request to our servers performs exactly two SQL 
 
 I'm going to measure CPU usage in CPU seconds and memory usage in megabytes. Everyone knows what megabytes are so I'm not going to explain those, but not everyone is familiar with CPU seconds and they're kinda weird so let's discuss those now.
 
-When people say "CPU second" what they really mean is "CPU logical core second." For example, a CPU with 16 logical cores can perform 16 CPU seconds of processing for every second of wall clock time. This why when you open the process manager tool in your operating system of choice you'll occasionally see it report some processes as using over 100% CPU. This makes no sense, as it's not possible to use more than 100% of anything, but it's reported this way because the percent is calculated based on the processing power of a single logical core of the CPU and not the total processing power of the entire CPU. For example, a process running on a CPU with 16 logical cores can use up to "1600%" of the CPU. Yup, it's dumb, but whatever, now you know.
+When people say "CPU second" what they really mean is "CPU logical core second." For example, a CPU with 16 logical cores can perform 16 CPU seconds of processing for every second of wall clock time. This is why when you open the process manager tool in your operating system of choice you'll occasionally see it report some processes as using over 100% CPU. This makes no sense, as it's not possible to use more than 100% of anything, but it's reported this way because the percent is calculated based on the processing power of a single logical core of the CPU and not the total processing power of the entire CPU. For example, a process running on a CPU with 16 logical cores can use up to "1600%" of the CPU. Yup, it's dumb, but whatever, now you know.
 
 
 
@@ -4056,7 +4056,7 @@ And the stats we're tracking:
 - CPU usage (in CPU seconds)
 - Memory usage (in megabytes)
 
-And the theoretical upperbounds we calculcated:
+And the theoretical upper bounds we calculated:
 - Server should be able to process up to ~17k requests per second for RO workload (before DB becomes bottleneck)
 - Server should be able to process up to ~1.6k requests per second for RW workload (before DB becomes bottleneck)
 - Server can use up to 16 CPU seconds per second (since the test machine has 16 logical cores)
@@ -4068,7 +4068,7 @@ And the theoretical upperbounds we calculcated:
 
 **Request Throughput**
 
-| Server | Total Requests | Successful Requests | Success Rate | Succcessful Requests per Second |
+| Server | Total Requests | Successful Requests | Success Rate | Successful Requests per Second |
 |-|-|-|-|-|
 | **DR** | 23571 req | 23562 req | 99.96% | 392 req/sec |
 | **SA** | 170714 req | 170714 req | 100% | 2845 req/sec |
@@ -4109,7 +4109,7 @@ Wow, the PEM server totally stole the show here. All of its numbers are impressi
 
 **Request Throughput**
 
-| Server | Total Requests | Successful Requests | Success Rate | Succcessful Requests per Second |
+| Server | Total Requests | Successful Requests | Success Rate | Successful Requests per Second |
 |-|-|-|-|-|
 | **DR** | 26365 req | 21063 req | 79.89% | 351 req/sec |
 | **SA** | 71522 req | 71522 req | 100% | 1192 req/sec |
@@ -4138,11 +4138,11 @@ I'm surprised by these results! I was expecting the results from the RW workload
 
 Again, the DR server totally bombed. It's performance looks slightly less worse in this context than in the previous context but it's still terrible.
 
-The SA server had a 1192 req/sec throughput with an average latency of 33.6 ms and a maximum memory useage of 125.40 MB. It also ate up a ton of CPU, at an average of 6.092 cpu/sec.
+The SA server had a 1192 req/sec throughput with an average latency of 33.6 ms and a maximum memory usage of 125.40 MB. It also ate up a ton of CPU, at an average of 6.092 cpu/sec.
 
 The PES server's performance really tanked, it's no longer competitive with the SA server. It seems like node.js really shines when it can handle lots of small requests quickly. If the complexity of the requests and their time to complete increases it seems like node.js starts to really struggle.
 
-Despite it's awesome performance in the RO workload the PEM server's performance also greatly fell in the RW workload, but despite that it was still competitive with the SA server! Not only is it competitive in terms of request throughput and average request latency but PEM also used less CPU! However, it used tremedously more memory, at 1149.82 MB.
+Despite it's awesome performance in the RO workload the PEM server's performance also greatly fell in the RW workload, but despite that it was still competitive with the SA server! Not only is it competitive in terms of request throughput and average request latency but PEM also used less CPU! However, it used tremendously more memory, at 1149.82 MB.
 
 After seeing all of the results of both workloads it's hard to crown an overall winner.
 
@@ -4177,7 +4177,7 @@ Where I think Diesel v1.4 could improve:
 - No support for async/await and it's not on the project's roadmap so it's not coming any time soon.
 
 What I like about sqlx v0.4:
-- Just lets me write and run SQL, which is what I want to do in the first place anyway.
+- Lets me just write and run SQL, which is what I want to do in the first place anyway.
 - The derive macros `sqlx::FromRow` and `sqlx::Type` are really nice.
 - Logs every executed query, how many rows it returned, and how long the query took at an `INFO` level. Very nice!
 
@@ -4220,7 +4220,7 @@ Where I think actix-web v3.3 can improve:
 
 We didn't really get into "advanced" async programming in this article, and in a way that's a good thing! One of the big selling points of introducing the `async` and `await` keywords to Rust is that it would make async programming as simple and straight-forward as sync programming, and I believe they delivered on that promise in this project given how similar the async implementation was to the sync implementation.
 
-Although with that said, while async Rust _can be_ as simple as sync Rust, it also can be way more complicated! I wasn't completely forthcoming or transparent about all of my struggles in this article, but writing the `actix_web::FromRequest` impl for `Token` was like really, really hard. There were also some things I tried to do in the async implementation that never made it into the article because I just couldn't get them to compile. While I believe this is _partially_ due to my own inexperience with async programming Rust, I also think the async stuff is just inherently harder and more complex. I'd like to tackle all of these things head-on so I'll probably an _"Advanced Async Patterns in Rust"_ article or something like that in the future.
+Although with that said, while async Rust _can be_ as simple as sync Rust, it also can be way more complicated! I wasn't completely forthcoming or transparent about all of my struggles in this article, but writing the `actix_web::FromRequest` impl for `Token` was really, really hard. There were also some things I tried to do in the async implementation that never made it into the article because I just couldn't get them to compile. While I believe this is _partially_ due to my own inexperience with async programming Rust, I also think the async stuff is just inherently harder and more complex. I'd like to tackle all of these things head-on so I'll probably write an _"Advanced Async Patterns in Rust"_ article or something like that in the future.
 
 
 ### Rust vs JS
