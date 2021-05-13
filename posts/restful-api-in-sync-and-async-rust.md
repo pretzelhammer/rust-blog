@@ -37,6 +37,7 @@ _11 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
         - [Inserting Data](#inserting-data-1)
         - [Updating Data](#updating-data-1)
         - [Deleting Data](#deleting-data-1)
+        - [Compile-Time Verification of SQL Queries](#compile-time-verification-of-sql-queries)
         - [Using a Connection Pool w/sqlx](#using-a-connection-pool-wsqlx)
         - [Refactoring DB Operations Into a Module](#refactoring-db-operations-into-a-module-1)
     - [HTTP Routing w/actix-web](#http-routing-wactix-web)
@@ -2702,6 +2703,13 @@ fn delete_done_cards_by_board(conn: &mut PgConnection, board_id: i64) {
         .unwrap();
 }
 ```
+
+You may have noticed we switched from using `sqlx::query_as` to `sqlx::query`. The difference between the two is that the former attempts to map the result rows into some type which impls `sqlx::FromRow` whereas the latter doesn't, so the latter is more approach for `DELETE` queries that don't return any rows.
+
+
+#### Compile-Time Verification of SQL Queries
+
+One interesting feature of sqlx is that it can verify all of our queries are syntactically and semantically valid at compile-time, but this is behavior we have to opt into by using the `sqlx::query!` and `sqlx::query_as!` macros over the `sqlx::query` and `sqlx::query_as` functions. The downsides of the macros are that they're slightly less ergonomic to use than the regular functions and they will increase compiles but the upsides can greatly outweigh the downsides if we're working in a project with lots of complex queries or many tables and entities. I haven't been using this for this project but they're worth knowing about.
 
 
 
