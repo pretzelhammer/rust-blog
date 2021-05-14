@@ -267,8 +267,7 @@ pub fn init() -> Result<(), fern::InitError> {
         .chain(std::io::stderr());
 
     // also log to file if one is provided via env
-    let log_file = env::var("LOG_FILE").ok();
-    if let Some(log_file) = log_file {
+    if let Ok(log_file) = env::var("LOG_FILE") {
         let log_file = fs::File::create(log_file)?;
         builder = builder.chain(log_file);
     }
@@ -516,7 +515,7 @@ crates
 - diesel-cli
 
 ```bash
-cargo install diesel-cli
+cargo install diesel_cli
 ```
 
 Once we have diesel-cli installed we can use it to create new migrations and execute pending migrations. diesel-cli figures out which DB to connect to by checking the `DATABASE_URL` environment variable, which it will also load from an `.env` file if one exists in the current working directory.
