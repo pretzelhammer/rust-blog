@@ -266,12 +266,13 @@ Other examples of auto marker traits are the `Send` and `Sync` traits. A type is
 struct Struct;
 
 // opt-out of Send trait
-impl !Send for Struct {}
+impl !Send for Struct {} // ✅
 
 // opt-out of Sync trait
-impl !Sync for Struct {}
+impl !Sync for Struct {} // ✅
 
-impl !Sized for Struct {} // compile error
+// can't opt-out of Sized
+impl !Sized for Struct {} // ❌
 ```
 
 This seems reasonable since there might be reasons why we wouldn't want our type to be sent or shared across threads, however it's hard to imagine a scenario where we'd want the compiler to "forget" the size of our type and treat it as an unsized type as that offers no benefits and merely makes the type more difficult to work with.
@@ -295,12 +296,12 @@ fn func<T>(t: T) {}
 fn func<T: Sized>(t: T) {}
 
 // ...which we can opt-out of by explicitly setting ?Sized...
-fn func<T: ?Sized>(t: T) {} // compile error
+fn func<T: ?Sized>(t: T) {} // ❌
 
 // ...which doesn't compile since t doesn't have
 // a known size so we must put it behind a pointer...
-fn func<T: ?Sized>(t: &T) {} // compiles
-fn func<T: ?Sized>(t: Box<T>) {} // compiles
+fn func<T: ?Sized>(t: &T) {} // ✅
+fn func<T: ?Sized>(t: Box<T>) {} // ✅
 ```
 
 **Pro tips**
@@ -320,7 +321,7 @@ fn debug<T: Debug>(t: T) { // T: Debug + Sized
 }
 
 fn main() {
-    debug("my str"); // T = &str, &str: Debug + Sized ✔️
+    debug("my str"); // T = &str, &str: Debug + Sized ✅
 }
 ```
 
@@ -340,7 +341,7 @@ fn main() {
 
 Which now throws this error:
 
-```rust
+```none
 error[E0277]: the size for values of type `str` cannot be known at compilation time
  --> src/main.rs:8:9
   |
@@ -369,8 +370,8 @@ I've already kinda spoiled the answer in the code comments above, but basically:
 | Type | `Sized` |
 |-|-|
 | `str` | ❌ |
-| `&str` | ✔️ |
-| `&&str` | ✔️ |
+| `&str` | ✅ |
+| `&&str` | ✅ |
 
 This is why I had to add a `?Sized` bound to make the function work as intended after changing it to take references. The working function below:
 
@@ -382,7 +383,7 @@ fn debug<T: Debug + ?Sized>(t: &T) { // T: Debug + ?Sized
 }
 
 fn main() {
-    debug("my str"); // &T = &str, T = str, str: Debug + !Sized ✔️
+    debug("my str"); // &T = &str, T = str, str: Debug + !Sized ✅
 }
 ```
 
@@ -468,7 +469,7 @@ trait Trait: ?Sized {}
 
 Throws this error:
 
-```rust
+```none
 error: `?Trait` is not permitted in supertraits
  --> src/main.rs:1:14
   |
@@ -488,7 +489,7 @@ Okay, so by default traits allow `self` to possibly be an unsized type. As we le
 
 ```rust
 trait Trait {
-    fn method(self); // compiles
+    fn method(self); // ✅
 }
 ```
 
@@ -496,17 +497,17 @@ However the moment we try to implement the method, either by providing a default
 
 ```rust
 trait Trait {
-    fn method(self) {} // compile error
+    fn method(self) {} // ❌
 }
 
 impl Trait for str {
-    fn method(self) {} // compile error
+    fn method(self) {} // ❌
 }
 ```
 
 Throws:
 
-```rust
+```none
 error[E0277]: the size for values of type `Self` cannot be known at compilation time
  --> src/lib.rs:2:15
   |
@@ -538,17 +539,17 @@ If we're determined to pass `self` around by value we can fix the first error by
 
 ```rust
 trait Trait: Sized {
-    fn method(self) {} // compiles
+    fn method(self) {} // ✅
 }
 
-impl Trait for str { // compile error
+impl Trait for str { // ❌
     fn method(self) {}
 }
 ```
 
 Now throws:
 
-```rust
+```none
 error[E0277]: the size for values of type `str` cannot be known at compilation time
  --> src/lib.rs:7:6
   |
@@ -566,11 +567,11 @@ Which is okay, as we knew upon binding the trait with `Sized` we'd no longer be 
 
 ```rust
 trait Trait {
-    fn method(&self) {} // compiles
+    fn method(&self) {} // ✅
 }
 
 impl Trait for str {
-    fn method(&self) {} // compiles
+    fn method(&self) {} // ✅
 }
 ```
 
@@ -581,10 +582,10 @@ trait Trait {
     fn method(self) where Self: Sized {}
 }
 
-impl Trait for str {} // compiles!?
+impl Trait for str {} // ✅!?
 
 fn main() {
-    "str".method(); // compile error
+    "str".method(); // ❌
 }
 ```
 
@@ -596,11 +597,11 @@ trait Trait {
     fn method2(&self) {}
 }
 
-impl Trait for str {} // compiles
+impl Trait for str {} // ✅
 
 fn main() {
     // we never call "method" so no errors
-    "str".method2(); // compiles
+    "str".method2(); // ✅
 }
 ```
 
@@ -619,12 +620,12 @@ impl Trait for dyn Trait {
 
 // and now we can use `dyn Trait` in our program
 
-fn function(t: &dyn Trait) {} // compiles
+fn function(t: &dyn Trait) {} // ✅
 ```
 
 If we try to actually compile the above program we get:
 
-```rust
+```none
 error[E0371]: the object type `(dyn Trait + 'static)` automatically implements the trait `Trait`
  --> src/lib.rs:5:1
   |
@@ -637,12 +638,12 @@ Which is the compiler telling us to chill since it automatically provides the im
 ```rust
 trait Trait: Sized {}
 
-fn function(t: &dyn Trait) {} // compile error
+fn function(t: &dyn Trait) {} // ❌
 ```
 
 Throws:
 
-```rust
+```none
 error[E0038]: the trait `Trait` cannot be made into an object
  --> src/lib.rs:3:18
   |
@@ -663,9 +664,9 @@ trait Trait {
     fn method2(&self) {}
 }
 
-fn function(arg: &dyn Trait) { // compiles
-    arg.method(); // compile error
-    arg.method2(); // compiles
+fn function(arg: &dyn Trait) { // ✅
+    arg.method(); // ❌
+    arg.method2(); // ✅
 }
 ```
 
@@ -692,20 +693,20 @@ fn generic<T: ToString>(t: T) {}
 fn trait_object(t: &dyn ToString) {}
 
 fn main() {
-    generic(String::from("String")); // compiles
-    generic("str"); // compiles
-    trait_object(&String::from("String")); // compiles, unsized coercion
-    trait_object("str"); // compile error, unsized coercion impossible
+    generic(String::from("String")); // ✅
+    generic("str"); // ✅
+    trait_object(&String::from("String")); // ✅ - unsized coercion
+    trait_object("str"); // ❌ - unsized coercion impossible
 }
 ```
 
 Throws:
 
-```rust
+```none
 error[E0277]: the size for values of type `str` cannot be known at compilation time
  --> src/main.rs:8:18
   |
-8 |     trait_object("str"); // compile error
+8 |     trait_object("str");
   |                  ^^^^^ doesn't have a size known at compile-time
   |
   = help: the trait `std::marker::Sized` is not implemented for `str`
@@ -717,14 +718,14 @@ The reason why passing a `&String` to a function expecting a `&dyn ToString` wor
 
 `&str` pointers are double-width, storing a pointer to the data and the data length. `&dyn ToString` pointers are also double-width, storing a pointer to the data and a pointer to a vtable. To coerce a `&str` into a `&dyn toString` would require a triple-width pointer to store a pointer to the data, the data length, and a pointer to a vtable. Rust does not support triple-width pointers so casting an unsized type to a trait object is not possible.
 
-Previous 2 paragraphs summarized in a table:
+Previous two paragraphs summarized in a table:
 
 | Type | Pointer to Data | Data Length | Pointer to VTable | Total Width |
 |-|-|-|-|-|
-| `&String` | ✔️ | ❌ | ❌ | 1 ✔️ |
-| `&str` | ✔️ | ✔️ | ❌ | 2 ✔️ |
-| `&String as &dyn ToString` | ✔️ | ❌ | ✔️ | 2 ✔️ |
-| `&str as &dyn ToString` | ✔️ | ✔️ | ✔️ | 3 ❌ |
+| `&String` | ✅ | ❌ | ❌ | 1 ✅ |
+| `&str` | ✅ | ✅ | ❌ | 2 ✅ |
+| `&String as &dyn ToString` | ✅ | ❌ | ✅ | 2 ✅ |
+| `&str as &dyn ToString` | ✅ | ✅ | ✅ | 3 ❌ |
 
 
 
@@ -739,7 +740,7 @@ fn function(t: &(dyn Trait + Trait2)) {}
 
 Throws:
 
-```rust
+```none
 error[E0225]: only auto traits can be used as additional traits in a trait object
  --> src/lib.rs:4:30
   |
@@ -772,8 +773,8 @@ impl<T: Trait + Trait2> Trait3 for T {}
 
 // from `dyn Trait + Trait2` to `dyn Trait3` 
 fn function(t: &dyn Trait3) {
-    t.method(); // compiles
-    t.method2(); // compiles
+    t.method(); // ✅
+    t.method2(); // ✅
 }
 ```
 
@@ -801,14 +802,14 @@ fn takes_trait2(t: &dyn Trait2) {}
 
 fn main() {
     let t: &dyn Trait3 = &Struct;
-    takes_trait(t); // compile error
-    takes_trait2(t); // compile error
+    takes_trait(t); // ❌
+    takes_trait2(t); // ❌
 }
 ```
 
 Throws:
 
-```rust
+```none
 error[E0308]: mismatched types
   --> src/main.rs:22:17
    |
@@ -857,8 +858,8 @@ fn takes_trait2(t: &dyn Trait2) {}
 
 fn main() {
     let t: &dyn Trait3 = &Struct;
-    takes_trait(t.as_trait()); // compiles
-    takes_trait2(t.as_trait2()); // compiles
+    takes_trait(t.as_trait()); // ✅
+    takes_trait2(t.as_trait2()); // ✅
 }
 ```
 
@@ -1131,7 +1132,7 @@ While it's not possible to define a type that can coerce to any other type it is
 enum Void {}
 ```
 
-This allows us to remove the feature flag from the previous 2 examples and implement them using stable Rust:
+This allows us to remove the feature flag from the previous two examples and implement them using stable Rust:
 
 ```rust
 enum Void {}

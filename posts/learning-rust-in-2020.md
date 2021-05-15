@@ -1,6 +1,6 @@
 # Learning Rust in 2020
 
-_09 May 2020 · #rust_
+_09 May 2020 · #rust · #programming · #exercises_
 
 **Table of Contents**
 - [Intro](#intro)
