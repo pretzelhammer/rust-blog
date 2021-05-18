@@ -1060,7 +1060,7 @@ impl From<Vec<StatusCount>> for BoardSummary {
 }
 ```
 
-Why do structs which are the result of "regular" Diesel queries have to derive `diesel::Queryable` but structs which are the result of `diesel::sql_query` queries have to derive `diesel::QueryableByName`? It's a mystery!
+Why do structs which are the result of "regular" Diesel queries have to derive `diesel::Queryable` but structs which are the result of `diesel::sql_query` queries have to derive `diesel::QueryableByName`? According to the Diesel docs the former deserializes DB row columns by index and the latter deserializes DB row columns by name, and the first one is more performant but the latter is a bit more foolproof, hence its use for arbitrary SQL queries.
 
 Anyway, after jumping through all of the hoops above we can finally implement a function to fetch board summaries:
 
