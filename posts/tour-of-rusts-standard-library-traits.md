@@ -3152,7 +3152,7 @@ fn main() {
 
 It's kinda confusing at first, because it seems like the `Index` trait does not follow its own method signature, but really it's just questionable syntax sugar.
 
-Since `Idx` is a generic type the `Index` trait can be implemented many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into its using `Range<usize>`s to get slices.
+Since `Idx` is a generic type the `Index` trait can be implemented many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into it using `Range<usize>`s to get slices.
 
 ```rust
 fn main() {
