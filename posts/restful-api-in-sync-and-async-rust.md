@@ -531,7 +531,7 @@ apt-get install postgresql libpq-dev
 And then we can tell cargo to only install diesel-cli with support for PostgresQL:
 
 ```bash
-cargo install diesel_cli --no-default-features --features "postgres"
+cargo install diesel_cli --no-default-features --features postgres
 ```
 
 Once we have diesel-cli installed we can use it to create new migrations and execute pending migrations. diesel-cli figures out which DB to connect to by checking the `DATABASE_URL` environment variable, which it will also load from an `.env` file if one exists in the current working directory.
@@ -1480,10 +1480,14 @@ diesel-derive-enum = { version = "1.1", features = ["postgres"] }
 +rocket_contrib = "0.4"
 ```
 
-Rocket depends on some nightly features so we'll need to switch to using the nightly compiler which we can do so by running this rustup command from the project directory:
+Rocket v0.4 depends on some nightly features, some of which are only available on compiler version 1.53.0 since they're later removed, so we'll need to install a specific nightly compiler and then switch to using these commands
 
 ```bash
-rustup override set nightly
+# install rustc 1.53.0-nightly (07e0e2ec2 2021-03-24)
+rustup install nightly-2021-03-24
+
+# set it as default
+rustup default nightly-2021-03-24
 ```
 
 We also have to add some compiler feature flags to the top of our main:
@@ -2305,6 +2309,22 @@ crates
 
 ```bash
 cargo install sqlx-cli
+```
+
+Again if this fails it's likely because we're missing some development libraries on our system, we can solve this issue with the following commands:
+
+```bash
+# macOS
+brew install postgresql
+
+# ubuntu
+apt-get install pkg-config libssl-dev postgresql libpq-dev
+```
+
+And then we can install sqlx-cli with only support for PostgresQL:
+
+```bash
+cargo install sqlx-cli --no-default-features --features postgres
 ```
 
 As before, let's create a boards and cards tables:
