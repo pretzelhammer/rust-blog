@@ -518,6 +518,22 @@ crates
 cargo install diesel_cli
 ```
 
+If the above command doesn't work at first, it's likely because we don't have all the development libraries for all of diesel-cli's supported databases. Since we're just using PostgresQL, we can make sure the development libraries are installed with these commands:
+
+```bash
+# macOS
+brew install postgresql
+
+# ubuntu
+apt-get install postgresql libpq-dev
+```
+
+And then we can tell cargo to only install diesel-cli with support for PostgresQL:
+
+```bash
+cargo install diesel_cli --no-default-features --features "postgres"
+```
+
 Once we have diesel-cli installed we can use it to create new migrations and execute pending migrations. diesel-cli figures out which DB to connect to by checking the `DATABASE_URL` environment variable, which it will also load from an `.env` file if one exists in the current working directory.
 
 Assuming the DB is currently running and a `DATABASE_URL` environment variable is present, here's the first diesel-cli command we'd run to bootstrap our project:
