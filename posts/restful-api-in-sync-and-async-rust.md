@@ -3906,9 +3906,12 @@ Server #4: pg-promise + express.js (multi process)
 - Interpreted with: node.js v16.0.0
 - Mode: multi process 
 
-Test Machine: MacBook Pro (2019)
-- CPU: 2.3 Ghz 8-core Intel Core i9
-- Memory: 32 GB 2667 MHz DDR4
+Test Machine: DigitalOcean VPS
+- OS: Ubuntu 20.04 (LTS)
+- CPU: 2.3 GHz 4-core Intel
+- Memory: 8 GB
+
+Since almost everyone builds and ships web servers to the cloud nowadays I decided to run all the benchmarks on a DigitalOcean VPS.
 
 
 
@@ -3994,74 +3997,7 @@ codegen-units = 1
 panic = "abort"
 ```
 
-Also, let's disable the logging in the Rust servers for the benchmarks because I didn't bother adding any logging to the node.js servers.
-
-
-
-### Calculating Best Possible Performance
-
-Since all of our servers are connecting to the same PostgresQL database it's possible that PostgresQL might become the common bottleneck between them all and our benchmarks essentially become useless. For starters, let's run PostgresQL entirely in memory. Second, let's benchmark PostgresQL itself so we can determine the theoretical upper bound for the performance of our RESTful API servers.
-
-So benchmarking PostgresQL is really easy! If we have PostgresQL installed on a machine it also comes with a command line tool called `pgbench` that does all the hard work for us. Initializing the benchmark tables is as easy as:
-
-```bash
-pgbench --initialize
-```
-
-Running a read-only workload is as easy as:
-
-```bash
-pgbench --username postgres --client 8 --jobs 8 --transactions 1000 --select-only
-```
-
-I chose 8 as my number of clients and jobs because it's equal to the number of physical cores on my test machine. Here are the results I got:
-
-```none
-starting vacuum...end.
-transaction type: <builtin: select only>
-scaling factor: 1
-query mode: simple
-number of clients: 8
-number of threads: 8
-number of transactions per client: 1000
-number of transactions actually processed: 8000/8000
-latency average = 0.244 ms
-tps = 32796.428469 (including connections establishing)
-tps = 33791.866076 (excluding connections establishing)
-```
-
-Wow! I know a big number when I see one and that number is HUGE! Apparently I can get ~34k read-only transactions per second (tps) on my test machine. I'm using the number which excludes establishing connections because all of the servers use connection pools and re-use connections between requests.
-
-Let's run a more realistic reads + writes workload:
-
-```bash
-pgbench --username postgres --client 8 --jobs 8 --transactions 1000
-```
-
-The results:
-
-```none
-starting vacuum...end.
-transaction type: <builtin: TPC-B (sort of)>
-scaling factor: 1
-query mode: simple
-number of clients: 8
-number of threads: 8
-number of transactions per client: 1000
-number of transactions actually processed: 8000/8000
-latency average = 2.530 ms
-tps = 3162.045587 (including connections establishing)
-tps = 3168.014678 (excluding connections establishing)
-```
-
-That number is not quite as big or mind-blowing as the previous number, but almost ~3.2k transactions per second (tps) for a workload of reads and writes still seems pretty good.
-
-Okay, so we know that every API request to our servers performs exactly two SQL queries: the first to validate the bearer token in the authorization header and the second to select, insert, update, or delete some data. The math's really simple, but here's a table anyway:
-
-| Workload | PostgresQL Performance | Best Possible RESTful API Server Performance |
-|-|-|-|
-| **Read-Only** | ~34k transactions per second | ~17k requests per second |
-| **Reads + Writes** | ~3.2k transactions per second | ~1.6k requests per second |
+Also, let's disable the logging in the Rust servers for the benchmarks because I didn't bother adding any logging to the node.js servers. And finally, I ran the benchmarks a few times a day over the course of a couple days and took the best results for every individual server and benchmark.
 
 
 
@@ -4069,7 +4005,7 @@ Okay, so we know that every API request to our servers performs exactly two SQL 
 
 I'm going to measure CPU usage in CPU seconds and memory usage in megabytes. Everyone knows what megabytes are so I'm not going to explain those, but not everyone is familiar with CPU seconds and they're kinda weird so let's discuss those now.
 
-When people say "CPU second" what they really mean is "CPU logical core second." For example, a CPU with 16 logical cores can perform 16 CPU seconds of processing for every second of wall clock time. This is why when you open the process manager tool in your operating system of choice you'll occasionally see it report some processes as using over 100% CPU. This makes no sense, as it's not possible to use more than 100% of anything, but it's reported this way because the percent is calculated based on the processing power of a single logical core of the CPU and not the total processing power of the entire CPU. For example, a process running on a CPU with 16 logical cores can use up to "1600%" of the CPU. Yup, it's dumb, but whatever, now you know.
+When people say "CPU second" what they really mean is "CPU logical core second." For example, a CPU with 16 logical cores can perform 16 CPU seconds of processing for every second of wall clock time. This is why when you open the process manager tool in your operating system of choice you'll occasionally see it report some processes as using over 100% CPU. This makes no sense, as it's not possible to use more than 100% of anything, but it's reported this way because the percent is calculated based on the processing power of a single logical core of the CPU and not the total processing power of the entire CPU. For example, a process running on a CPU with 4 logical cores can use up to "400%" of the CPU. Yup, it's dumb, but whatever, now you know.
 
 
 
@@ -4085,17 +4021,18 @@ The workloads we're using for the benchmarks:
 - Read-only (RO) workload for 60 seconds with up to 40 workers
 - Reads + Writes (RW) workload for 60 seconds with up to 40 workers
 
-And the stats we're tracking:
+The stats we're tracking:
 - Total requests processed
 - How many of the requests were successful (return 200 status code)
 - CPU usage (in CPU seconds)
 - Memory usage (in megabytes)
 
-And the theoretical upper bounds we calculated:
-- Server should be able to process up to ~17k requests per second for RO workload (before DB becomes bottleneck)
-- Server should be able to process up to ~1.6k requests per second for RW workload (before DB becomes bottleneck)
-- Server can use up to 16 CPU seconds per second (since the test machine has 16 logical cores)
-- Server can use up to 32 GB of memory (since that's how much the test machine has)
+And we're running these benchmarks on a DigitalOcean VPS with:
+- OS: Ubuntu 20.04 (LTS)
+- CPU: 2.3 GHz 4-core Intel
+- Memory: 8 GB
+
+Disclaimer: Like I said before, I don't normally benchmark anything so it's likely I may have gotten some things wrong or biased the tests toward one server or another, so don't take the results below as proof of anything, they're more for entertainment than anything else.
 
 
 
@@ -4103,40 +4040,72 @@ And the theoretical upper bounds we calculated:
 
 **Request Throughput**
 
+Absolute measurements
+
 | Server | Total Requests | Successful Requests | Success Rate | Successful Requests per Second |
 |-|-|-|-|-|
-| **DR** | 23571 req | 23562 req | 99.96% | 392 req/sec |
-| **SA** | 170714 req | 170714 req | 100% | 2845 req/sec |
-| **PES** | 148737 req | 148737 req | 100% | 2479 req/sec |
-| **PEM** | 243474 req | 243474 req | 100% | 4058 req/sec |
+| **DR** | 171431 req | 171431 req | 100% 🥇 | 2857 req/sec |
+| **SA** | 275803 req 🥇 | 275803 req 🥇 | 100% 🥇 | 4567 req/sec 🥇 |
+| **PES** | 115708 req | 115708 req | 100% 🥇 | 1928 req/sec |
+| **PEM** | 190624 req | 190624 req | 100% 🥇 | 3177 req/sec |
+
+Relative measurements
+
+| Server | Total Requests | Successful Requests | Success Rate | Successful Requests per Second |
+|-|-|-|-|-|
+| **DR** | 0.62x | 0.62x | 1.00x 🥇 | 0.62x |
+| **SA** | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 |
+| **PES** | 0.42x | 0.42x | 1.00x 🥇 | 0.42x |
+| **PEM** | 0.69x | 0.69x | 1.00x 🥇 | 0.69x |
 
 **Request Latencies**
 
+Absolute measurements
+
 | Server | Min | Avg | 50th percentile | 90th percentile | 95th percentile | 99th percentile | Max |
 |-|-|-|-|-|-|-|-|
-| **DR** | 6.8 ms | 102.0 ms | 26.5 ms | 316.4 ms | 327.7 ms | 513.7 ms | 1.78 s |
-| **SA** | 6.2 ms | 14.0 ms | 12.8 ms | 17.9 ms | 20.4 ms | 27.4 ms | 1.03 s |
-| **PES** | 5.8 ms | 16.1 ms | 15.8 ms | 20.2 ms | 21.7 ms | 26.3 ms | 1.02 s |
-| **PEM** | 3.5 ms | 9.8 ms | 8.6 ms | 14.6 ms | 17.7 ms | 25.7 ms | 1.01 s |
+| **DR** | 856 µs | 11.5 ms | 10.3 ms | 19.9 ms | 23.4 ms | 32.0 ms | 109.6 ms 🥇 |
+| **SA** | 830 µs 🥇 | 8.6 ms 🥇 | 7.4 ms 🥇 | 14.5 ms 🥇 | 17.7 ms 🥇 | 26.2 ms 🥇 | 191.1 ms |
+| **PES** | 7.5 ms | 20.7 ms | 19.8 ms | 28.0 ms | 31.4 ms | 39.6 ms | 182.0 ms |
+| **PEM** | 889 µs | 12.6 ms | 10.7 ms | 23.4 ms | 28.8 ms | 41.7 ms | 214.2 ms |
+
+Relative measurements
+
+| Server | Min | Avg | 50th percentile | 90th percentile | 95th percentile | 99th percentile | Max |
+|-|-|-|-|-|-|-|-|
+| **DR** | 1.03x | 1.34x | 1.39x | 1.37x | 1.32x | 1.22x | 1.00x 🥇 |
+| **SA** | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.74x |
+| **PES** | 9.04x | 2.41x | 2.68x | 1.93x | 1.77x | 1.51x | 1.66x |
+| **PEM** | 1.07x | 1.47x | 1.45x | 1.61x | 1.63x | 1.59x | 1.95x |
 
 **Resource Usage**
 
+Absolute measurements
+
 | Server | Total CPU Seconds | Avg CPU Seconds per Second | Avg CPU Seconds per Successful Request | Max Memory Used |
 |-|-|-|-|-|
-| **DR** | 8.500 cpu | 0.142 cpu/sec | 0.00036 cpu/req | 17.32 MB |
-| **SA** | 73.806 cpu | 1.230 cpu/sec | 0.00043 cpu/req | 15.75 MB |
-| **PES** | 60.202 cpu | 1.003 cpu/sec | 0.00040 cpu/req | 110.75 MB |
-| **PEM** | 184.945 cpu | 3.082 cpu/sec | 0.00076 cpu/req | 806.94 MB |
+| **DR** | 44.49 cpu 🥇 | 0.74 cpu/sec 🥇 | 0.00026 cpu/req | 14.2 MB |
+| **SA** | 68.77 cpu | 1.15 cpu/sec | 0.00025 cpu/req 🥇 | 10.6 MB 🥇 |
+| **PES** | 52.64 cpu | 0.88 cpu/sec | 0.00045 cpu/req | 117.5 MB |
+| **PEM** | 123.60 cpu | 2.06 cpu/sec | 0.00065 cpu/req | 476.8 MB |
 
-None of the servers even came close to hitting the theoretical ~17k requests per second maximum but I honestly wasn't expecting them to so I'm not really disappointed by that.
+Relative measurements
 
-The DR server totally bombed. I have no clue how it's _that slow_. Yeah, it barely used any CPU and it barely used any memory but that's also because it barely processed any requests. It's also the only server that failed to process all requests! I asked for performance debugging help in both the Diesel and Rocket repos the conclusion was that the cause of the poor performance is Rocket and not Diesel. Also, there's no way to fix it apparently, Rocket v0.4 is just really slow.
+| Server | Total CPU Seconds | Avg CPU Seconds per Second | Avg CPU Seconds per Successful Request | Max Memory Used |
+|-|-|-|-|-|
+| **DR** | 1.00x 🥇 | 1.00x 🥇 | 1.04x | 1.34x |
+| **SA** | 1.55x | 1.55x | 1.00x 🥇 | 1.00x 🥇 |
+| **PES** | 1.18x | 1.18x | 1.80x | 11.08x |
+| **PEM** | 2.78x | 2.78x | 2.60x | 44.98x |
 
-The SA server did really well in my opinion! A throughput of 2845 req/sec with an average latency of 14 ms per request while using only 15.75 MB of memory is pretty amazing.
 
-The PES server was surprisingly competitive. It almost had the same performance as the SA server in terms of request throughput and average latency, however the SA server is multi-threaded and is using all 16 of my test machine's CPU cores while the PES server is single-threaded and only using a single core. With that mind, the PES server's performance is a little bit more impressive than the SA server's performance in my opinion. It uses way more memory of course, but that's to be expected since it's node.js.
+The DR server had a request throughput of 2857 req/sec with an average response latency of 11.5 ms, an average CPU utilization of 0.74 cpu/sec, and used 14.2 MB of memory. All of that sounds pretty solid to me!
 
-Wow, the PEM server totally stole the show here. All of its numbers are impressive, including the bad ones. Compared to the other servers, a 4058 req/sec throughput with an average 10 ms latency is bonkers. However, it also overwhelmingly used by far the most CPU with an average of 3.082 cpu/sec and by far the most memory at 806.94 MB.
+The SA server had a request throughput of 4567 req/sec, which is 160% the performance of the DR server! The SA server had an average response latency of 7.4 ms, an average CPU utilization of 1.15 cpu/sec, and used 10.6 MB of memory. So it used a bit more CPU than the DR server but a bit less memory.
+
+The PES server had a request throughput of 1928 req/sec. Not as performant as the Rust servers, but I suppose that's to be expected because node.js is a single-threaded process so it can't take advantage of all 4 cores on the test machine to process multiple requests in parallel. PES had an average response latency of 20.7 ms which is pretty good but it's double that of the Rust servers. PES had an average CPU utilization of 0.88 cpu/sec which is similar to the Rust servers but because its request throughput was so much lower it actually took 0.00045 cpu/req which is almost double the Rust servers. PES also used 117.5 MB which is a lot but it's expected since it's node.js. In short: PES took roughly ~2x as much CPU and ~10x as much memory to only get ~0.5x of the performance of the Rust servers.
+
+The PEM server had a request throughput of 3177 req/sec with an average response latency of 12.6 ms which is competitive with the Rust servers. Where it stops being competitive is in its resource usage, consuming an average of 2.06 cpu/sec and 476.8 MB of memory, which is signcantly higher than all the other servers.
 
 
 
@@ -4144,48 +4113,71 @@ Wow, the PEM server totally stole the show here. All of its numbers are impressi
 
 **Request Throughput**
 
+Absolute measurements
+
 | Server | Total Requests | Successful Requests | Success Rate | Successful Requests per Second |
 |-|-|-|-|-|
-| **DR** | 26365 req | 21063 req | 79.89% | 351 req/sec |
-| **SA** | 71522 req | 71522 req | 100% | 1192 req/sec |
-| **PES** | 37767 req | 37767 req | 100% | 629 req/sec |
-| **PEM** | 68968 req | 68968 req | 100% | 1149 req/sec |
+| **DR** | 88778 req 🥇 | 74021 req 🥇 | 83% | 1234 req/sec 🥇 |
+| **SA** | 62362 req | 62362 req | 100% 🥇 | 1039 req/sec |
+| **PES** | 31683 req | 31683 req | 100% 🥇 | 528 req/sec |
+| **PEM** | 56380 req | 56380 req | 100% 🥇 | 940 req/sec |
+
+Relative measurements
+
+| Server | Total Requests | Successful Requests | Success Rate | Successful Requests per Second |
+|-|-|-|-|-|
+| **DR** | 1.00x 🥇 | 1.00x 🥇 | 0.83x | 1.00x 🥇 |
+| **SA** | 0.70x | 0.84x | 1.00x 🥇 | 0.84x |
+| **PES** | 0.36x | 0.43x | 1.00x 🥇 | 0.43x |
+| **PEM** | 0.64x | 0.76x | 1.00x 🥇 | 0.76x |
 
 **Request Latencies**
 
+Absolute measurements
+
 | Server | Min | Avg | 50th percentile | 90th percentile | 95th percentile | 99th percentile | Max |
 |-|-|-|-|-|-|-|-|
-| **DR** | 0.1 ms | 91.1 ms | 22.2 ms | 317.4 ms | 329.3 ms | 356.7 ms | 13.62 s |
-| **SA** | 6.7 ms | 33.6 ms | 21.5 ms | 74.7 ms | 96.8 ms | 138.2 ms | 1.17 s |
-| **PES** | 7.6 ms | 63.6 ms | 49.2 ms | 89.2 ms | 198.6 ms | 338.1 ms | 411.1 ms |
-| **PEM** | 2.8 ms | 34.8 ms | 17.0 ms | 79.7 ms | 115.2 ms | 206.0 ms | 1.15 s |
+| **DR** | 31 µs 🥇 | 19.4 ms 🥇 | 15.2 ms 🥇 | 40.4 ms 🥇 | 51.4 ms 🥇 | 79.3 ms 🥇 | 277.5 ms |
+| **SA** | 829 µs | 38.3 ms | 33.4 ms | 80.7 ms | 94.7 ms | 125.6 ms | 236.9 ms 🥇 |
+| **PES** | 10.4 ms | 75.9 ms | 55.3 ms | 106.5 ms | 274.3 ms | 448.7 ms | 573.4 ms |
+| **PEM** | 2.0 ms | 42.6 ms | 25.4 ms | 87.9 ms | 151.2 ms | 325.1 ms | 668.3 ms |
+
+Relative measurements
+
+| Server | Min | Avg | 50th percentile | 90th percentile | 95th percentile | 99th percentile | Max |
+|-|-|-|-|-|-|-|-|
+| **DR** | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.00x 🥇 | 1.17x |
+| **SA** | 26.74x | 1.97x | 2.20x | 2.00x | 1.84x | 1.584x | 1.00x 🥇 |
+| **PES** | 335.48x | 3.91x | 3.64x | 2.64x | 5.34x | 5.66x | 2.42x |
+| **PEM** | 64.52x | 2.20x | 1.67x | 2.18x | 2.94x | 4.10x | 2.82x |
 
 **Resource Usage**
 
+Absolute measurements
+
 | Server | Total CPU Seconds | Avg CPU Seconds per Second | Avg CPU Seconds per Successful Request | Max Memory Used |
 |-|-|-|-|-|
-| **DR** | 13.024 cpu | 0.217 cpu/sec | 0.00062 cpu/req | 34.25 MB |
-| **SA** | 365.514 cpu | 6.092 cpu/sec | 0.00511 cpu/req | 125.40 MB |
-| **PES** | 66.691 cpu | 1.112 cpu/sec | 0.00177 cpu/req | 167.29 MB |
-| **PEM** | 291.138 cpu | 4.852 cpu/sec | 0.00422 cpu/req | 1149.82 MB |
+| **DR** | 67.17 cpu | 1.12 cpu/sec | 0.00091 cpu/req 🥇 | 97.8 MB |
+| **SA** | 149.11 cpu | 2.49 cpu/sec | 0.00239 cpu/req | 45.3 MB 🥇 |
+| **PES** | 59.11 cpu 🥇 | 0.99 cpu/sec 🥇 | 0.00187 cpu/req | 154.5 MB |
+| **PEM** | 163.38 cpu | 2.72 cpu/sec | 0.00290 cpu/req | 571.4 MB |
 
-I'm surprised by these results! I was expecting the results from the RW workload to look similar to the results from the RO workload but be just slightly worse. However, having to do writes must have increased the contention for locks within the DB, which in turn has increased the average latency to handle every request, and the larger number of longer-lived requests seem to have totally tanked the performance of the node.js servers. As before, let's discuss the results server by server.
+Relative measurements
 
-Again, the DR server totally bombed. It's performance looks slightly less worse in this context than in the previous context but it's still terrible. Also again, Rocket is the cause of the poor performance here, not Diesel.
+| Server | Total CPU Seconds | Avg CPU Seconds per Second | Avg CPU Seconds per Successful Request | Max Memory Used |
+|-|-|-|-|-|
+| **DR** | 1.14x | 1.14x | 1.00x 🥇 | 2.16x |
+| **SA** | 2.52x | 2.52x | 2.63x | 1.00x 🥇 |
+| **PES** | 1.00x 🥇 | 1.00x 🥇 | 2.05x | 3.41x |
+| **PEM** | 2.76x | 2.76x | 3.19x | 12.61x |
 
-The SA server had a 1192 req/sec throughput with an average latency of 33.6 ms and a maximum memory usage of 125.40 MB. It also ate up a ton of CPU, at an average of 6.092 cpu/sec.
+I was expecting these results to be a repeat of the previous results but slower but to my surprise they came out very differently! Request throughputs went down across the board. CPU utilization, memory utilization, and average response latencies went up across the board.
 
-The PES server's performance really tanked, it's no longer competitive with the SA server. It seems like node.js really shines when it can handle lots of small requests quickly. If the complexity of the requests and their time to complete increases it seems like node.js starts to really struggle.
+For starters, the DR server is the only server which failed to successfully process all requests, but despite that it still had the highest request throughput at 1234 req/sec! Technically it has the best performance but if I was working with a server that dropped 1 out of 5 requests I would be very annoyed.
 
-Despite it's awesome performance in the RO workload the PEM server's performance also greatly fell in the RW workload, but despite that it was still competitive with the SA server! Not only is it competitive in terms of request throughput and average request latency but PEM also used less CPU! However, it used tremendously more memory, at 1149.82 MB.
+The SA server had a request throughput of 1039 req/sec which is 84% the performance of the DR server, but it at least processed all request successfully, so I'm not sure which is better in practice. I was sure after the first benchmark that actix-web was faster than Rocket, but now I'm not so sure. It's possible the difference in these results might be caused by Diesel having better performance for write queries than sqlx. I'm just speculating here, don't take anything I say too seriously. SA used ~2.6x as much CPU but ~0.5x as much memory as DR.
 
-After seeing all of the results of both workloads it's hard to crown an overall winner.
-
-If we were working in an environment where we only had a single core CPU to work with, or CPU time was really expensive and we wanted to use CPU as efficiently as possible, then the overall winner hands down is PES.
-
-If we were working in a very memory constrained environment, or memory was really expensive to use, then the overall winner hands down is SA.
-
-But if we didn't particularly care about CPU or memory usage, and just wanted the highest request throughput we could get from a single machine with a multi-core CPU and plenty of memory, then the overall winner is PEM, although SA would be a reasonable runner-up choice.
+Nothing too interesting to say about the node.js servers in this benchmark, similarly to the previous benchmark they used a lot more CPU and memory to get worse performance relative to the Rust servers.
 
 
 
@@ -4221,7 +4213,7 @@ Where I think sqlx v0.4 can improve:
 - Please add all of diesel-cli's migration-related functionality to sqlx-cli, including the ability to revert migrations.
 - Derive macros similar to `diesel::Insertable` and `diesel::AsChangeSet` which I could use to decorate structs and then pass those structs as-is to the `bind` method of parameterized queries would be pretty nice.
 
-The benchmarks we performed above were skewed a lot by Rocket and actix-web, so it's not really fair to use them to compare Diesel and sqlx. If you would like to see the results of detailed benchmarks run specifically to profile Diesel and sqlx then you can find [the results for those here](https://github.com/diesel-rs/metrics/) and [the source code for them here](https://github.com/diesel-rs/diesel/tree/master/diesel_bench). Disclaimer: this benchmark suite is maintained by the Diesel team.
+The benchmarks we performed above were probably skewed a lot by Rocket and actix-web, so it's not really fair to use them to compare Diesel and sqlx. If you would like to see the results of detailed benchmarks run specifically to profile Diesel and sqlx then you can find [the results for those here](https://github.com/diesel-rs/metrics/) and [the source code for them here](https://github.com/diesel-rs/diesel/tree/master/diesel_bench). Disclaimer: this benchmark suite is maintained by the Diesel team.
 
 
 
@@ -4237,19 +4229,16 @@ What I like about Rocket v0.4:
 Where I think Rocket v0.4 can improve:
 - Please get off nightly Rust and use stable Rust. (Note: this is coming in Rocket v0.5)
 - Please support async/await. (Note: this is coming in Rocket v0.5)
-- Please improve performance!
 
 What I like about actix-web v3.3:
 - Good documentation.
 - Using procedural macros to decorate request handlers is optional and there's a non-macro API.
-- Nice performance.
 
 Where I think actix-web v3.3 can improve:
 - Providing a `Responder` impl for `()` that returns `204 No Content` would be really nice.
 - Providing a `ResponseError` impl for `E where E: std::error::Error` that returns `500 Server Error` and prints the error message on debug builds and prints a generic error message on release builds would be really nice.
 - Please log more, like way more! Even when I set the logging level to `TRACE` the logs were still almost useless when it came to helping me debug issues.
 - On one hand, the `FromRequest` impl on `Path<T> where T: DeserializeOwned` is lowkey brilliant, but on the other hand if the type is not trivially deserializable (e.g. any situation where a member has to be validated) then it's hostile to users who have never written a `serde::Deserialize` impl by hand before, which is most users.
-- Nice performance, but could be nicer :)
 
 
 
@@ -4258,6 +4247,7 @@ Where I think actix-web v3.3 can improve:
 We didn't really get into "advanced" async programming in this article, and in a way that's a good thing! One of the big selling points of introducing the `async` and `await` keywords to Rust is that it would make async programming as simple and straight-forward as sync programming, and I believe they delivered on that promise in this project given how similar the async implementation was to the sync implementation.
 
 Although with that said, while async Rust _can be_ as simple as sync Rust, it also can be way more complicated! I wasn't completely forthcoming or transparent about all of my struggles in this article, but writing the `actix_web::FromRequest` impl for `Token` was really, really hard. There were also some things I tried to do in the async implementation that never made it into the article because I just couldn't get them to compile. While I believe this is _partially_ due to my own inexperience with async programming Rust, I also think the async stuff is just inherently harder and more complex. I'd like to tackle all of these things head-on so I'll probably write an _"Advanced Async Patterns in Rust"_ article or something like that in the future.
+
 
 
 ### Rust vs JS
@@ -4270,7 +4260,9 @@ The one big thing I missed from Rust when re-writing the RESTful API servers in 
 
 ### In Summary
 
-In the future, if I find myself writing another RESTful API server in Rust, I'm definitely going to use sqlx over Diesel. If I had to pick an web framework right now I'd pick actix-web over Rocket because the performance difference is too great to ignore but I will say Rocket is absolutely better than actix-web in almost every other possible metric: documentation, logging, easy-to-use APIs, and overall developer friendliness. I'm eagerly awaiting the release of Rocket v0.5, which should hopefully fix most of the issues I had with Rocket v0.4, including improving the overall performance of the framework.
+In the future, if I find myself writing another RESTful API server in Rust, I'm definitely going to use sqlx over Diesel, but this is to satisfy my own personal preferences, I don't think Diesel is a bad choice at all for those would prefer using an ORM over SQL.
+
+If I had to pick a web framework right now I'd probably pick Rocket, because although actix-web seems to have better performance Rocket wins in almost every other possible metric: documentation, logging, easy-to-use APIs, and overall developer friendliness. I'm eagerly awaiting the release of Rocket v0.5, which should fix all the issues I have with Rocket v0.4, including improving the performance which hopefully will put it on par with actix-web.
 
 
 
