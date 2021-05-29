@@ -50,7 +50,6 @@ _11 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
 - [Benchmarks](#benchmarks)
     - [Servers](#servers)
     - [Methodology](#methodology)
-    - [Calculating Best Possible Performance](#calculating-best-possible-performance)
     - [Measuring Resource Usage](#measuring-resource-usage)
     - [Results](#results)
         - [Read-Only Workload](#read-only-workload)
