@@ -298,7 +298,7 @@ fn func<T: Sized>(t: T) {}
 // ...which we can opt-out of by explicitly setting ?Sized...
 fn func<T: ?Sized>(t: T) {} // ❌
 
-// ...which doesn't compile since t doesn't have
+// ...which doesn't compile since it doesn't have
 // a known size so we must put it behind a pointer...
 fn func<T: ?Sized>(t: &T) {} // ✅
 fn func<T: ?Sized>(t: Box<T>) {} // ✅
