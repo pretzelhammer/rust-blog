@@ -91,7 +91,7 @@ The server should support the ability to:
 
 And that's it! To make this project slightly more interesting let's also include token-based authentication for all of the server's endpoints, but let's keep it simple: as long as a request contains a valid token it has access to all of the boards and cards.
 
-Furthermore, to satisfy my own cursiority, and to maximize the educationalness of this article, we're going to write two implementations together: one using sync Rust and the other using async Rust. The first implementation will use r2d2, Diesel, and Rocket. The second implementation will use sqlx, and actix-web. Here's a quick preview of the crates we'll be using for this project:
+Furthermore, to satisfy my own curiosity, and to maximize the educationalness of this article, we're going to write two implementations together: one using sync Rust and the other using async Rust. The first implementation will use r2d2, Diesel, and Rocket. The second implementation will use sqlx, and actix-web. Here's a quick preview of the crates we'll be using for this project:
 
 General crates
 - dotenv (loading environment variables)
