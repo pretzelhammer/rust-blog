@@ -1422,7 +1422,7 @@ impl Clone for SomeType {
 }
 ```
 
-`Clone` can also be useful in constructing instances of a type within a generic context. Here's an example from the previous section except using `Clone` instead of `Default`:
+`Clone` can also be useful in constructing instances of a type within a generic context. Here's a modified example from the previous section except using `Clone` instead of `Default`:
 
 ```rust
 fn guarantee_length<T: Clone>(mut vec: Vec<T>, min_len: usize, fill_with: &T) -> Vec<T> {
