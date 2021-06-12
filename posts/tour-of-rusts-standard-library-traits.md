@@ -866,11 +866,10 @@ impl Subtrait for SomeType {}
 // neither overriding or shadowing the other
 
 fn main() {
-    let st = SomeType;
-    st.method(); // ❌ ambiguous method call
+    SomeType.method(); // ❌ ambiguous method call
     // must disambiguate using fully-qualified syntax
-    <SomeType as Supertrait>::method(&st); // ✅ prints "in supertrait"
-    <SomeType as Subtrait>::method(&st); // ✅ prints "in subtrait"
+    <SomeType as Supertrait>::method(&SomeType); // ✅ prints "in supertrait"
+    <SomeType as Subtrait>::method(&SomeType); // ✅ prints "in subtrait"
 }
 ```
 
