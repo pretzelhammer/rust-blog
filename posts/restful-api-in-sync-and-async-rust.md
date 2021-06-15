@@ -121,7 +121,7 @@ After finishing both sync and async implementations we'll run some benchmarks to
 
 ### Project Setup
 
-All of the boring instructions for setting this project up, like installing Docker and running PostgresQL locally, are in the [companion code repository](https://github.com/pretzelhammer/kanban). For this article let's focus entirely on the fun part: the Rust!
+All of the boring instructions for setting this project up, like installing Docker and running  locally, are in the [companion code repository](https://github.com/pretzelhammer/kanban). For this article let's focus entirely on the fun part: the Rust!
 
 After the initial setup we have this empty `Cargo.toml` file:
 
@@ -356,7 +356,7 @@ pub struct Board {
 Unpacking the new stuff:
 - `#[derive(serde::Serialize)]` derives a `serde::Serialize` impl for `Board` which will allow us to serialize it to JSON using the `serde_json` crate.
 - `#[serde(rename_all = "camelCase")]` renames all of the snake_case member identifiers to camelCase when serializing (or vice versa when deserializing). This is because it's a convention to use snake_case names in Rust but JSON is often produced and consumed by JS code and the JS convention is to use camelCase for member identifiers.
-- Making `id` an `i64` instead of an `u64` might seem like an odd choice but since we're using PostgresQL as our DB we have to do this because PostgresQL only supports signed integer types.
+- Making `id` an `i64` instead of an `u64` might seem like an odd choice but since we're using PostgreSQL as our DB we have to do this because PostgreSQL only supports signed integer types.
 - A `created_at` member is always useful to have, if for no other reason than to be able to sort entities by chronological order when no better sort order is available.
 
 Okay, let's add cards and statuses:
@@ -517,7 +517,7 @@ crates
 cargo install diesel_cli
 ```
 
-If the above command doesn't work at first, it's likely because we don't have all the development libraries for all of diesel-cli's supported databases. Since we're just using PostgresQL, we can make sure the development libraries are installed with these commands:
+If the above command doesn't work at first, it's likely because we don't have all the development libraries for all of diesel-cli's supported databases. Since we're just using PostgreSQL, we can make sure the development libraries are installed with these commands:
 
 ```bash
 # macOS
@@ -527,7 +527,7 @@ brew install postgresql
 apt-get install postgresql libpq-dev
 ```
 
-And then we can tell cargo to only install diesel-cli with support for PostgresQL:
+And then we can tell cargo to only install diesel-cli with support for PostgreSQL:
 
 ```bash
 cargo install diesel_cli --no-default-features --features postgres
@@ -690,7 +690,7 @@ serde_json = "1.0"
 +diesel = { version = "1.4", features = ["postgres", "chrono"] }
 ```
 
-We enable the postgres and chrono feature flags since we'll be connecting to PostgresQL and deserializing PostgresQL's timestamp types to chrono types. Updated main file:
+We enable the postgres and chrono feature flags since we'll be connecting to PostgreSQL and deserializing PostgreSQL's timestamp types to chrono types. Updated main file:
 
 ```diff
 // src/main.rs
@@ -738,7 +738,7 @@ Uh oh, now what?
 
 #### Mapping DB Enums to Rust Enums
 
-As you may recall from the preceding section we defined an enum type in PostgresQL like so:
+As you may recall from the preceding section we defined an enum type in PostgreSQL like so:
 
 ```sql
 CREATE TYPE STATUS_ENUM AS ENUM ('todo', 'doing', 'done');
@@ -865,7 +865,7 @@ use crate::schema::boards;
 // handwritten by us
 use crate::models::Board;
 
-// example of connecting to PostgresQL
+// example of connecting to PostgreSQL
 fn get_connection() -> PgConnection {
     dotenv::dotenv().unwrap();
     let db_url = env::var("DATABASE_URL").unwrap();
@@ -2320,7 +2320,7 @@ brew install postgresql
 apt-get install pkg-config libssl-dev postgresql libpq-dev
 ```
 
-And then we can install sqlx-cli with only support for PostgresQL:
+And then we can install sqlx-cli with only support for PostgreSQL:
 
 ```bash
 cargo install sqlx-cli --no-default-features --features postgres
@@ -2441,7 +2441,7 @@ This impl allows us to use `Board` as the returned result of SQL queries. Let's 
 use sqlx::{Connection, PgConnection};
 use crate::models::Board;
 
-// example of connecting to PostgresQL
+// example of connecting to PostgreSQL
 async fn get_connection() -> PgConnection {
     dotenv::dotenv().unwrap();
     let db_url = std::env::var("DATABASE_URL").unwrap();
