@@ -1025,8 +1025,8 @@ fn example<T>(t: &[T]) -> Vec<T> {
 fn example2() -> i32 {
     // we know this parse call will never fail
     match "123".parse::<i32>() {
-        Some(num) => num,
-        None => unreachable!(), // ! coerced to i32
+        Ok(num) => num,
+        Err(_) => unreachable!(), // ! coerced to i32
     }
 }
 
