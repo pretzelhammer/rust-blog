@@ -12,7 +12,7 @@ _09 May 2020 · #rust · #programming · #exercises_
     - [Codewars](#codewars)
     - [Advent of Code](#advent-of-code)
     - [Rustlings](#rustlings)
-    - [Exercism](#xxercism)
+    - [Exercism](#exercism)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
 - [Notifications](#notifications)
