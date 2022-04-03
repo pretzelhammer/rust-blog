@@ -11,7 +11,7 @@ My posts are listed below in reverse chronological order.
 | 2020-11-01 | [Learn Assembly with Entirely Too Many Brainfuck Compilers](./posts/too-many-brainfuck-compilers.md) | |
 | 2020-07-22 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | |
 | 2020-05-19 | [Common Rust Lifetime Misconceptions](./posts/common-rust-lifetime-misconceptions.md) | [русский](./posts/translations/rus/common-rust-lifetime-misconceptions.md) · [日本語](./posts/translations/jp/common-rust-lifetime-misconceptions.md) · [中文](./posts/translations/zh-hans/common-rust-lifetime-misconceptions.md)|
-| 2020-05-09 | [Learning Rust in 2020](./posts/learning-rust-in-2020.md) | [中文](./posts/translations/../learning-rust-in-2020.md) |
+| 2020-05-09 | [Learning Rust in 2020](./posts/learning-rust-in-2020.md) | [中文](./posts/translations/zh-hans/learning-rust-in-2020.md) |
 | 2020-05-02 | [Why blog?](./posts/why-blog.md) | |
 
 Note: Translations are community-maintained.
