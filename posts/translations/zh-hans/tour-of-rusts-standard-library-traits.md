@@ -5167,7 +5167,7 @@ where
     assert_eq!(owned1_hash == owned2_hash, ref1_hash == ref2_hash); // ❌
     
     // ref comparisons aren't required to match owned type comparisons
-    // 值的比较，与其应用的比较没有必然联系
+    // 值的比较，与其引用的比较没有必然联系
     assert_eq!(owned1.cmp(&owned2), ref1.cmp(&ref2)); // ❌
 }
 
