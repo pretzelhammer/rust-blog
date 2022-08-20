@@ -1846,7 +1846,7 @@ All operators in Rust are associated with traits. If we'd like to impl operators
 | `FnMut` | closure | `(...args)` | mutable closure invocation |
 | `FnOnce` | closure | `(...args)` | one-time closure invocation |
 | `Deref` | other | `*` | immutable dereference |
-| `DerefMut` | other | `*` | mutable derenence |
+| `DerefMut` | other | `*` | mutable dereference |
 | `Drop` | other | - | type destructor |
 | `Index` | other | `[]` | immutable index |
 | `IndexMut` | other | `[]` | mutable index |
@@ -2808,7 +2808,7 @@ fn main() {
 | Trait(s) | Category | Operator(s) | Description |
 |----------|----------|-------------|-------------|
 | `Deref` | other | `*` | immutable dereference |
-| `DerefMut` | other | `*` | mutable derenence |
+| `DerefMut` | other | `*` | mutable dereference |
 | `Drop` | other | - | type destructor |
 | `Index` | other | `[]` | immutable index |
 | `IndexMut` | other | `[]` | mutable index |
