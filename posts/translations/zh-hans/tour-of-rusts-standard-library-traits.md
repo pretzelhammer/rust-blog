@@ -4197,7 +4197,7 @@ fn test_safe_div() {
 
 > Since errors are returned and not thrown they must be explicitly handled, and if the current function cannot handle an error it should propagate it up to the caller. The most idiomatic way to propagate errors is to use the `?` operator, which is just syntax sugar for the now deprecated `try!` macro which simply does this:
 
-由于错误是被返回的，而不是被抛出的，它们必须被显式地处理。如果当前函数没有处理该错误的能力，那么该错误应当原路返回到上一级调用函数。最理想的返回错误的方法是使用 `?` 算符，它是现在已经过时的 `try!` 宏的语法糖：
+由于错误是被返回的，而不是被抛出的，它们必须被显式地处理。如果当前函数没有处理该错误的能力，那么该错误应当原路返回到上一级调用函数。最慣用的返回错误的方法是使用 `?` 算符，它是现在已经过时的 `try!` 宏的语法糖：
 
 ```rust
 macro_rules! try {
@@ -4609,7 +4609,7 @@ trait FromStr {
 
 > `FromStr` types allow performing a fallible conversion from `&str` into `Self`. The idiomatic way to use `FromStr` is to call the `.parse()` method on `&str`s:
 
-实现 `FromStr` 特性的类型允许可失败地从 `&str` 转换至 `Self` 。使用这一特性的理想方式是，调用 `&str` 实例的 `.parse()` 方法：
+实现 `FromStr` 特性的类型允许可失败地从 `&str` 转换至 `Self` 。使用这一特性的慣用方式是，调用 `&str` 实例的 `.parse()` 方法：
 
 ```rust
 use std::str::FromStr;
@@ -4621,7 +4621,7 @@ fn example<T: FromStr>(s: &'static str) {
     let t = T::from_str(s);
     let t: Result<T, _> = s.parse();
     let t = s.parse::<T>(); // most idiomatic
-                            // 最理想的使用方式
+                            // 最慣用的使用方式
 }
 ```
 
@@ -5522,7 +5522,7 @@ impl<'a> Iterator for MyTypeIterator<'a> {
 
 > For the sake of teaching the above example shows how to impl an `Iterator` from scratch but the idiomatic solution in this situation would be to just defer to `Vec`'s `iter` method:
 
-出于教学的原因，我们在上例中从头手动实现了一个迭代器。而在这种情况下，最理想的做法是直接调用 `Vec` 的 `iter` 方法。
+出于教学的原因，我们在上例中从头手动实现了一个迭代器。而在这种情况下，最慣用的做法是直接调用 `Vec` 的 `iter` 方法。
 
 ```rust
 struct MyType {
@@ -5583,7 +5583,7 @@ fn example<I: Iterator<Item = i32>>(mut iter: I) {
 
 > Which is okay. However, the idiomatic refactor is actually:
 
-这是可行的，但是理想的改进方式莫过于：
+这是可行的，但是慣用的改进方式莫过于：
 
 ```rust
 fn example<I: Iterator<Item = i32>>(mut iter: I) {
@@ -5705,7 +5705,7 @@ trait FromIterator<A> {
 
 > `FromIterator` types can be created from an iterator, hence the name. `FromIterator` is most commonly and idiomatically used by calling the `collect` method on `Iterator`:
 
-顾叶落而晓秋至，实现 `FromIterator` 特性的类型可以由迭代器而构造。`FromIterator` 特性最常见和最理想的使用方法是调用 `Iterator` 的 `collect` 方法：
+顾叶落而晓秋至，实现 `FromIterator` 特性的类型可以由迭代器而构造。`FromIterator` 特性最常见和最慣用的使用方法是调用 `Iterator` 的 `collect` 方法：
 
 ```rust
 fn collect<B>(self) -> B
