@@ -2686,7 +2686,7 @@ Examples of deleting boards and cards:
 
 ```rust
 // delete all boards
-fn delete_all_boards(conn: &mut PgConnection) {
+async fn delete_all_boards(conn: &mut PgConnection) {
     sqlx::query("DELETE FROM boards")
         .execute(conn)
         .await
@@ -2694,7 +2694,7 @@ fn delete_all_boards(conn: &mut PgConnection) {
 }
 
 // delete a board by its id
-fn delete_board_by_id(conn: &mut PgConnection, board_id: i64) {
+async fn delete_board_by_id(conn: &mut PgConnection, board_id: i64) {
     sqlx::query("DELETE FROM boards WHERE id = $1")
         .bind(board_id)
         .execute(conn)
@@ -2703,7 +2703,7 @@ fn delete_board_by_id(conn: &mut PgConnection, board_id: i64) {
 }
 
 // delete all cards
-fn delete_all_cards(conn: &mut PgConnection) {
+async fn delete_all_cards(conn: &mut PgConnection) {
     sqlx::query("DELETE FROM cards")
     .execute(conn)
     .await
@@ -2711,7 +2711,7 @@ fn delete_all_cards(conn: &mut PgConnection) {
 }
 
 // delete a card by its id
-fn delete_card_by_id(conn: &mut PgConnection, card_id: i64) {
+async fn delete_card_by_id(conn: &mut PgConnection, card_id: i64) {
     sqlx::query("DELETE FROM cards WHERE id = $1")
         .bind(card_id)
         .execute(conn)
@@ -2720,7 +2720,7 @@ fn delete_card_by_id(conn: &mut PgConnection, card_id: i64) {
 }
 
 // delete all of the cards on a board
-fn delete_cards_by_board(conn: &mut PgConnection, board_id: i64) {
+async fn delete_cards_by_board(conn: &mut PgConnection, board_id: i64) {
     sqlx::query("DELETE FROM cards WHERE board_id = $1")
         .bind(board_id)
         .execute(conn)
@@ -2729,7 +2729,7 @@ fn delete_cards_by_board(conn: &mut PgConnection, board_id: i64) {
 }
 
 // delete all of the done cards on a board
-fn delete_done_cards_by_board(conn: &mut PgConnection, board_id: i64) {
+async fn delete_done_cards_by_board(conn: &mut PgConnection, board_id: i64) {
     sqlx::query("DELETE FROM cards WHERE board_id = $1 AND status = 'done'")
         .bind(board_id)
         .execute(conn)
