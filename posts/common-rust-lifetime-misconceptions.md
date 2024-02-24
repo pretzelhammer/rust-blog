@@ -157,7 +157,7 @@ Well yes, but a type _with_ a `'static` lifetime is different from a type _bound
 
 It's important at this point to distinguish `&'static T` from `T: 'static`.
 
-`&'static T` is an immutable reference to some `T` that can be safely held indefinitely long, including up until the end of the program. This is only possible if `T` itself is immutable and does not move _after the reference was created_. `T` does not need to be created at compile-time. It's possible to generate random dynamically allocated data at run-time and return `'static` references to it at the cost of leaking memory, e.g.
+`&'static T` is an immutable reference to some `T` that can be safely held indefinitely long, including up until the end of the program. This is only possible if `T` itself is immutable and does not move _after the reference was created_. `T` does not need to be created at compile-time. It's possible to generate random dynamically allocated data at run-time and return `'static` references to it via a memory leak, e.g.
 
 ```rust
 use rand;
