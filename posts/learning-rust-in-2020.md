@@ -15,7 +15,6 @@ _09 May 2020 · #rust · #programming · #exercises_
     - [Exercism](#exercism)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
-- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -189,26 +188,15 @@ Same as the [TL;DR](#tldr) :)
 Discuss this article on
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/ggj8tf/learning_rust_in_2020/)
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-learning-rust-in-2020/42373)
-- [Twitter](https://twitter.com/pretzelhammer/status/1259897499122360322)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/gie64f/learning_rust_in_2020/)
 - [Hackernews](https://news.ycombinator.com/item?id=23160975)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
-
-## Notifications
-
-Get notified when the next article get published by
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
-
-
-
 ## Further Reading
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

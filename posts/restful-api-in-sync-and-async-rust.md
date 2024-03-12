@@ -61,7 +61,6 @@ _11 May 2021 · #rust · #diesel · #rocket · #sqlx · #actix-web_
     - [Rust vs JS](#rust-vs-js)
     - [In Summary](#in-summary)
 - [Discuss](#discuss)
-- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -4271,24 +4270,13 @@ Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/nanar9/restful_api_in_sync_async_rust/)
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-restful-api-in-sync-async-rust/59713)
-- [Twitter](https://twitter.com/pretzelhammer/status/1392825891428909062)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/nnp6j4/restful_api_in_sync_async_rust/)
-
-
-
-## Notifications
-
-Get notified when the next article get published by
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
-
 
 
 ## Further Reading
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

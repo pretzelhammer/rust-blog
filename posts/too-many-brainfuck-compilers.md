@@ -18,7 +18,6 @@ _01 November 2020 · #assembly · #compilers_
 - [Optimization opportunities](#optimization-opportunities)
 - [Concluding thoughts](#concluding-thoughts)
 - [Discuss](#discuss)
-- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -2224,27 +2223,17 @@ Discuss this article on
 - [coding subreddit](https://www.reddit.com/r/coding/comments/jqxl19/learn_assembly_with_entirely_too_many_brainfuck/)
 - [ProgrammingLanguages subreddit](https://www.reddit.com/r/ProgrammingLanguages/comments/jsf9cr/learn_assembly_by_writing_entirely_too_many/)
 - [programming subreddit](https://www.reddit.com/r/programming/comments/jrlljd/learn_assembly_with_entirely_too_many_brainfuck/)
-- [Twitter](https://twitter.com/pretzelhammer/status/1326531312900075520)
 - [Official Rust users forum](https://users.rust-lang.org/t/learn-assembly-by-writing-entirely-too-many-brainfuck-compilers-in-rust/51333?u=pretzelhammer)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/jsvdsy/learn_assembly_by_writing_entirely_too_many/)
 - [Hackernews](https://news.ycombinator.com/item?id=25069243)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
-## Notifications
-
-Get notified when the next article gets published by
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
-
-
-
 ## Further Reading
 
 Rust
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 

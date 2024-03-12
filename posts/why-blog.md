@@ -10,8 +10,6 @@ Also I saw this comic which was pretty encouraging:
 
 _Artist credit: [stuffman](https://stuffman.tumblr.com/)_
 
-
-
 ## Yeah but why is your blog a github repo and not a website?
 
 I'm a full-stack webdev by trade so I'm _super nitpicky_ when it comes to websites. I get lost in the technical details of trying to build _the perfect website_ that I spend zero time actually writing any content. I know there are [hundreds of static site generators](https://www.staticgen.com/) that do 90%+ of the technical work for you but I've tried those in the past and wasn't satisfied with them. That's not because they're bad tools, a lot of them are excellent tools, it's just that I'm a craftsman and not happy with something unless I made it with my own two hands. It's a problem, I know.
@@ -20,22 +18,11 @@ I was almost about to give up on my blog idea but that's when I ran across [Fran
 
 One small final note: I plan to focus this blog entirely around Rust. Aside from this initial post I don't intend to use this blog to post about personal things.
 
-
-
-## Notifications
-
-Get notified when the next blog post get published by
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
-
-
-
 ## Further Reading
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

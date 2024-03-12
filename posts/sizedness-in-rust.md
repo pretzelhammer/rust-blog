@@ -23,7 +23,6 @@ _22 July 2020 · #rust · #sizedness_
     - [PhantomData](#phantomdata)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
-- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -1242,18 +1241,8 @@ struct Struct {
 Discuss this article on
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-sizedness-in-rust/46293?u=pretzelhammer)
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/hx2jd0/sizedness_in_rust/)
-- [Twitter](https://twitter.com/pretzelhammer/status/1286669073137491973)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/hxips7/sizedness_in_rust/)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
-
-
-## Notifications
-
-Get notified when the next article get published by
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
-
 
 
 ## Further Reading

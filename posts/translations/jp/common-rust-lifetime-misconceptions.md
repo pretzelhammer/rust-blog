@@ -21,7 +21,6 @@ Translated by [Yusuke Kominami](https://github.com/komi1230)
   - [11) `'static`な参照は`'a`な参照になることを常に強制される](#11-staticな参照はaな参照になることを常に強制される)
 - [まとめ](#まとめ)
 - [ディスカッション](#ディスカッション)
-- [お知らせ](#お知らせ)
 - [参考](#参考)
 
 ## はじめに
@@ -1197,13 +1196,6 @@ error[E0597]: `some_string` does not live long enough
 - [Twitter](https://twitter.com/pretzelhammer/status/1263505856903163910)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/golrsx/common_rust_lifetime_misconceptions/)
 - [Hackernews](https://news.ycombinator.com/item?id=23279731)
-
-## お知らせ
-
-次のブログが公開されたときのお知らせを受け取ってください。
-
-- [pretzelhammerのTwitterをフォローする](https://twitter.com/pretzelhammer) or
-- このリポジトリのリリースをチェックする (`Watch`のドロップダウンをクリックして`Releases only`を選択)
 
 ## 参考
 

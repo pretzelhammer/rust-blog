@@ -26,7 +26,6 @@
     - [Exercism](#exercism)
   - [结论](#结论)
   - [讨论](#讨论)
-  - [通知](#通知)
   - [延申阅读](#延申阅读)
 
 
@@ -176,12 +175,6 @@ Exercism 的优点：
 - [Hackernews](https://news.ycombinator.com/item?id=23160975)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
-## 通知
-
-通过这些渠道获取最新消息
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click Watch -> click Custom -> select Releases -> click Apply)
 
 ## 延申阅读
 

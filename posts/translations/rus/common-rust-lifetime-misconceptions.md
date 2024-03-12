@@ -19,7 +19,6 @@
     - [11) `'static` ссылки всегда можно привести к `'a`](#11-static-ссылки-всегда-можно-привести-к-a-ссылкам)
 - [Заключение](#заключение)
 - [Обсуждение](#обсуждение)
-- [Контакты](#контакты)
 - [Дальнейшее чтение](#дальнейшее-чтение)
 
 ## Вступление
@@ -1202,12 +1201,6 @@ error[E0597]: `some_string` does not live long enough
 - [Twitter](https://twitter.com/pretzelhammer/status/1263505856903163910)
 - [субреддите Rust](https://www.reddit.com/r/rust/comments/golrsx/common_rust_lifetime_misconceptions/)
 - [Hackernews](https://news.ycombinator.com/item?id=23279731)
-
-## Контакты
-
-Получайте уведомления о будущих публикациях в блоге
-- [подписавшись на pretzelhammer в Twitter](https://twitter.com/pretzelhammer) или
-- подписавшись на уведомления о релизах в репозитории (кликните на выпадающем списке `Watch` и выберете `Releases only`)
 
 ## Дальнейшее чтение
 

@@ -17,7 +17,6 @@ _19 May 2020 · #rust · #lifetimes_
     - [10) closures follow the same lifetime elision rules as functions](#10-closures-follow-the-same-lifetime-elision-rules-as-functions)
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
-- [Notifications](#notifications)
 - [Further Reading](#further-reading)
 
 
@@ -1108,26 +1107,15 @@ There's no real lesson or insight to be had here, it just is what it is.
 Discuss this article on
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/gmrcrq/common_rust_lifetime_misconceptions/)
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-common-rust-lifetime-misconceptions/42950)
-- [Twitter](https://twitter.com/pretzelhammer/status/1263505856903163910)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/golrsx/common_rust_lifetime_misconceptions/)
 - [Hackernews](https://news.ycombinator.com/item?id=23279731)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
-
-## Notifications
-
-Get notified when the next article get published by
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- [Subscribing to this repo's release RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
-- Watching this repo's releases (click `Watch` -> click `Custom` -> select `Releases` -> click `Apply`)
-
-
-
 ## Further Reading
 
-- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

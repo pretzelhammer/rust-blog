@@ -20,7 +20,6 @@ _2020 年 5 月 19 日 · 预计阅读 30 分钟 · #rust · #生命周期_
     - [11) `'static` 引用总能被强制转换为 `'a` 引用](#11-static-引用总能被强制转换为-a-引用)
 - [总结](#总结)
 - [讨论](#讨论)
-- [温馨提示](#温馨提示)
 - [拓展阅读](#拓展阅读)
 - [译者注](#译者注)
 
@@ -1207,14 +1206,6 @@ error[E0597]: `some_string` does not live long enough
 - [rust subreddit](https://www.reddit.com/r/rust/comments/golrsx/common_rust_lifetime_misconceptions/)
 - [Hackernews](https://news.ycombinator.com/item?id=23279731)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
-
-
-
-## 温馨提示
-
-通过这些渠道获取最新消息
-- [Following pretzelhammer on Twitter](https://twitter.com/pretzelhammer) or
-- Watching this repo's releases (click on `Watch` dropdown and select `Releases only`)
 
 
 

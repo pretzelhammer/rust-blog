@@ -64,7 +64,6 @@ _2021年 3月 31日 · #rust · #traits_
     - [Read & Write](#read--write)
 - [结语 Conclusion](#结语-conclusion)
 - [讨论 Discuss](#讨论-discuss)
-- [通告 Notifications](#通告-notifications)
 - [更多资料 Further Reading](#更多资料-further-reading)
 - [翻译 Translation](#翻译-translation)
 
@@ -5887,16 +5886,6 @@ _该漫画的创作者: [The Jenkins Comic](https://thejenkinscomic.wordpress.co
 - [Twitter](https://twitter.com/pretzelhammer/status/1379561720176336902)
 - [lobste.rs](https://lobste.rs/s/g27ezp/tour_rust_s_standard_library_traits)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/mmrao0/tour_of_rusts_standard_library_traits/)
-
-
-## 通告 Notifications
-
-> Get notified when the next blog post get published by
-
-在如下处得知我下一篇博文的详情
-- [订阅我的推特 pretzelhammer](https://twitter.com/pretzelhammer) 或者
-- 订阅这个 repo (点击 `Watch` -> 点击 `Custom` -> 选择 `Releases` -> 点击 `Apply`)
-
 
 
 ## 更多资料 Further Reading
