@@ -691,7 +691,7 @@ error[E0277]: `{async fn body@src/main.rs:23:28: 28:2}`
   --> src/main.rs:34:5
    |
 23 |   async fn count_to(num: u8) {
-   |   -------------------------- within this `impl futures::Future<Output = ()>`
+   |   ----------------- within this `impl futures::Future<Output = ()>`
 ...
 34 | /     tokio::select! {
 35 | |         _ = count_to(3) => {
