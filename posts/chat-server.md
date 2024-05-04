@@ -412,7 +412,10 @@ To really get the party started we need to upgrade our echo server to a chat ser
 
 ```rust
 use futures::{SinkExt, StreamExt};
-use tokio::{net::{TcpListener, TcpStream}, sync::broadcast::{self, Sender}};
+use tokio::{
+    net::{TcpListener, TcpStream},
+    sync::broadcast::{self, Sender}
+};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec};
 
 const HELP_MSG: &str = include_str!("help.txt");
@@ -427,7 +430,10 @@ async fn main() -> anyhow::Result<()> {
     }
 }
 
-async fn handle_user(mut tcp: TcpStream, tx: Sender<String>) -> anyhow::Result<()> {
+async fn handle_user(
+    mut tcp: TcpStream,
+    tx: Sender<String>
+) -> anyhow::Result<()> {
     let (reader, writer) = tcp.split();
     let mut stream = FramedRead::new(reader, LinesCodec::new());
     let mut sink = FramedWrite::new(writer, LinesCodec::new());
@@ -462,7 +468,10 @@ async fn main() -> anyhow::Result<()> {
     tokio::spawn(handle_user(tcp, tx.clone()));
 }
 
-async fn handle_user(mut tcp: TcpStream, tx: Sender<String>) -> anyhow::Result<()> {
+async fn handle_user(
+    mut tcp: TcpStream,
+    tx: Sender<String>
+) -> anyhow::Result<()> {
     // ...
     let mut rx = tx.subscribe();
     // ...
@@ -523,7 +532,10 @@ To solve this problem we need to be able to `await` two futures at once. In this
 `tokio::select!` to the rescue! `tokio::select!` allows us to poll multiple futures at once.
 
 ```rust
-async fn handle_user(mut tcp: TcpStream, tx: Sender<String>) -> anyhow::Result<()> {
+async fn handle_user(
+    mut tcp: TcpStream,
+    tx: Sender<String>
+) -> anyhow::Result<()> {
     // ...
     loop {
         tokio::select! {
@@ -751,7 +763,9 @@ If that last part flew over your head don't worry, I don't fully get it either. 
 ```rust
 use futures::{Stream, StreamExt};
 
-async fn iterate<T>(mut items: impl Stream<Item = T>) {
+async fn iterate<T>(
+    mut items: impl Stream<Item = T>
+) {
     while let Some(item) = items.next().await { // ❌
         todo!()
     }
@@ -767,7 +781,9 @@ error[E0277]: `impl Stream<Item = T>` cannot be unpinned
 But if we sprinkle `Unpin` into the function signature it works:
 
 ```rust
-async fn iterate<T>(mut items: impl Stream<Item = T> + Unpin) { // ✔️
+async fn iterate<T>(
+    mut items: impl Stream<Item = T> + Unpin // ✔️
+) {
     while let Some(item) = items.next().await {
         todo!()
     }
@@ -777,7 +793,9 @@ async fn iterate<T>(mut items: impl Stream<Item = T> + Unpin) { // ✔️
 **2\)** However, let's say that causes compile errors elsewhere in our code, because we are passing a stream to this function isn't `Unpin`. We can remove the `Unpin` from the function signature and use the `pin!` macro to pin the stream within the function:
 
 ```rust
-async fn iterate<T>(mut items: impl Stream<Item = T>) {
+async fn iterate<T>(
+    mut items: impl Stream<Item = T>
+) {
     tokio::pin!(items); // ✔️
     while let Some(item) = items.next().await {
         todo!()
@@ -790,7 +808,9 @@ This pins it to the stack, so it cannot escape the current scope.
 **3\)** If the pinned object needs to escape the current scope there's `Box::pin` to pin it in the heap:
 
 ```rust
-async fn iterate<T>(mut items: impl Stream<Item = T>) {
+async fn iterate<T>(
+    mut items: impl Stream<Item = T>
+) {
     let mut items = Box::pin(items); // ✔️
     while let Some(item) = items.next().await {
         todo!()
@@ -801,7 +821,9 @@ async fn iterate<T>(mut items: impl Stream<Item = T>) {
 **4\)** Or we can ask the caller to figure out this detail for us:
 
 ```rust
-async fn iterate<T, S: Stream<Item = T> + ?Sized>(mut items: Pin<&mut S>){
+async fn iterate<T, S: Stream<Item = T> + ?Sized>(
+    mut items: Pin<&mut S>
+) {
     while let Some(item) = items.next().await {
         todo!()
     }
@@ -886,7 +908,10 @@ use chat_server::random_name;
 
 // ...
 
-async fn handle_user(mut tcp: TcpStream, tx: Sender<String>) -> anyhow::Result<()> {
+async fn handle_user(
+    mut tcp: TcpStream,
+    tx: Sender<String>
+) -> anyhow::Result<()> {
     // ...
     let name = random_name();
     // ...
@@ -978,7 +1003,9 @@ async fn handle_user(
                 tx.send(format!("{name} is now {new_name}"))?;
                 name = new_name;
             } else {
-                sink.send(format!("{new_name} is already taken")).await?;
+                sink.send(
+                    format!("{new_name} is already taken")
+                ).await?;
             }
         }
         // ...
@@ -1231,10 +1258,14 @@ async fn handle_user(
                 } else if user_msg.starts_with("/name") {
                     // ...
                     if changed_name {
-                        b!(tx.send(format!("{name} is now {new_name}")));
+                        b!(tx.send(
+                            format!("{name} is now {new_name}")
+                        ));
                         // ...
                     } else {
-                        b!(sink.send(format!("{new_name} is already taken")).await);
+                        b!(sink.send(
+                            format!("{new_name} is already taken")
+                        ).await);
                     }
                 } else {
                     b!(tx.send(format!("{name}: {user_msg}")));
@@ -1300,7 +1331,9 @@ impl Rooms {
         // create room if it doesn't yet exist
         // get write access
         let mut write_guard = self.0.write().unwrap();
-        let room = write_guard.entry(room_name.to_owned()).or_insert(Room::new());
+        let room = write_guard
+            .entry(room_name.to_owned())
+            .or_insert(Room::new());
         room.tx.clone()
     }
 }
@@ -1330,7 +1363,9 @@ async fn handle_user(
             if user_msg.starts_with("/name") {
                 // ...
                 if changed_name {
-                    b!(room_tx.send(format!("{name} is now {new_name}")));
+                    b!(room_tx.send(
+                        format!("{name} is now {new_name}")
+                    ));
                     // ...
                 }
                 // ...
@@ -1440,9 +1475,12 @@ impl Rooms {
             .read()
             .unwrap()
             .iter()
-            // receiver_count() tells us
+            // receiver_count tells us
             // the # of users in the room
-            .map(|(name, room)| (name.to_owned(), room.tx.receiver_count()))
+            .map(|(name, room)| (
+                name.to_owned(),
+                room.tx.receiver_count(),
+            ))
             .collect();
         list.sort_by(|a, b| {
             use std::cmp::Ordering::*;
@@ -1534,7 +1572,11 @@ impl Rooms {
             write_guard.remove(room_name);
         }
     }
-    fn change(&self, prev_room: &str, next_room: &str) -> Sender<String> {
+    fn change(
+        &self,
+        prev_room: &str,
+        next_room: &str
+    ) -> Sender<String> {
         self.leave(prev_room);
         self.join(next_room)
     }
@@ -1598,7 +1640,12 @@ impl Rooms {
     }
     // update user's name in room if they
     // changed it using the /name command
-    fn change_name(&self, room_name: &str, prev_name: &str, new_name: &str) {
+    fn change_name(
+        &self,
+        room_name: &str,
+        prev_name: &str,
+        new_name: &str
+    ) {
         let mut write_guard = self.0.write().unwrap();
         if let Some(room) = write_guard.get_mut(room_name) {
             room.users.remove(prev_name);
@@ -1645,7 +1692,10 @@ async fn handle_user(
         room_tx = rooms.change(&room_name, &new_room, &name);
         // ...
     } else if user_msg.starts_with("/users") {
-        let users_list = rooms.list_users(&room_name).unwrap().join(", ");
+        let users_list = rooms
+            .list_users(&room_name)
+            .unwrap()
+            .join(", ");
         b!(sink.send(format!("Users - {users_list}")).await);
     }
     // ...
@@ -1773,7 +1823,12 @@ use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt};
 fn setup_logging() {
     let subscriber = tracing_subscriber::registry()
         .with(EnvFilter::from_default_env())
-        .with(fmt::Layer::new().without_time().compact().with_ansi(true).with_writer(io::stdout));
+        .with(fmt::Layer::new()
+            .without_time()
+            .compact()
+            .with_ansi(true)
+            .with_writer(io::stdout)
+        );
     tracing::subscriber::set_global_default(subscriber)
             .expect("Unable to set a global subscriber");
 }
