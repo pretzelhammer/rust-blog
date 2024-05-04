@@ -686,7 +686,8 @@ async fn main() {
 Now throws:
 
 ```
-error[E0277]: `{async fn body@src/main.rs:23:28: 28:2}` cannot be unpinned
+error[E0277]: `{async fn body@src/main.rs:23:28: 28:2}`
+              cannot be unpinned
   --> src/main.rs:34:5
    |
 23 |   async fn count_to(num: u8) {
@@ -701,11 +702,16 @@ error[E0277]: `{async fn body@src/main.rs:23:28: 28:2}` cannot be unpinned
 41 | |     };
    | |     ^
    | |     |
-   | |_____within `impl futures::Future<Output = ()>`, the trait `Unpin` is not implemented for `{async fn body@src/main.rs:23:28: 28:2}`, which is required by `&mut impl futures::Future<Output = ()>: futures::Future`
+   | |_____within `impl futures::Future<Output = ()>`,
+           the trait `Unpin` is not implemented for
+           `{async fn body@src/main.rs:23:28: 28:2}`,
+           which is required by `&mut impl
+           futures::Future<Output = ()>: futures::Future`
    |       required by a bound introduced by this call
    |
    = note: consider using the `pin!` macro
-           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+           consider using `Box::pin` if you need to access
+           the pinned value outside of the current scope
 ```
 
 We need to "pin" our future. Okay, let's do what the compiler suggested:
