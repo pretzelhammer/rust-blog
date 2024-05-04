@@ -116,7 +116,7 @@ let server = TcpListener::bind("127.0.0.1:42069").await?;
 > [!IMPORTANT]
 > This is `tokio::net::TcpListener` and not `std::net::TcpListener`. The former is async and the latter is sync. Also calling `bind` returns a `Future` which we **must** `await` for anything to happen because futures are lazy in Rust!
 
-As a general rule of thumb, if there's a type that handles IO by the same name defined in both `tokio` and `std` we want to use the one defined in `tokio`.
+As a general rule of thumb, if there's a type that handles IO by the same name in both `tokio` and `std` we want to use the one in `tokio`.
 
 The rest of the code should hopefully be straight-forward:
 
@@ -333,12 +333,17 @@ async fn main() -> anyhow::Result<()> {
         let (reader, writer) = tcp.split();
         let mut stream = FramedRead::new(reader, LinesCodec::new());
         let mut sink = FramedWrite::new(writer, LinesCodec::new());
+        // send list of server commands to
+        // the user as soon as they connect
         sink.send(HELP_MSG).await?;
         while let Some(Ok(mut msg)) = stream.next().await {
+            // handle new /help command
             if msg.starts_with("/help") {
                 sink.send(HELP_MSG).await?;
+            // handle new /quit command
             } else if msg.starts_with("/quit") {
                 break;
+            // handle regular message
             } else {
                 msg.push_str(" ❤️");
                 sink.send(msg).await?;
@@ -381,6 +386,8 @@ async fn main() -> anyhow::Result<()> {
     let server = TcpListener::bind("127.0.0.1:42069").await?;
     loop {
         let (tcp, _) = server.accept().await?;
+        // spawn a separate task for
+        // to handle every connection
         tokio::spawn(handle_user(tcp));
     }
 }
@@ -410,61 +417,17 @@ async fn handle_user(mut tcp: TcpStream) -> anyhow::Result<()> {
 
 To really get the party started we need to upgrade our echo server to a chat server that lets separate concurrent connections communicate with each other:
 
-```rust
-use futures::{SinkExt, StreamExt};
-use tokio::{
-    net::{TcpListener, TcpStream},
-    sync::broadcast::{self, Sender}
-};
-use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec};
-
-const HELP_MSG: &str = include_str!("help.txt");
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    let server = TcpListener::bind("127.0.0.1:42069").await?;
-    let (tx, _) = broadcast::channel::<String>(32);
-    loop {
-        let (tcp, _) = server.accept().await?;
-        tokio::spawn(handle_user(tcp, tx.clone()));
-    }
-}
-
-async fn handle_user(
-    mut tcp: TcpStream,
-    tx: Sender<String>
-) -> anyhow::Result<()> {
-    let (reader, writer) = tcp.split();
-    let mut stream = FramedRead::new(reader, LinesCodec::new());
-    let mut sink = FramedWrite::new(writer, LinesCodec::new());
-    let mut rx = tx.subscribe();
-    sink.send(HELP_MSG).await?;
-    while let Some(Ok(mut user_msg)) = stream.next().await {
-        if user_msg.starts_with("/help") {
-            sink.send(HELP_MSG).await?;
-        } else if user_msg.starts_with("/quit") {
-            break;
-        } else {
-            user_msg.push_str(" ❤️");
-            let _ = tx.send(user_msg);
-        }
-        let peer_msg = rx.recv().await?;
-        sink.send(peer_msg).await?;
-    }
-    Ok(())
-}
-```
-
 > [!NOTE]
-> The code is starting to get long and difficult to parse. All following examples will be presented as an abbreviated diff highlighting the key changes, but you can still find the full source code for any example in [the examples directory](https://github.com/pretzelhammer/chat-server/tree/main/examples) of [this repository](https://github.com/pretzelhammer/chat-server). You can see a diff between any two examples by running `just diff {number} {number}`. For instance, to see the diff between this example and the previous example you would run `just diff 06 07`.
-
-Anyway, as promised, the key changes:
+> The code is starting to get long and difficult to read. All following examples will be presented as a heavily abbreviated diff highlighting the key changes, but you can still find the full source code for any example in [the examples directory](https://github.com/pretzelhammer/chat-server/tree/main/examples) of [this repository](https://github.com/pretzelhammer/chat-server). You can see a diff between any two examples by running `just diff {number} {number}`. For instance, to see the diff between this example and the previous example you would run `just diff 06 07`.
 
 ```rust
+// ...
 async fn main() -> anyhow::Result<()> {
     // ...
+    // create broadcast channel
     let (tx, _) = broadcast::channel::<String>(32);
     // ...
+    // clone it for every connected client
     tokio::spawn(handle_user(tcp, tx.clone()));
 }
 
@@ -473,12 +436,16 @@ async fn handle_user(
     tx: Sender<String>
 ) -> anyhow::Result<()> {
     // ...
+    // get a receiver from the sender
     let mut rx = tx.subscribe();
     // ...
     while let Some(Ok(mut user_msg)) = stream.next().await {
         // ...
+        // send all messages to the channel
         tx.send(user_msg)?;
         // ...
+        // receive all of our and others'
+        // messages from the channel
         let peer_msg = rx.recv().await?;
         sink.send(peer_msg).await?;
     }
@@ -488,7 +455,7 @@ async fn handle_user(
 
 We communicate between different clients using a broadcast channel. After creating the channel we get a `Sender` and a `Receiver` which we can `clone` any number of times and send to different threads. Each value sent via a `Sender` gets received by every `Receiver`, so the value type must implement `Clone`.
 
-Before we would get a message from the client's stream and immediately echo it out to the client's sink. Now when we get a message from the client's stream we send pass it through the broadcast channel before we get it back and then send it to the client's sink. Every client will receive their own and others' messages from the channel.
+Before we would get a message from the client's stream and immediately echo it out to the client's sink. Now when we get a message from the client's stream we pass it through the broadcast channel before we get it back and then send it to the client's sink. Every client will receive their own and others' messages from the shared channel.
 
 Let's try out our new code by connecting with two clients at once:
 
@@ -529,7 +496,7 @@ To solve this problem we need to be able to `await` two futures at once. In this
 
 ## 08\) Letting users actually chat
 
-`tokio::select!` to the rescue! `tokio::select!` allows us to poll multiple futures at once.
+`tokio::select!` allows us to poll multiple futures at once:
 
 ```rust
 async fn handle_user(
@@ -550,6 +517,8 @@ async fn handle_user(
     // ...
 }
 ```
+
+We execute the match arm of whatever future completes first. The other future is dropped.
 
 Now if we try our server:
 
@@ -577,7 +546,7 @@ It works! Anyway, celebrations aside, we need to talk about cancel safety. As me
 
 On one hand, this is great, because if we start polling a future and later decide we don't need its result anymore, we can stop polling it and we won't waste anymore CPU on doing useless work. On the other hand, this may not be so great if the future we're cancelling is in the middle of an important operation that if not completed may drop important data or may leave data in a corrupt state.
 
-Let's look at an example of "cancelling" a future. Cancelling is in quotes because it's not an explicit operation, it just means we started to poll a future, but then stopped polling it before it completed, and then dropped it.
+Let's look at an example of "cancelling" a future. Cancelling is in quotes because it's not an explicit operation, it just means we started to poll a future but then stopped polling it before it completed.
 
 ```rust
 use tokio::time::sleep;
@@ -593,7 +562,6 @@ async fn count_to(num: u8) {
 #[tokio::main]
 async fn main() {
     println!("start counting");
-
     // the select! macro polls each
     // future until one of them completes,
     // and then we execute the match arm
@@ -607,9 +575,7 @@ async fn main() {
             println!("counted to 10");
         },
     };
-
     println!("stop counting");
-
     // this sleep is here to demonstrate
     // that the count_to(10) doesn't make
     // any progress after we stop polling
@@ -636,7 +602,7 @@ stop counting
 We "cancelled" the `count_to(10)` future. In this simple toy example we don't care if the count completes or not so this future is cancel-safe in that sense, but if finishing the count was critical to our application then cancelling this future would be a problem. To make sure the future completes we can `await` it after the `tokio::select!`:
 
 ```rust
-#[tokio::main]
+// ...
 async fn main() {
     println!("start counting");
     let count_to_10 = count_to(10);
@@ -664,15 +630,15 @@ error[E0382]: use of moved value: count_to_10
 Oh duh, we made the simplest mistake in the book, trying to use a value after we moved it. Let's pass a mutable reference instead:
 
 ```rust
-#[tokio::main]
+// ...
 async fn main() {
     println!("start counting");
-    let count_to_10 = count_to(10); // ❌
+    let count_to_10 = count_to(10);
     tokio::select! {
         _ = count_to(3) => {
             println!("counted to 3");
         },
-        _ = &mut count_to_10 => {
+        _ = &mut count_to_10 => { // ❌
             println!("counted to 10");
         },
     };
@@ -688,7 +654,7 @@ Now throws:
 ```
 error[E0277]: {async fn body@src/main.rs:23:28: 28:2}
               cannot be unpinned
-  --> src/main.rs:34:5
+   -> src/main.rs:34:5
    |
 23 |   async fn count_to(num: u8) {
    |   ----------------- within this impl futures::Future<Output = ()>
@@ -697,16 +663,15 @@ error[E0277]: {async fn body@src/main.rs:23:28: 28:2}
 35 | |         _ = count_to(3) => {
 36 | |             println!("counted to 3");
 37 | |         },
-...  |
-40 | |         },
+...  
 41 | |     };
    | |     ^
    | |     |
    | |_____within impl futures::Future<Output = ()>,
-           the trait Unpin is not implemented for
-           {async fn body@src/main.rs:23:28: 28:2},
-           which is required by &mut impl
-           futures::Future<Output = ()>: futures::Future
+   |       the trait Unpin is not implemented for
+   |       {async fn body@src/main.rs:23:28: 28:2},
+   |       which is required by &mut impl
+   |       futures::Future<Output = ()>: futures::Future
    |       required by a bound introduced by this call
    |
    = note: consider using the pin! macro
@@ -919,12 +884,15 @@ async fn handle_user(
     tx: Sender<String>
 ) -> anyhow::Result<()> {
     // ...
+    // generate random name
     let name = random_name();
     // ...
+    // tell user their name
     sink.send(format!("You are {name}")).await?;
     // ...
     user_msg = stream.next() => {
         // ...
+        // prepend user's name to their messages
         tx.send(format!("{name}: {user_msg}"))?;
     },
     // ...
@@ -953,7 +921,7 @@ We'd like names to be unique across the server. We can enforce this by maintaini
 > [!TIP]
 > To share mutable data across many threads we can wrap it with `Arc<Mutex<T>>`, which is like the thread-safe version of `Rc<RefCell<T>>` if you've ever used that before.
 
-Let's wrap our `Arc<Mutex<HashSet<T>>>` in a new type to make working with it more ergonomic:
+Let's wrap our `Arc<Mutex<HashSet<T>>>` in a new type to make using it more ergonomic:
 
 ```rust
 // ...
@@ -965,9 +933,12 @@ impl Names {
     fn new() -> Self {
         Self(Arc::new(Mutex::new(HashSet::new())))
     }
+    // returns true if name was inserted,
+    // i.e. the name is unique
     fn insert(&self, name: String) -> bool {
         self.0.lock().unwrap().insert(name)
     }
+    // returns unique name
     fn get_unique(&self) -> String {
         let mut name = random_name();
         let mut guard = self.0.lock().unwrap();
@@ -992,23 +963,31 @@ async fn handle_user(
     names: Names,
 ) -> anyhow::Result<()> {
     // ...
+    // get a unique name for new user
     let mut name = names.get_unique();
     // ...
+    // tell them their name
     sink.send(format!("You are {name}")).await?;
     // ...
     user_msg = stream.next() => {
         // ...
+        // handle new /name command
         if user_msg.starts_with("/name") {
             let new_name = user_msg
                 .split_ascii_whitespace()
                 .nth(1)
                 .unwrap()
                 .to_owned();
+            // check if name is unique
             let changed_name = names.insert(new_name.clone());
             if changed_name {
+                // notify everyone that user
+                // changed their name
                 tx.send(format!("{name} is now {new_name}"))?;
                 name = new_name;
             } else {
+                // tell user that name is
+                // already taken
                 sink.send(
                     format!("{new_name} is already taken")
                 ).await?;
@@ -1253,35 +1232,9 @@ async fn handle_user(
     // ...
     // we now catch errors here
     let result: anyhow::Result<()> = loop {
-        tokio::select! {
-            user_msg = stream.next() => {
-                let user_msg = match user_msg {
-                    Some(msg) => b!(msg),
-                    None => break Ok(()),
-                };
-                if user_msg.starts_with("/help") {
-                    b!(sink.send(HELP_MSG).await);
-                } else if user_msg.starts_with("/name") {
-                    // ...
-                    if changed_name {
-                        b!(tx.send(
-                            format!("{name} is now {new_name}")
-                        ));
-                        // ...
-                    } else {
-                        b!(sink.send(
-                            format!("{new_name} is already taken")
-                        ).await);
-                    }
-                } else {
-                    b!(tx.send(format!("{name}: {user_msg}")));
-                }
-            },
-            peer_msg = rx.recv() => {
-                let peer_msg = b!(peer_msg);
-                b!(sink.send(peer_msg).await);
-            },
-        }
+        // all fallible statements
+        // from before are now wrapped
+        // with our b!() macro
     };
     // the line below is always reached
     // and the user's name is always freed,
@@ -1358,32 +1311,32 @@ async fn handle_user(
     rooms: Rooms,
 ) -> anyhow::Result<()> {
     // ...
+    // when user connects to server
+    // automatically put them in
+    // the main room
     let room_name = MAIN.to_owned();
     let room_tx = rooms.join(&room_name);
     let mut room_rx = room_tx.subscribe();
+    // notify everyone in room that
+    // a new user has joined
     let _ = room_tx.send(format!("{name} joined {room_name}"));
     // ...
     tokio::select! {
         user_msg = stream.next() => {
             // ...
-            if user_msg.starts_with("/name") {
-                // ...
-                if changed_name {
-                    b!(room_tx.send(
-                        format!("{name} is now {new_name}")
-                    ));
-                    // ...
-                }
-                // ...
-            } else {
-                b!(room_tx.send(format!("{name}: {user_msg}")));
-            }
+            // send messages to the room
+            // we're currently in
+            b!(room_tx.send(format!("{name}: {user_msg}")));
         },
+        // receive messages from the
+        // room we're currently in
         peer_msg = room_rx.recv() => {
             // ...
         },
     }
     // ...
+    // notify everyone in room that
+    // we have left
     let _ = room_tx.send(format!("{name} left {room_name}"));
     // ...
 }
@@ -1417,6 +1370,8 @@ async fn handle_user(
     rooms: Rooms,
 ) -> anyhow::Result<()> {
     // ...
+    // automatically join main room
+    // on connect, as before
     let mut room_name = MAIN.to_owned();
     let mut room_tx = rooms.join(&room_name);
     let mut room_rx = room_tx.subscribe();
@@ -1427,17 +1382,26 @@ async fn handle_user(
             .nth(1)
             .unwrap()
             .to_owned();
+        // check if user is already in the room
+        // they're trying to join
         if new_room == room_name {
             b!(sink.send(format!("You are in {room_name}")).await);
             continue;
         }
+        // notify current room that we've left
         b!(room_tx.send(format!("{name} left {room_name}")));
+        // join new room, this creates
+        // the room if it doesn't
+        // already exist
         room_tx = rooms.join(&new_room);
         room_rx = room_tx.subscribe();
         room_name = new_room;
+        // notify new room that we have joined
         b!(room_tx.send(format!("{name} joined {room_name}")));
     }
     // ...
+    // notify our current room that we've left
+    // on disconnect, as before
     let _ = room_tx.send(format!("{name} left {room_name}"));
     // ...
 }
@@ -1509,6 +1473,7 @@ async fn handle_user(
     rooms: Rooms,
 ) -> anyhow::Result<()> {
     // ...
+    // handle new /rooms command
     if user_msg.starts_with("/rooms") {
         let rooms_list = rooms.list();
         let rooms_list = rooms_list
@@ -1597,10 +1562,15 @@ async fn handle_user(
     // ...
     if user_msg.starts_with("/join") {
         // ...
+        // now correctly deletes the room
+        // we're leaving if it becomes empty
         room_tx = rooms.change(&room_name, &new_room);
         // ...
     }
     // ...
+    // when we disconnect we also
+    // need to leave and delete the
+    // room if it's empty
     rooms.leave(&room_name);
     // ...
 }
@@ -1615,6 +1585,8 @@ Users within a room are not discoverable. Let's add a `/users` command that will
 
 struct Room {
     // ...
+    // keep track of the names
+    // of the users in the room
     users: HashSet<String>,
 }
 
@@ -1658,6 +1630,7 @@ impl Rooms {
             room.users.insert(new_name.to_owned());
         }
     }
+    // returns list of users' names in the room
     fn list_users(&self, room_name: &str) -> Option<Vec<String>> {
         self
             .0
@@ -1665,11 +1638,14 @@ impl Rooms {
             .unwrap()
             .get(room_name)
             .map(|room| {
+                // get users in room
                 let mut users = room
                     .users
                     .iter()
                     .cloned()
                     .collect::<Vec<_>>();
+                // alphabetically sort
+                // users by names
                 users.sort();
                 users
             })
@@ -1684,19 +1660,23 @@ async fn handle_user(
     rooms: Rooms,
 ) -> anyhow::Result<()> {
     // ...
+    // send our name when joining a room
     room_tx = rooms.join(&room_name, &name);
     // ...
     if user_msg.starts_with("/name") {
         // ...
         if changed_name {
+            // let room know we changed our name
             rooms.change_name(&room_name, &name, &new_name);
             // ...
         }
         // ...
     } else if user_msg.starts_with("/join") {
         // ...
+        // send our name when changing rooms
         room_tx = rooms.change(&room_name, &new_room, &name);
         // ...
+    // handle new /users command
     } else if user_msg.starts_with("/users") {
         let users_list = rooms
             .list_users(&room_name)
@@ -1761,25 +1741,25 @@ High lock contention increases how long threads need to wait for a lock to be fr
 We store names in a `Mutex<HashSet<String>>`. That's one lock for potentially thousands of keys. Instead of putting a lock around the entire set, what if we could put a lock around every individual key in the set? A `DashSet` doesn't necessarily go that far, but it does split the data into several shards internally and each shard gets its own lock. Some ASCII diagrams to help explain:
 
 ```
-+---------------------------------------+
-| Mutex                                 |
-| +-----------------------------------+ |
-| | HashSet                           | |
-| | +-------+-------+-------+-------+ | |
-| | |  key  |  key  |  key  |  key  | | |
-| | +-------+-------+-------+-------+ | |
-| +-----------------------------------+ |
-+---------------------------------------+
++-------------------------------+
+| Mutex                         |
+| +---------------------------+ |
+| | HashSet                   | |
+| | +-----+-----+-----+-----+ | |
+| | | key | key | key | key | | |
+| | +-----+-----+-----+-----+ | |
+| +---------------------------+ |
++-------------------------------+
 
-+-------------------------------------------+
-| DashSet                                   |
-| +-------------------+-------------------+ |
-| | RwLock            | RwLock            | |
-| | +-------+-------+ | +-------+-------+ | |
-| | |  key  |  key  | | |  key  |  key  | | |
-| | +-------+-------+ | +-------+-------+ | |
-| +-------------------+-------------------+ |
-+-------------------------------------------+
++-----------------------------------+
+| DashSet                           |
+| +---------------+---------------+ |
+| | RwLock        | RwLock        | |
+| | +-----+-----+ | +-----+-----+ | |
+| | | key | key | | | key | key | | |
+| | +-----+-----+ | +-----+-----+ | |
+| +-------------------+-----------+ |
++-----------------------------------+
 ```
 
 In this case guarding the same amount of data but with more locks means each lock will get less contention between threads.
@@ -1840,7 +1820,7 @@ fn setup_logging() {
 }
 ```
 
-And then after running `setup_logging` somewhere early in our main function we can call the `trace!`, `debug!`, `info!`, `warn!`, and `error!` macros from `tracing`, which all function similarly to `println!`.
+And then after running `setup_logging` somewhere early in our main function we can call the `trace!`, `debug!`, `info!`, `warn!`, and `error!` macros from `tracing`, which all function similarly to `println!`. We also can customize the logging level via the environment, using the `RUST_LOG` environment variable.
 
 Right now our server always runs at `127.0.0.1` on port `42069`. We should let server admins be able to customize this without having to recompile our code. We can accept these parameters as command line arguments and parse them using the `clap` crate:
 
@@ -1873,7 +1853,7 @@ You can see the full source code with all logging and error handling [here](http
 
 ## Conclusion
 
-We learned a lot! The final full code for the server is [here](https://github.com/pretzelhammer/chat-server/blob/main/src/bin/chat-server.rs). You can run it with `just server`. To chat run `just chat`. And if it's lonely run `just bots`.
+We learned a lot! The final full code for the server is [here](https://github.com/pretzelhammer/chat-server/blob/main/src/bin/chat-server.rs). You can run it with `just server`. To chat run `just chat`. And if it gets lonely run `just bots`.
 
 ## Discuss
 
