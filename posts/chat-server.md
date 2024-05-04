@@ -573,7 +573,7 @@ $ just telnet # concurrent client 2
 1: i am doing great ❤️
 ```
 
-It works! Anyway, celebrations aside, we need to talk about cancel safety. As mentioned before, Rust futures are lazy, and they only make progress while being polled. Polling is a little bit different than awaiting. To await a future means to poll it to completion. To poll a future is to give it a nudge like _"Hey little buddy you can do it!"_ and then the future makes some progress, but it may not necessarily complete.
+It works! Anyway, celebrations aside, we need to talk about cancel safety. As mentioned before, Rust futures are lazy, and they only make progress while being polled. Polling is a little bit different than awaiting. To await a future means to poll it to completion. To poll a future means to ask it to make some progress, but it may not necessarily complete.
 
 On one hand, this is great, because if we start polling a future and later decide we don't need its result anymore, we can stop polling it and we won't waste anymore CPU on doing useless work. On the other hand, this may not be so great if the future we're cancelling is in the middle of an important operation that if not completed may drop important data or may leave data in a corrupt state.
 
@@ -658,7 +658,7 @@ async fn main() {
 Throws:
 
 ```
-error[E0382]: use of moved value: `count_to_10`
+error[E0382]: use of moved value: count_to_10
 ```
 
 Oh duh, we made the simplest mistake in the book, trying to use a value after we moved it. Let's pass a mutable reference instead:
@@ -686,12 +686,12 @@ async fn main() {
 Now throws:
 
 ```
-error[E0277]: `{async fn body@src/main.rs:23:28: 28:2}`
+error[E0277]: {async fn body@src/main.rs:23:28: 28:2}
               cannot be unpinned
   --> src/main.rs:34:5
    |
 23 |   async fn count_to(num: u8) {
-   |   ----------------- within this `impl futures::Future<Output = ()>`
+   |   ----------------- within this impl futures::Future<Output = ()>
 ...
 34 | /     tokio::select! {
 35 | |         _ = count_to(3) => {
@@ -702,15 +702,15 @@ error[E0277]: `{async fn body@src/main.rs:23:28: 28:2}`
 41 | |     };
    | |     ^
    | |     |
-   | |_____within `impl futures::Future<Output = ()>`,
-           the trait `Unpin` is not implemented for
-           `{async fn body@src/main.rs:23:28: 28:2}`,
-           which is required by `&mut impl
-           futures::Future<Output = ()>: futures::Future`
+   | |_____within impl futures::Future<Output = ()>,
+           the trait Unpin is not implemented for
+           {async fn body@src/main.rs:23:28: 28:2},
+           which is required by &mut impl
+           futures::Future<Output = ()>: futures::Future
    |       required by a bound introduced by this call
    |
-   = note: consider using the `pin!` macro
-           consider using `Box::pin` if you need to access
+   = note: consider using the pin! macro
+           consider using Box::pin if you need to access
            the pinned value outside of the current scope
 ```
 
@@ -781,7 +781,7 @@ async fn iterate<T>(
 Throws:
 
 ```
-error[E0277]: `impl Stream<Item = T>` cannot be unpinned
+error[E0277]: impl Stream<Item = T> cannot be unpinned
 ```
 
 But if we sprinkle `Unpin` into the function signature it works:
