@@ -1452,8 +1452,8 @@ BlondCyclops joined main
 > /join pizza # new command
 ElasticBonobo joined pizza
 BlondCyclops joined pizza
-> pizza party time
-ElasticBonobo: pizza party time
+> let's have a pizza party
+ElasticBonobo: let's have a pizza party
 BlondCyclops: 🍕🥳
 ```
 
@@ -1706,7 +1706,7 @@ async fn handle_user(
 
 Now we can find our friends within rooms:
 
-```
+```console
 $ just chat
 Server commands
   /help - prints this message
