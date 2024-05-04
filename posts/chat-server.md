@@ -2,7 +2,7 @@
 
 _04 May 2024 · #rust · #async · #concurrency · #tokio_
 
-![chat server demo](./assets/chat-server-demo.gif)
+![chat server demo](../assets/chat-server-demo.gif)
 
 <details>
 <summary><b>Table of contents</b></summary>
@@ -37,7 +37,7 @@ _04 May 2024 · #rust · #async · #concurrency · #tokio_
 I recently finished coding a multithreaded chat server using Tokio and I'm pretty happy with it. I'd like to share what I learned in this easy-to-follow step-by-step tutorial-style article. Let's get into it.
 
 > [!NOTE]
-> The full source code for every step can be found in [this repository](https://github.com/pretzelhammer/chat-server).
+> The full source code for every step can be found in [the examples directory](https://github.com/pretzelhammer/chat-server/tree/main/examples) of [this repository](https://github.com/pretzelhammer/chat-server).
 
 ## 01\) Simplest possible echo server
 
@@ -151,7 +151,7 @@ If you'd like to mess around with the code yourself just `git clone` [this repos
 
 ## 02\) Handling multiple connections serially
 
-There's an annoying bug in our server: it quits after handling just one connection! If we try to `just telnet` more than once we get `telnet: Unable to connect to remote host: Connection refused` at which point we have to manually restart the server with `just example 01` again. Oof.
+There's an annoying bug in our server: it quits after handling just one connection! If we try to `just telnet` more than once we get `telnet: Unable to connect to remote host: Connection refused` at which point we have to manually restart the server with `just example 01` again. 🤦
 
 Here's how we would fix it:
 
@@ -179,7 +179,7 @@ We just had to add another `loop` around our `server.accept()` line! Pretty easy
 
 ## 03\) Modifying messages
 
-As exciting as an echo server is, it would be even more exciting if it modified messages somehow. So how about we try adding a ❤️ emoji at the end of every echoed line? Here's what that would look like:t
+As exciting as an echo server is, it would be even more exciting if it modified messages somehow. So how about we try adding a ❤️ emoji at the end of every echoed line? Here's what that would look like:
 
 ```rust
 use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpListener};
@@ -312,7 +312,7 @@ this is a really really really long message kinda ❤️
 
 ## 05\) Adding `/help` & `/quit` server commands
 
-Telnet is annoying to quit. The usual tricks of `esc`, `^C`, and `^D` don't work. We have to type `^]` to enter command mode and then type `quit` + ENTER. Oof.
+Telnet is annoying to quit. The usual tricks of `esc`, `^C`, and `^D` don't work. We have to type `^]` to enter command mode and then type `quit` + ENTER. 🤦
 
 We can make our server more user-friendly by implementing our own commands, so let's start with `/help` and `/quit`. `/help` will print out a list and description of all the commands our server supports and `/quit` will cause the server to close the connection (which will also cause telnet to quit).
 
@@ -450,7 +450,7 @@ async fn handle_user(mut tcp: TcpStream, tx: Sender<String>) -> anyhow::Result<(
 ```
 
 > [!NOTE]
-> The code is starting to get long and difficult to parse. For all following examples I will only present an abbreviated diff highlighting the key changes, but you can still find the full source code for any example in [this directory](https://github.com/pretzelhammer/chat-server/tree/main/examples) of [this repository](https://github.com/pretzelhammer/chat-server). You can see a diff between any two examples by running `just diff {num} {num}`. For instance, to see the diff between this example and the previous example you would run `just diff 06 07`.
+> The code is starting to get long and difficult to parse. All following examples will be presented as an abbreviated diff highlighting the key changes, but you can still find the full source code for any example in [the examples directory](https://github.com/pretzelhammer/chat-server/tree/main/examples) of [this repository](https://github.com/pretzelhammer/chat-server). You can see a diff between any two examples by running `just diff {number} {number}`. For instance, to see the diff between this example and the previous example you would run `just diff 06 07`.
 
 Anyway, as promised, the key changes:
 
@@ -520,10 +520,7 @@ To solve this problem we need to be able to `await` two futures at once. In this
 
 ## 08\) Letting users actually chat
 
-`tokio::select!` to the rescue!
-
-> [!TIP]
-> `tokio::select!` allows us to poll multiple futures at once.
+`tokio::select!` to the rescue! `tokio::select!` allows us to poll multiple futures at once.
 
 ```rust
 async fn handle_user(mut tcp: TcpStream, tx: Sender<String>) -> anyhow::Result<()> {
@@ -913,7 +910,10 @@ MeatyPuma: hello
 PeacefulGibbon: howdy
 ```
 
-Excellent. Also, I switched from using `just telnet` to `just chat` because I got tired of using telnet and wanted to build my own TUI chat client that's easier to use and looks nicer, which is what `just chat` runs.
+Excellent.
+
+> [!NOTE]
+> I switched from using `just telnet` to `just chat` because I got tired of using telnet and built a TUI chat client that's easier to use and looks nicer, which is what `just chat` runs.
 
 ## 10\) Letting users edit their names with `/name`
 
@@ -1817,7 +1817,7 @@ We learned a lot! The final full code for the server is [here](https://github.co
 ## Discuss
 
 Discuss this article on
-- [Github](https://github.com/pretzelhammer/rust-blog/discussions)
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions/75)
 
 ## Further reading
 
