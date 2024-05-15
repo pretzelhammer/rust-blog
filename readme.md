@@ -6,7 +6,7 @@ Here are my posts in reverse chronological order.
 
 | Year | Title | Popularity | Translations |
 |-|-|-|-|
-| 2024 | [Beginner's Guide to Concurrent Programming: Coding a Multithreaded Chat Server using Tokio](./posts/chat-server.md) | ⏳ | - |
+| 2024 | [Beginner's Guide to Concurrent Programming: Coding a Multithreaded Chat Server using Tokio](./posts/chat-server.md) | ⏳ | [中文](./posts/translations/zh-hans/chat-server.md) |
 | 2021 | [RESTful API in Sync & Async Rust](./posts/restful-api-in-sync-and-async-rust.md) | 🔥 | - |
 | 2021 | [Tour of Rust's Standard Library Traits](./posts/tour-of-rusts-standard-library-traits.md) | 🔥🔥🔥 |[中文](./posts/translations/zh-hans/tour-of-rusts-standard-library-traits.md) |
 | 2020 | [Learn Assembly with Entirely Too Many Brainfuck Compilers](./posts/too-many-brainfuck-compilers.md) | 🔥 | - |
