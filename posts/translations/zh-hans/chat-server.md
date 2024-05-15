@@ -1,8 +1,8 @@
 # 并发编程新手指南: 使用Tokio实现多线程聊天服务器
 
-2024年5月4日 · #rust · #async · #concurrency · #tokio_
+_2024年5月4日 · #rust · #async · #concurrency · #tokio_
 
-![聊天服务器演示](../../assets/chat-server-demo.gif)
+![聊天服务器演示](../../../assets/chat-server-demo.gif)
 
 <details>
 <summary><b>目录</b></summary>
