@@ -1859,6 +1859,9 @@ We learned a lot! The final full code for the server is [here](https://github.co
 
 Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions/75)
+- [official Rust users forum](https://users.rust-lang.org/t/beginners-guide-to-concurrent-programming-coding-a-multithreaded-chat-server-using-tokio/110976)
+- [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/1cmebbo/beginners_guide_to_concurrent_programming_coding/)
+- [rust subreddit](https://www.reddit.com/r/rust/comments/1cnz9p9/beginners_guide_to_concurrent_programming_coding/)
 
 ## Further reading
 
