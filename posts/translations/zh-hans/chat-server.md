@@ -259,7 +259,7 @@ async fn main() -> anyhow::Result<()> {
 
 `ReadHalf` 实现了 `AsyncRead` ， `WriteHalf` 实现了 `AsyncWrite`, 然而正如之前所述，直接使用这些方法会比较繁琐且容易出错，所以这里使用了编解码中的 `LinesCodec`、 `FramedRead` 和 `FramedWrite`。
 
-`LinesCodec` 处理底层细节将字节流转换为换行分隔的 `UTF-8` 的字符串，并与 `FramedRead` 一起使用，我们可以包装 `ReadHalf` 实现 `Stream<Item = Result<String, _>>`，这比 `AsyncRead` 更容易使用。`Steam` 就像是 `Iterator` 的异步版本。举个例子，假如我们有一个如下同步的函数：
+`LinesCodec` 处理底层细节将字节流转换为换行分隔的 `UTF-8` 的字符串，并与 `FramedRead` 一起使用，我们可以包装 `ReadHalf` 实现 `Stream<Item = Result<String, _>>`，这比 `AsyncRead` 更容易使用。`Stream` 就像是 `Iterator` 的异步版本。举个例子，假如我们有一个如下同步的函数：
 
 ```rust
 fn iterate<T>(items: impl Iterator<Item = T>) {
