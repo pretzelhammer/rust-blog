@@ -255,9 +255,9 @@ async fn main() -> anyhow::Result<()> {
 
 There's a lot of new stuff in this example so let's go over it. The `split` method splits a `TcpStream` into a `ReadHalf` and `WriteHalf`. This is useful if we want to add these halves to different structs, or send them to different threads, or read and write to the same `TcpStream` concurrently (which we'll be doing later).
 
-`ReadHalf` implements `AsyncRead` and `WriteHalf` implements `AsyncWrite`, however as mentionedly previously, these can be tedious and error-prone to work with directly, which why we bring in `LinesCodec`, `FramedRead`, and `FramedWrite`.
+`ReadHalf` implements `AsyncRead` and `WriteHalf` implements `AsyncWrite`, however as mentioned previously, these can be tedious and error-prone to work with directly, which why we bring in `LinesCodec`, `FramedRead`, and `FramedWrite`.
 
-`LinesCodec` handles the low-level details of converting a stream of bytes into a stream of UTF-8 strings delimited by newlines, and using it together with `FramedRead` we can wrap a `ReadHalf` to get an implementation of `Stream<Item = Result<String, _>>`, which is much easier to work with than an `AsyncRead`. A `Steam` is like the async version of an `Iterator`. For example, if we had a sync function like this:
+`LinesCodec` handles the low-level details of converting a stream of bytes into a stream of UTF-8 strings delimited by newlines, and using it together with `FramedRead` we can wrap a `ReadHalf` to get an implementation of `Stream<Item = Result<String, _>>`, which is much easier to work with than an `AsyncRead`. A `Stream` is like the async version of an `Iterator`. For example, if we had a sync function like this:
 
 ```rust
 fn iterate<T>(items: impl Iterator<Item = T>) {
