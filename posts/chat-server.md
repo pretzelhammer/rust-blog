@@ -1104,7 +1104,7 @@ And to quote the `RwLock` docs from the `parking_lot` crate:
 
 I guess we just have to be really careful 🤷
 
-**3\)** Aquire locks in the same order everywhere
+**3\)** Acquire locks in the same order everywhere
 
 If we need to acquire multiple locks to safely perform some operation, we need to always acquire those locks in the same order, otherwise deadlocks can trivially occur, like here:
 
@@ -1728,7 +1728,7 @@ We have a lot of short strings. We can have thousands of users and hundreds of r
 
 As you may remember, when we `send` something to a broadcast channel every call to `recv` clones that data. That means if a user sends a `String` message that is five paragraphs long in a room with 1000 other users we're going to have to clone that message 1000 times which means doing 1000 heap allocations. We know that after a message is sent it's immutable, so we don't need to send a `String`, we can convert the `String` to an `Arc<str>` instead and send that, because cloning an `Arc<str>` is very cheap since all it does is increment an atomic counter.
 
-#### Miscellanous micro optimizations
+#### Miscellaneous micro optimizations
 
 After combing through the code I found a couple places where we were carelessly allocating unnecessary `Vec`s and `String`s, mostly for the `/rooms` and `/users` commands, and made them both only allocate a single `String` when generating a response.
 
