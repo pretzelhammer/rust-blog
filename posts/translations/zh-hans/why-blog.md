@@ -6,7 +6,7 @@ _2020年 5月 2日 · #blogging_
 
 另外，这张图不错：
 
-![哇，两个蛋糕！](../assets/holy-shit-two-cakes.png)
+![哇，两个蛋糕！](../../../assets/holy-shit-two-cakes.png)
 
 _作者：[stuffman](https://stuffman.tumblr.com/)_
 
