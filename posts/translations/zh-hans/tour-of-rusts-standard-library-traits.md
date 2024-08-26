@@ -3257,7 +3257,7 @@ fn main() {
 
 `Fn` 改良了 `FnMut` ，尽管它们都可以多次调用，但是 `FnMut` 需要参数的可变引用，而 `Fn` 仅需要参数的不可变引用。`Fn` 可以在所有 `FnMut` 和 `FnOnce` 可用的地方使用。
 
-> If a closure doesn't capture anything from its environment it's technically not a closure, but just an anonymously declared inline function, and can be casted to, used, and passed around as a regular function pointer, i.e. `fn`. Function pointers can be used anywhere `Fn` can be used, which includes anwhere `FnMut` and `FnOnce` can be used.
+> If a closure doesn't capture anything from its environment it's technically not a closure, but just an anonymously declared inline function, and can be casted to, used, and passed around as a regular function pointer, i.e. `fn`. Function pointers can be used anywhere `Fn` can be used, which includes anywhere `FnMut` and `FnOnce` can be used.
 
 如果一个闭包不从环境中捕获任何的值，那么从技术上讲它就不是闭包，而仅仅只是一个内联的匿名函数。并且它可以被转换为、用于或传递为一个常规函数指针，即 `fn`。函数指针可以用于任何 `Fn` ，`FnMut` ，`FnOnce` 可用的地方。
 

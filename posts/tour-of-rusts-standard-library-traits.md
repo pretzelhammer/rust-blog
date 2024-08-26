@@ -2773,7 +2773,7 @@ fn main() {
 
 `Fn` refines `FnMut` in the sense that `FnMut` requires mutable references and can be called multiple times, but `Fn` only requires immutable references and can be called multiple times. `Fn` can be used anywhere `FnMut` can be used, which includes anywhere `FnOnce` can be used.
 
-If a closure doesn't capture anything from its environment it's technically not a closure, but just an anonymously declared inline function, and can be casted to, used, and passed around as a regular function pointer, i.e. `fn`. Function pointers can be used anywhere `Fn` can be used, which includes anwhere `FnMut` and `FnOnce` can be used.
+If a closure doesn't capture anything from its environment it's technically not a closure, but just an anonymously declared inline function, and can be casted to, used, and passed around as a regular function pointer, i.e. `fn`. Function pointers can be used anywhere `Fn` can be used, which includes anywhere `FnMut` and `FnOnce` can be used.
 
 ```rust
 fn add_one(x: i32) -> i32 {
