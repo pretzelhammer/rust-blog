@@ -3,7 +3,7 @@
 _2020年 5月 2日 · #blogging_
 
 在学习 Rust 时我一直被几个概念所困扰，所以我尝试通过写 Markdown 组织我的想法。
-我很快便有了好几个 Markdown 文件。我想，_也许可以开始写博客？_但我意识到，
+我很快便有了好几个 Markdown 文件。我想， _也许可以开始写博客？_ 但我意识到，
 _不行，我的小博客永远不会像 Niko Matsakis、Saoirse Shipwreckt、
 Huon Wilson、David Tolnay、Alexis Beingessner、Daniel Keep、Carl Fredrik Samson、
 Aleksey Kladov、Amos Wegner、Pascal Hertleif、Dimitri Sabadie、
@@ -22,8 +22,8 @@ _作者：[stuffman](https://stuffman.tumblr.com/)_
 
 ## 行，但为什么要放到 GitHub 仓库里而不是建一个网站？
 
-我是一个全栈网页网络开发人员，所以我对网站_非常挑剔_。
-我致力于做一个_完美的前端_，但是一点东西也没写出来。
+我是一个全栈网页网络开发人员，所以我对网站 _非常挑剔_ 。
+我致力于做一个 _完美的前端_ ，但是一点东西也没写出来。
 我知道有[无数静态网页生成器](https://www.staticgen.com/)把九成以上的工作都做完了，
 但我都试了一遍却一个也不喜欢。不是因为它们不好，实际上很多都不错，
 但我是个工匠，更喜欢自己动手。这是个问题，我知道。
