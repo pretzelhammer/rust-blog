@@ -10,7 +10,7 @@ Aleksey Kladov、Amos Wegner、Pascal Hertleif、Dimitri Sabadie、
 Daniel Henry-Mantilla、
 Steve Klabnik、Jake Goulding 和 Carol Nichols 的那样出彩。_
 这个名单一点也不全面，还缺好几十个人呢！
-有好多比我聪明的多的人已经在写这一类东西了。但是，我有一个独特的优势：我很蠢。
+有好多比我聪明得多的人已经在写这一类东西了。但是，我有一个独特的优势：我很蠢。
 聪明人更倾向于写抽象文章给聪明人看。对于像我这样的傻瓜来说，
 市面上有一个巨大的空白，我打算把它填上。
 
