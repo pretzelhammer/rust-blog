@@ -163,70 +163,88 @@ Rust 特供槽点：
 - 在 Codewars 上 Rust 还很小众，一共九千多题，只有三百多题有 Rust 版本 :(
 
 统一槽点：
-- Your solution is tested against a suite of secret unit tests, if you fail one of the secret unit tests you aren't shown the failed test case. This is especially annoying if the test case tests for an edge case that wasn't clearly communicated in the problem description.
+- 无法看到 WA 测试点。如果这个测试点刚好是一个边界情况，题目又没有讲清楚，就很烦人了。
 
-Things Codewars does right:
-- There's a small whitelist of 3rd-party dependencies you can use to help solve problems with Rust. This whitelist includes: rand, chrono, regex, serde, itertools, and lazy_static which helps round out Rust's standard library and puts it more on par with other languages.
-- You can filter problems by language.
-- Submitting a solution to a problem also automatically publishes the solution. You can view and upvote other members' solutions. You can sort solutions by most upvotes to see particularly concise and clever solutions, which sometimes will also be very idiomatic (but sometimes not, as explained above).
-- Problem difficulty grading is pretty good! Instead of grading problems as Easy, Medium, or Hard like LeetCode, Codewars chooses to grade problems from easiest to hardest as: 8 kyu, 7 kyu, 6 kyu, 5 kyu, 4 kyu, 3 kyu, 2 kyu, 1 kyu. I completed 60 problems in the 8 kyu - 4 kyu range and every level felt a little more difficult than the last, which aligned with my expectations.
+优点：
+- 可以使用以下第三方库解 Rust 题目：rand, chrono, regex, serde, itertools, and lazy_static which helps round out Rust's standard library and puts it more on par with other languages.
+- 可以按语言筛选题目。
+- 答案通过时会自动发布为题解。可以查看他人的题解。可以按赞数排序题解，方便看简洁聪明（而且很多时候也很优雅）的题解。
+- 问题难度的设计十分优雅！与 LeetCode 不同，Codewars 用 8 kyu 到 1 kyu 从简单到困难排序。我完成了很多 8～4 kyu 的题，每一 kyu 的题都刚好比上一 kyu 难一点，符合我的预期。
 
 
 
 ### [Advent of Code](https://adventofcode.com/)
 
-Advent of Code is totally language-agnostic. This would seem like a minus at first but seeing how horribly HackerRank, LeetCode, and Codewars handle their support for Rust on their sites it's actually a plus. Advent of Code also gets placed above the previously mentioned sites because AoC's exercises are really interesting, diverse, and high quality in my opinion.
+Advent of Code 的题目语言无关。也许刚开始这像一个扣分项，
+但是和前面几个做一下对比，你就知道这多么先进了。
+Advent of Code 的题目也得到了上面一些平台的收录，因为它们确实又有趣有优秀。
 
-General AoC issues:
-- After you finish an exercise there's no way to see other people's Rust solutions unless you search from them on Google, and even after you find some there's no telling how good or idiomatic they are.
+槽点：
+- 不提供题解，想看得自己搜，搜了也不知道好不好。
 
-To solve the above issue I recommend going through the 2018 Calendar problems and comparing your solutions to [BurntSushi's AoC 2018 Rust solutions](https://github.com/BurntSushi/advent-of-code). BurntSushi writes really clean, readable, idiomatic Rust code. If you want to go through the 2019 Calendar then I recommend comparing your solutions to [bcmyers' AoC 2019 Rust solutions](https://github.com/bcmyers/aoc2019). The reason I specifically suggest bcmyers' is because he made a [youtube playlist of him coding up the solutions](https://www.youtube.com/playlist?list=PLQXBtq4j4Ozkx3r4eoMstdkkOG98qpBfg) and he does a great job of explaining his thought process and why he's doing what he's doing while he's coding.
+建议完成 2018 Calendar 然后把答案和 [BurntSushi 的](https://github.com/BurntSushi/advent-of-code)
+做对比。BurntSushi 的代码干净整洁，可读性强。
+如果想做 2019 Calendar，可以用 [bcmyers 的答案](https://github.com/bcmyers/aoc2019)
+做参考。
+推荐他的原因是他做了 [一系列关于这些题目解法的视频](https://www.youtube.com/playlist?list=PLQXBtq4j4Ozkx3r4eoMstdkkOG98qpBfg)，
+而且讲得很好。
 
-Things AoC got right:
-- High quality, interesting, curated exercises that are tied together with a narrative.
-- Language agnostic, so while it doesn't teach you any Rust patterns it at least doesn't teach you any Rust anti-patterns either.
+优点：
+- 高质量、有趣且精心策划的题目；
+- 语言无关，所以虽然不会有高质量代码，但至少不会冒出来不规范的代码。
 
 
 
 ### [Rustlings](https://github.com/rust-lang/rustlings)
 
-Rustlings is sooo good. All Rustlings exercises are hand-crafted for Rust with love and it's a wonderful breath of fresh air. Finally, a set of exercises that really teach you idiomatic Rust!
+Rustlings 非常好。Rustling 上的所有题目都专门为 Rust 所编写。
+而且，它真的是奔着教会你优雅的代码去的！
 
-If you're a total Rust newbie you should absolutely checkout [Rustlings](https://github.com/rust-lang/rustlings) and get started on the exercises. I highly recommend reading fasterthanlime's [A half-hour to learn Rust](https://fasterthanli.me/blog/2020/a-half-hour-to-learn-rust/) first as it'll get you up to speed on a lot of Rust syntax and concepts super quickly.
+如果你是一个完全的 Rust 萌新，你肯定要做一做 [Rustlings](https://github.com/rust-lang/rustlings)
+上的练习。极力推荐 [fasterthanlime 的 《A half hour to learn Rust》](https://fasterthanli.me/blog/2020/a-half-hour-to-learn-rust)，
+可以帮你快速了解很多 Rust 的语法和概念。
 
-I have only 1 tiny Rustlings criticism: there are some sudden difficulty spikes in the "error-handling" and "conversions" exercises that I could see some users getting overwhelmed by. I assume most probably make it through, or at least I hope.
+只有一个小缺陷：在“error-handling”和“conversions”几节难度忽然飙升，
+让很多人不知所措。希望大家都能挺过去。
 
-I also have 1 tiny non-criticism: it's too short. This is a non-criticism because it's one of Rustlings design goals to be a quick and gentle introduction to Rust but it's so good that of course I wish it was somehow longer.
+也有一个小建议（不是批评）：太短了。之所以不是批评，是因为 Rustlings 的目标就是
+快速帮人入门 Rust。但是它真的写得太好了，希望多来点儿。
 
 
 
 ### [Exercism](https://exercism.io/tracks/rust)
 
-Exercism has a Rust track, which is a collection of exercises roughly ordered by subject and difficulty. The Rust track shares a lot of exercises in common with other tracks, but all of the exercises were translated to Rust by experienced Rustaceans and don't suffer from any of the awkward unidiomatic Rust issues that are common on LeetCode and Codewars. There are about a dozen Rust-specific problems that require you to implement a standard library trait, or write a macro, or write a parallel solution using multiple threads, or write unsafe Rust code. These exercises are by far the highlights of the track and I wish there were more of them. Exercism is second only to Rustlings as a resource for learning Rust. The only reason I placed it above Rustlings is Rustlings can be completed in an evening and Exercism's Rust track will take at least a month to complete so it just has a lot more content.
+Exercism 有一个 “Rust track”，就是一列题目，大致按难度排序。
+Rust track 和其他 tracks 共享很多题目，但是所有题目均由专业人员译为 Rust 题目，
+不会出现像 LeetCode 和 Codewars 那样的问题。
+有十几道题需要实现标准库 trait，写几个宏，写点多线程并发，或者 `unsafe {}`。
+这些题目是这个 track 的亮点，希望多来点。
+Exercism 仅次于 Rustlings。将它排在 Rustlings 后面的唯一原因是 Rustlings 一晚上就可以完成，
+但 Exercism 的 Rust track 需要至少一个月。
 
-Exercism issues, specific to the Rust track:
-- "Mentored mode" is useless, as most of the Rust mentors on the site are inactive, and the students heavily outnumber them, so it's much better to go through a track in "practice mode".
-- There are 92 exercises but a good chunk of them don't really teach you anything new so they kinda feel like busywork. They could probably cut ~20 exercises from the track to make it feel a lot tighter.
+Rust 特供槽点：
+- 因为很多指导员不活跃，“指导模式”基本没用，不如用“练习模式”。
+- 大约有 92 道题，但其中有很多题并没有新东西，像在做无用功，不如删掉二十几题。
 
-Things Exercism does right:
-- All problems are translated to Rust or written for Rust by experienced Rustaceans.
-- There are problems which specifically teach Rust's idioms, design patterns, and unique features.
-- Problem difficulties are fairly graded, easy problems are easy, medium problems are medium, hard problems are hard.
-- You can include whatever 3rd-party dependencies that you want in your solutions.
-- All unit tests are public, if you're failing a test you know exactly why.
-- After you submit a solution you can browse other user's solutions, and you can sort solutions by which received the most stars.
-
-
-
-## Conclusion
-
-Same as the [TL;DR](#tldr) :)
+优点：
+- 所有题目均有专业人士译为 Rust 题目。
+- 有专门讲 Rust 引入的新东西的题目。
+- 题目分级准确。
+- 可以随意引入第三方库。
+- 所有测试点均公开，可以知道错在哪了；
+- 可以浏览其他用户的题解，并按 star 数排序。
 
 
 
-## Discuss
+## 结论
 
-Discuss this article on
+#include [TL;DR](#tldr) // :)
+
+
+
+## 讨论
+
+在以下区域讨论本文：
 - [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/ggj8tf/learning_rust_in_2020/)
 - [official Rust users forum](https://users.rust-lang.org/t/blog-post-learning-rust-in-2020/42373)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/gie64f/learning_rust_in_2020/)
@@ -234,10 +252,10 @@ Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
 
 
-## Further Reading
+## 参阅
 
-- [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
-- [Sizedness in Rust](./sizedness-in-rust.md)
+- [Rust 中常见的有关生命周期的误解](./common-rust-lifetime-misconceptions.md)
+- [Rust 标准库特性指南](./tour-of-rusts-standard-library-traits.md)
+- [Sizedness in Rust](./../../sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
