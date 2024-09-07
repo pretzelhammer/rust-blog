@@ -1,4 +1,4 @@
-# Learning Rust in 2020
+# 2020 年的 Rust 学习指南
 
 _2020年 5月 9日 · #rust · #programming · #exercises_
 
