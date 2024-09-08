@@ -5,7 +5,7 @@ _2020年 5月 9日 · #rust · #programming · #exercises_
 **目录**
 - [前言](#前言)
 - [省流](#省流)
-- [Practical Rust Resource Reviews](#practical-rust-resource-reviews)
+- [Rust 练习平台比较](#practical-rust-resource-reviews)
     - [HackerRank](#hackerrank)
     - [Project Euler](#project-euler)
     - [LeetCode](#leetcode)
@@ -13,9 +13,9 @@ _2020年 5月 9日 · #rust · #programming · #exercises_
     - [Advent of Code](#advent-of-code)
     - [Rustlings](#rustlings)
     - [Exercism](#exercism)
-- [Conclusion](#conclusion)
-- [Discuss](#discuss)
-- [Further Reading](#further-reading)
+- [结论](#conclusion)
+- [讨论](#discuss)
+- [参阅](#further-reading)
 
 
 
@@ -238,7 +238,7 @@ Rust 特供槽点：
 
 ## 结论
 
-#include [TL;DR](#tldr) // :)
+同 [TL;DR](#tldr) :)
 
 
 
