@@ -166,7 +166,7 @@ Rust 特供槽点：
 - 无法看到 WA 测试点。如果这个测试点刚好是一个边界情况，题目又没有讲清楚，就很烦人了。
 
 优点：
-- 可以使用以下第三方库解 Rust 题目：rand, chrono, regex, serde, itertools, and lazy_static which helps round out Rust's standard library and puts it more on par with other languages.
+- 可以使用以下第三方库解 Rust 题目：rand、chrono、regex、serde、itertools 和 lazy_static，使 Rust 的功能赶上其他语言。
 - 可以按语言筛选题目。
 - 答案通过时会自动发布为题解。可以查看他人的题解。可以按赞数排序题解，方便看简洁聪明（而且很多时候也很优雅）的题解。
 - 问题难度的设计十分优雅！与 LeetCode 不同，Codewars 用 8 kyu 到 1 kyu 从简单到困难排序。我完成了很多 8～4 kyu 的题，每一 kyu 的题都刚好比上一 kyu 难一点，符合我的预期。
