@@ -10,7 +10,7 @@ Aleksey Kladov、Amos Wegner、Pascal Hertleif、Dimitri Sabadie、
 Daniel Henry-Mantilla、
 Steve Klabnik、Jake Goulding 和 Carol Nichols 的那样出彩。_
 这个名单一点也不全面，还缺好几十个人呢！
-有好多比我聪明的多的人已经在写这一类东西了。但是，我有一个独特的优势：我很蠢。
+有好多比我聪明得多的人已经在写这一类东西了。但是，我有一个独特的优势：我很蠢。
 聪明人更倾向于写抽象文章给聪明人看。对于像我这样的傻瓜来说，
 市面上有一个巨大的空白，我打算把它填上。
 
@@ -29,7 +29,7 @@ _作者：[stuffman](https://stuffman.tumblr.com/)_
 但我是个工匠，更喜欢自己动手。这是个问题，我知道。
 
 我差点放弃了我的这个想法，但后来我看见了 [Frank McSherry 的博客](https://github.com/frankmcsherry/blog)。
-哇！我咋这么蠢，愣是没想到可以这样？不需要折腾一点前端！只要把文章放到 GitHub 上，
+哇！我怎么这么蠢，愣是没想到可以这样？不需要折腾一点前端！只要把文章放到 GitHub 上，
 别人就可以直接读了，无比简单。我喜欢这样。我决定也这么做，这样我就有时间写东西了。
 
 另：这个博客只有关于 Rust 的事，除了这篇文章没有任何个人的事。
