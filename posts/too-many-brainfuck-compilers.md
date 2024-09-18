@@ -2233,9 +2233,10 @@ Discuss this article on
 Rust
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Beginner's Guide to Concurrent Programming: Coding a Multithreaded Chat Server using Tokio](./chat-server.md)
+- [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
-- [Learning Rust in 2020](./learning-rust-in-2020.md)
 
 ISAs
 - [What does RISC and CISC mean in 2020?](https://medium.com/swlh/what-does-risc-and-cisc-mean-in-2020-7b4d42c9a9de)

@@ -1867,7 +1867,7 @@ Discuss this article on
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
+- [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
-- [Learning Rust in 2020](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)

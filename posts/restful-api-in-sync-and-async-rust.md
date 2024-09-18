@@ -4277,6 +4277,7 @@ Discuss this article on
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
 - [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md)
-- [Sizedness in Rust](./sizedness-in-rust.md)
+- [Beginner's Guide to Concurrent Programming: Coding a Multithreaded Chat Server using Tokio](./chat-server.md)
 - [Learning Rust in 2020](./learning-rust-in-2020.md)
+- [Sizedness in Rust](./sizedness-in-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
