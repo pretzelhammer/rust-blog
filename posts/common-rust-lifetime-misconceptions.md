@@ -314,9 +314,8 @@ fn compare<'a, 'b>(&'a self, &'b str) -> &'a str;
 ```
 
 If you've ever written
-- a struct method
-- a function which takes references
-- a function which returns references
+- a function which takes or returns references
+- a struct method which takes or returns references
 - a generic function
 - a trait object (more on this later)
 - a closure (more on this later)
