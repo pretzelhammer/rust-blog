@@ -168,7 +168,7 @@ fn rand_str_generator() -> &'static str {
 }
 ```
 
-`T: 'static` is some `T` that can be safely held indefinitely long, including up until the end of the program. `T: 'static` includes all `&'static T` however it also includes all owned types, like `String`, `Vec`, etc. The owner of some data is guaranteed that data will never get invalidated as long as the owner holds onto it, therefore the owner can safely hold onto the data indefinitely long, including up until the end of the program. `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_ not _"`T` has a `'static` lifetime"_. A program to help illustrate these concepts:
+`T: 'static` is some `T` that can be safely held indefinitely long, including up until the end of the program. `T: 'static` includes all `&'static T` however it also includes all owned types, like `String`, `Vec`, etc. The owner of some data is guaranteed that data will never get invalidated as long as the owner holds onto it, therefore the owner can safely hold onto the data indefinitely long, including up until the end of the program. `T: 'static` should be read as _"`T` can live at least as long as a `'static` lifetime"_ not _"`T` has a `'static` lifetime"_. A program to help illustrate these concepts:
 
 ```rust
 use rand;
@@ -188,7 +188,8 @@ fn main() {
         }
     }
 
-    // strings are owned types so they're bounded by 'static
+    // strings are owned types so they can
+    // live at least as long as 'static
     for mut string in strings {
         // all the strings are mutable
         string.push_str("a mutation");
@@ -202,7 +203,7 @@ fn main() {
 ```
 
 **Key Takeaways**
-- `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_
+- `T: 'static` should be read as _"`T` can live at least as long as a `'static` lifetime"_
 - if `T: 'static` then `T` can be a borrowed type with a `'static` lifetime _or_ an owned type
 - since `T: 'static` includes owned types that means `T`
     - can be dynamically allocated at run-time
@@ -222,10 +223,10 @@ This misconception is a generalized version of the one above.
 `T: 'a` includes all `&'a T` but the reverse is not true.
 
 ```rust
-// only takes ref types bounded by 'a
+// only takes ref types that can outlive 'a
 fn t_ref<'a, T: 'a>(t: &'a T) {}
 
-// takes any types bounded by 'a
+// takes any types that can outlive 'a
 fn t_bound<'a, T: 'a>(t: T) {}
 
 // owned type which contains a reference
@@ -242,7 +243,7 @@ fn main() {
     t_ref(Ref(&string)); // ❌ - expected ref, found struct
     t_ref(&Ref(&string)); // ✅
 
-    // string var is bounded by 'static which is bounded by 'a
+    // string can outlive 'static which is longer than 'a
     t_bound(string); // ✅
 }
 ```
@@ -516,7 +517,7 @@ fn main() {
 ### 6) boxed trait objects don't have lifetimes
 
 Earlier we discussed Rust's lifetime elision rules _for functions_. Rust also has lifetime elision rules for trait objects, which are:
-- if a trait object is used as a type argument to a generic type then its life bound is inferred from the containing type
+- if a trait object is used as a type argument to a generic type then its lifetime bound is inferred from the containing type
     - if there's a unique bound from the containing then that's used
     - if there's more than one bound from the containing type then an explicit bound must be specified
 - if the above doesn't apply then
@@ -1074,7 +1075,7 @@ There's no real lesson or insight to be had here, it just is what it is.
 
 - `T` is a superset of both `&T` and `&mut T`
 - `&T` and `&mut T` are disjoint sets
-- `T: 'static` should be read as _"`T` is bounded by a `'static` lifetime"_
+- `T: 'static` should be read as _"`T` can live at least as long as a `'static` lifetime"_
 - if `T: 'static` then `T` can be a borrowed type with a `'static` lifetime _or_ an owned type
 - since `T: 'static` includes owned types that means `T`
     - can be dynamically allocated at run-time
