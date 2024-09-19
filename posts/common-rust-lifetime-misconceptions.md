@@ -63,33 +63,29 @@ When I first started learning Rust I understood that `i32`, `&i32`, and `&mut i3
 
 ```rust
 trait Trait {}
-
 impl<T> Trait for T {}
-
 impl<T> Trait for &T {} // ❌
-
 impl<T> Trait for &mut T {} // ❌
 ```
 
 The above program doesn't compile as expected:
 
 ```none
-error[E0119]: conflicting implementations of trait `Trait` for type `&_`:
- --> src/lib.rs:5:1
+error[E0119]: conflicting implementations of trait `Trait` for type `&_`
+ --> src/lib.rs:3:1
   |
-3 | impl<T> Trait for T {}
+2 | impl<T> Trait for T {}
   | ------------------- first implementation here
-4 |
-5 | impl<T> Trait for &T {}
+3 | impl<T> Trait for &T {}
   | ^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `&_`
 
-error[E0119]: conflicting implementations of trait `Trait` for type `&mut _`:
- --> src/lib.rs:7:1
+error[E0119]: conflicting implementations of trait `Trait` for type `&mut _`
+ --> src/lib.rs:4:1
   |
-3 | impl<T> Trait for T {}
+2 | impl<T> Trait for T {}
   | ------------------- first implementation here
-...
-7 | impl<T> Trait for &mut T {}
+3 | impl<T> Trait for &T {}
+4 | impl<T> Trait for &mut T {}
   | ^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `&mut _`
 ```
 
@@ -97,10 +93,18 @@ The compiler doesn't allow us to define an implementation of `Trait` for `&T` an
 
 ```rust
 trait Trait {}
-
 impl<T> Trait for &T {} // ✅
-
 impl<T> Trait for &mut T {} // ✅
+```
+
+Although it could probably go without saying, but for the sake of making sure nobody erroneously extrapolates the last couple examples, implementations for concrete types cannot overlap and this compiles just fine:
+
+```rust
+trait Trait {}
+struct Struct;
+impl Trait for Struct {} // ✅
+impl Trait for &Struct {} // ✅
+impl Trait for &mut Struct {} // ✅
 ```
 
 **Key Takeaways**
