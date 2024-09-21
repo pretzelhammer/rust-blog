@@ -1,6 +1,6 @@
 # Learning Rust in 2024
 
-_16 March 2024 · #rust · #programming · #exercises_
+_21 September 2024 · #rust · #programming · #exercises_
 
 **Table of contents**
 - [TL;DR](#tldr)
@@ -45,7 +45,7 @@ Other good alternatives are StackOverflow and ChatGPT (or whatever LLM you prefe
 
 If you've tried all of those things but still cannot get unstuck, then here are some beginner-friendly online Rust communities where you can ask questions: the [/r/rust](https://www.reddit.com/r/rust/) subreddit, the [/r/learnrust](https://www.reddit.com/r/learnrust/) subreddit, and the [official Rust users forum](https://users.rust-lang.org/).
 
-Also it's a good idea to have [Rust Playground](https://play.rust-lang.org/) open in an browser tab. It's an online code editor and compiler for Rust code. It's great for tinkering with small examples to reinforce what you're learning while reading.
+Also it's a good idea to have [Rust Playground](https://play.rust-lang.org/) open in a browser tab. It's an online code editor and compiler for Rust code. It's great for tinkering with small examples to reinforce what you're learning while reading.
 
 
 
@@ -101,7 +101,7 @@ However, if you found rustlings too easy or too slow and would like to try somet
 
 ### The [Rust track](https://exercism.org/tracks/rust) on Exercism
 
-The [Rust track](https://exercism.org/tracks/rust) on Exercism is the best collection of small Rust exercises on the internet aside from rustlings and 100ELR. What makes it so good is that many of the exercises were crafted by Rustaceans, and are meant to teach you the aspects of Rust that make it unique and interesting compared to other programming languages. There's an exercise where you have to write a declaractive macro! There's even exercise where you have to write unsafe code!
+The [Rust track](https://exercism.org/tracks/rust) on Exercism is the best collection of small Rust exercises on the internet aside from rustlings and 100ELR. What makes it so good is that many of the exercises were crafted by Rustaceans, and are meant to teach you the aspects of Rust that make it unique and interesting compared to other programming languages. There's an exercise where you have to write a declarative macro! There's even exercise where you have to write unsafe code!
 
 To get started you have to make an account on Exercism and enroll in the Rust track (both are free). You can then complete the exercises online using Exercism's online code editor or by downloading the exercises to your machine, completing them using your code editor, and submitting your solutions to Exercism using the `exercism` cli tool.
 
@@ -115,7 +115,7 @@ The best part of completing an exercise is that it gives you the ability to see 
 
 Furthermore, the exercises are rated by difficulty: easy, medium, or hard. Currently there's 99 total exercises in the Rust track and I would say that about 30 are really good and the other 59 are just generic exercises that were copy & pasted from other tracks. Less than 0.1% of people complete the entire track. I wouldn't be surprised if less than 1% of people even complete half of the track. I have done all of the exercises so I'll recommend which ones I think are the best, since you're likely not going to do all of them anyway.
 
-You should start with the easy exercises. Difficulty-wise they're slightly more challenging than what you'd find in rustlings or 100ELR. Quality-wise all of them are okay. None of them will take you longer than 20 minutes to complete. Also, if completing the easy exercises stops being rewarding move on to the medium exercises, don't push yourself to complete all the easy ones if you don't feel like you're getting anything out of them anymore.
+You should start with the easy exercises. Difficulty-wise they're slightly more challenging than what you'd find in rustlings or 100ELR. Quality-wise all of them are okay. None of them will take you longer than 20 minutes to complete. Also, if completing the easy exercises stops being rewarding then move on to the medium exercises, don't push yourself to complete all the easy ones if you don't feel like you're getting anything out of them anymore.
 
 Anyway, as for the medium exercises, these are the best ones in my opinion (in no particular order):
 - [PaaS I/O](https://exercism.org/tracks/rust/exercises/paasio)
@@ -159,7 +159,7 @@ If you do a bunch of easy exercises, plus the medium and hard ones I recommend, 
 
 ### [Advent of Code](https://adventofcode.com/)
 
-[Advent of Code](https://adventofcode.com/) (AoC) is a collection of programming puzzles. Every year since 2015 a new puzzle has been released every day from December 1st to 25th. Each puzzle has 2 parts. The first 10-15 puzzles of each year are usually easy to medium difficulty, and the last 10-15 puzzles of each year are usually hard. The puzzles are designed to be language agnostic, meaning you can solve them using any programming language. So if your goal to learn Rust then doing the puzzles on their own is not going to help you very much, but if you complete a puzzle and then review an experienced Rustacean's solution that could help teach you a lot of Rust.
+[Advent of Code](https://adventofcode.com/) (AoC) is a collection of programming puzzles. Every year since 2015 a new puzzle has been released every day from December 1st to 25th. Each puzzle has 2 parts. The first 10-15 puzzles of each year are usually easy to medium difficulty, and the last 10-15 puzzles of each year are usually hard. The puzzles are designed to be language agnostic, meaning you can solve them using any programming language. So if your goal is to learn Rust then just doing the puzzles is not going to help you very much, but if you complete a puzzle and then review an experienced Rustacean's solution that could help teach you a lot of Rust.
 
 The experienced Rustacean in this case would be fasterthanlime. On top of publishing his solutions for the 2020 and 2022 AoC puzzles he also wrote beginner-friendly blog posts explaining his thought process while solving each one. If you're going to do AoC to learn Rust then you should start with the 2020 puzzles and after completing each one read the corresponding fasterthanlime blog post on it. I wouldn't recommend going far past puzzle 10 for any given year because they can start to get really challenging and you'll be spending most of your time busting your brain trying to figure out how to solve the puzzle instead of learning Rust.
 
@@ -167,7 +167,7 @@ The experienced Rustacean in this case would be fasterthanlime. On top of publis
 
 #### Setting up
 
-First, create an account on [AoC](https://adventofcode.com/). Second, since AoC is language agnostic you have to setup your own cargo project with your own scaffolding in order to solve the puzzles. Doing this can be very educational but it's also pretty boring. I'd suggest skipping that and using this Github template instead: [fspoettel/advent-of-code-rust](https://github.com/fspoettel/advent-of-code-rust). Click on `Use this template` -> `Create a new repository`, then `git clone` the created repository to your machine. In `.cargo/config.toml` set `AOC_YEAR` to `2020`.
+First, create an account on [AoC](https://adventofcode.com/). Second, since AoC is language agnostic you have to set up your own cargo project with your own scaffolding in order to solve the puzzles. Doing this can be very educational but it's also pretty boring. I'd suggest skipping that and using this Github template instead: [fspoettel/advent-of-code-rust](https://github.com/fspoettel/advent-of-code-rust). Click on `Use this template` -> `Create a new repository`, then `git clone` the created repository to your machine. In `.cargo/config.toml` set `AOC_YEAR` to `2020`.
 
 Also you can install the `aoc-cli` tool to fetch all instructions and inputs from your AoC account to your machine. To do that run `cargo install aoc-cli --version 0.12.0`, then create the file `$HOME/.adventofcode.session` and paste your AoC session cookie into it. To get your session cookie, press `F12` while anywhere on the AoC website to open your browser's developer tools, then look for `Cookies` under the `Application` or `Storage` tabs and copy the `session` cookie value.
 
@@ -213,7 +213,7 @@ If you completed at least 10 of the 2020 puzzles then year 2022 is the next best
 
 The goal of most Rust tutorials is to show you how some piece of software could be implemented in Rust, not to necessarily to teach you Rust, and so many tutorial authors assume their audience will already be somewhat competent with the language and will omit a bunch of beginner explanations for the sake of keeping the tutorial focused and concise.
 
-With that said, writing a non-trivial piece of software can be a lot more fun and rewarding than completing a bunch of small exercises, so this approach can be preferrable for keeping your motivations high, especially if you're building something you're genuinely interested and excited about.
+With that said, writing a non-trivial piece of software can be a lot more fun and rewarding than completing a bunch of small exercises, so this approach can be preferable for keeping your motivations high, especially if you're building something you're genuinely interested and excited about.
 
 I wish I could recommend some tutorials here but there's so many of them out there that it would be hard for me to go through all of them and rank them by their quality. The quality probably isn't that important though, what's important is that you're writing Rust code and enjoying your time, so pick any tutorial that looks fun and follow along without sweating the details.
 
@@ -229,7 +229,7 @@ Disclaimer: I wrote this.
 
 Reading [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md) will help you understand why half of the stuff you tried in your last 10 hours of Rust coding didn't work 🙂
 
-Jokes aside, understanding lifetimes is probably the biggest stumbling block that many beginners struggle to get over when learning Rust, and this article dispells all of the most common misconceptions that people have about lifetimes that cause them confusion and frustration.
+Jokes aside, understanding lifetimes is probably the biggest stumbling block that many beginners struggle to get over when learning Rust, and this article dispels all of the most common misconceptions that people have about lifetimes that cause them confusion and frustration.
 
 The reason I recommend it after at least 10 hours of practical Rust coding experience is because I think it might be too much technical information too soon for absolute beginners, who may find it more overwhelming than helpful.
 
@@ -239,7 +239,7 @@ The reason I recommend it after at least 10 hours of practical Rust coding exper
 
 As before if you're not sure what to code my suggestions remain the same: [100 Exercises to Learn Rust](https://rust-exercises.com/100-exercises/), the [Rust track](https://exercism.org/tracks/rust) on Exercism, [Advent of Code](https://adventofcode.com/), or tutorials.
 
-Also since you now have some Rust experience under your belt feel free to try coding something in multithreaded async Rust if you're feeling adventrous.
+Also since you now have some Rust experience under your belt feel free to try coding something in multithreaded async Rust if you're feeling adventurous.
 
 
 
@@ -265,7 +265,7 @@ These are other Rust beginner resources that I really like but wasn't able to fi
 
 ### [Tour of Rust](https://tourofrust.com/)
 
-It's really good. However, it covers a lot of the same ground that other resources in the guide already cover, so it was omitted for the sake keeping the guide streamlined.
+It's really good. However, it covers a lot of the same ground that other resources in the guide already cover, so it was omitted for the sake of keeping the guide streamlined.
 
 
 
