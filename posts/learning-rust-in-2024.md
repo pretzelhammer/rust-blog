@@ -286,7 +286,7 @@ This is a great article. I wasn't sure where to put it in the guide because it c
 ## Discuss
 
 Discuss this article on
-- links coming soon
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions/84)
 
 
 
