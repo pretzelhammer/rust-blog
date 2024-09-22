@@ -4853,7 +4853,7 @@ impl<'a> Iterator for MyTypeIterator<'a> {
 }
 ```
 
-For the sake of teaching the above example shows how to impl an `Iterator` from scratch but the idiomatic solution in this situation would be to just defer to `Vec`'s `iter` method:
+The above example shows how to impl an `Iterator` from scratch for educational value, but the idiomatic solution in this situation would be to just defer to `Vec`'s `iter` method:
 
 ```rust
 struct MyType {
