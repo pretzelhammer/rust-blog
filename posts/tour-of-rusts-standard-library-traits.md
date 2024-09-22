@@ -4593,7 +4593,7 @@ trait Iterator {
     type Item;
     fn next(&mut self) -> Option<Self::Item>;
 
-    // provides default impls for 67 functions
+    // provides default impls for 75 functions
     // which are omitted here for brevity's sake
 }
 ```
@@ -4725,6 +4725,124 @@ fn receivers_can_be_iterated() {
 
     for received in recv {
         // iterate over received values
+    }
+}
+```
+
+
+
+### ExactSizeIterator
+
+Prerequisites
+- [Self](#self)
+- [Methods](#methods)
+- [Associated Types](#associated-types)
+- [Marker Traits](#marker-traits)
+- [Subtraits & Supertraits](#subtraits--supertraits)
+- [Iterator](#iterator)
+
+```rust
+trait ExactSizeIterator: Iterator {
+    // provided default impls
+    fn len(&self) -> usize;
+    fn is_empty(&self) -> bool;
+}
+```
+
+The default impls provided by the `Iterator` trait for the methods `size_hint`, `count`,  `last`, and `nth` are suboptimal if we know the exact size of the data we're iterating over and have have fast random access into it.
+
+To illustrate this point let's start by defining a type called `Range` which impls `Iterator` that we can calculate the exact size of:
+
+```rust
+struct Range {
+    start: usize,
+    end: usize,
+}
+
+impl Iterator for Range {
+    type Item = usize;
+    fn next(&mut self) -> Option<Self::Item> {
+        let current = self.start;
+        self.start += 1;
+        if current < self.end {
+            Some(current)
+        } else {
+            None
+        }
+    }
+}
+```
+
+Here's the default `size_hint` impl that `Range` would get from the `Iterator` trait:
+
+```rust
+fn size_hint(&self) -> (usize, Option<usize>) {
+    (0, None)
+}
+```
+
+It's not useful at all! The lower bound is hardcoded to `0` and the upper bound is hardcoded to `None`, which is the same as saying _"I have no clue how big this iterator is, it can have anywhere from zero to infinity remaining items in it."_
+
+Yet we can precisely calculate how many items are remaining in `Range` and provide an actually useful `size_hint` impl:
+
+```rust
+impl Iterator for Range {
+    // ...
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let size = self.end - self.start;
+        (size, Some(size))
+    }
+}
+```
+
+We can also now impl `ExactSizeIterator` for `Range` because it's a marker trait that marks the type as having an accurate `size_hint` impl:
+
+```rust
+impl ExactSizeIterator for Range {}
+```
+
+We should also provide our own impls for `count`, `last`, and `nth` as their default impls assume the size of the iterator is unknown and rely on repeatedly calling `next`. Here's a simplified version of the default `count` impl as an example:
+
+```rust
+fn count(self) -> usize {
+    let mut accum = 0;
+    while let Some(x) = self.next() {
+        accum += 1;
+    }
+    accum
+}
+```
+
+If we had a `Range` of size one million that's one million times the `next` function would have to be called to `count` it! We can do much better:
+
+```rust
+impl Iterator for Range {
+    // ...
+    fn count(self) -> usize {
+        self.end - self.start
+    }
+}
+```
+
+And efficient impls for `last` and `nth`:
+
+```rust
+impl Iterator for Range {
+    type Item = usize;
+    fn last(self) -> Option<Self::Item> {
+        if self.start == self.end {
+            None
+        } else {
+            Some(self.end - 1)
+        }
+    }
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        if self.start + n > self.end {
+            None
+        } else {
+            self.start += n;
+            self.next()
+        }
     }
 }
 ```
