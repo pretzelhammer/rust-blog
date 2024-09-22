@@ -3313,9 +3313,11 @@ Prerequisites
 - [Methods](#methods)
 - [Generic Parameters](#generic-parameters)
 - [Generic Blanket Impls](#generic-blanket-impls)
+- [Subtraits & Supertraits](#subtraits--supertraits)
+- [Sized](#sized)
 
 ```rust
-trait From<T> {
+trait From<T>: Sized {
     fn from(T) -> Self;
 }
 ```
@@ -3323,7 +3325,7 @@ trait From<T> {
 `From<T>` types allow us to convert `T` into `Self`.
 
 ```rust
-trait Into<T> {
+trait Into<T>: Sized {
     fn into(self) -> T;
 }
 ```
@@ -3333,10 +3335,7 @@ trait Into<T> {
 These traits are two different sides of the same coin. We can only impl `From<T>` for our types because the `Into<T>` impl is automatically provided by this generic blanket impl:
 
 ```rust
-impl<T, U> Into<U> for T
-where
-    U: From<T>,
-{
+impl<T, U: From<T>> Into<U> for T {
     fn into(self) -> U {
         U::from(self)
     }
@@ -3856,12 +3855,12 @@ Prerequisites
 `TryFrom` and `TryInto` are the fallible versions of `From` and `Into`.
 
 ```rust
-trait TryFrom<T> {
+trait TryFrom<T>: Sized {
     type Error;
     fn try_from(value: T) -> Result<Self, Self::Error>;
 }
 
-trait TryInto<T> {
+trait TryInto<T>: Sized {
     type Error;
     fn try_into(self) -> Result<T, Self::Error>;
 }
@@ -3870,10 +3869,7 @@ trait TryInto<T> {
 Similarly to `Into` we cannot impl `TryInto` because its impl is provided by this generic blanket impl:
 
 ```rust
-impl<T, U> TryInto<U> for T
-where
-    U: TryFrom<T>,
-{
+impl<T, U: TryFrom<T>> TryInto<U> for T {
     type Error = U::Error;
 
     fn try_into(self) -> Result<U, U::Error> {
@@ -3882,7 +3878,21 @@ where
 }
 ```
 
-Let's say that in the context of our program it doesn't make sense for `Point`s to have `x` and `y` values that are less than `-1000` or greater than `1000`. This is how we'd rewrite our earlier `From` impls using `TryFrom` to signal to the users of our type that this conversion can now fail:
+Furthermore, we cannot impl `TryFrom` for a type if it already has a `From` impl, as an infallible `TryForm` impl is automatically provided by this generic blanket impl:
+
+```rust
+enum Inflallible {}
+
+impl<T, U: Into<T>> TryFrom<U> for T {
+    type Error = Infallible;
+
+    fn try_from(value: U) -> Result<Self, Self::Error> {
+        Ok(U::into(value))
+    }
+}
+```
+
+So let's say that in the context of our earlier program it doesn't make sense for `Point`s to have `x` and `y` values that are less than `-1000` or greater than `1000`. This is how we'd rewrite our earlier `From` impls using `TryFrom` to signal to the users of our type that this conversion can now fail:
 
 ```rust
 use std::convert::TryFrom;
@@ -4122,7 +4132,6 @@ Prerequisites
 - [Methods](#methods)
 - [Sized](#sized)
 - [Generic Parameters](#generic-parameters)
-- [Sized](#sized)
 - [Deref & DerefMut](#deref--derefmut)
 
 ```rust
