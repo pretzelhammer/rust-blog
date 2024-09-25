@@ -1,4 +1,4 @@
-# 2024 年学习 Rust
+# 2024 年的 Rust 学习指南
 
 _2024 年 9 月 21 日 · #rust · #coding · #exercises_
 
@@ -261,6 +261,6 @@ Codecrafters 的最大缺点是费用，每月要 40 美元。他们偶尔会有
 - [常见的 Rust 生命周期误解](./common-rust-lifetime-misconceptions.md)
 - [Rust 标准库特性导览](./tour-of-rusts-standard-library-traits.md)
 - [并发编程初学者指南：使用 Tokio 编写多线程聊天服务器](./chat-server.md)
-- [Rust 中的 Sizedness](../../sizedness-in-rust.md)
-- [同步和异步 Rust 中的 RESTful API](../../restful-api-in-sync-and-async-rust.md)
-- [通过 brainfuck 编译器学习汇编语言](../../too-many-brainfuck-compilers.md)
+- [Sizedness in Rust](../../sizedness-in-rust.md)
+- [RESTful API in Sync & Async Rust](../../restful-api-in-sync-and-async-rust.md)
+- [Learn Assembly with Entirely Too Many Brainfuck Compilers](../../too-many-brainfuck-compilers.md)
