@@ -287,7 +287,9 @@ This is a great article. I wasn't sure where to put it in the guide because it c
 
 Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions/84)
-
+- [official Rust users forum](https://users.rust-lang.org/t/learning-rust-in-2024)
+- [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/1fnlvd8/learning_rust_in_2024/)
+- [rust subreddit](https://www.reddit.com/r/rust/comments/1fod8u9/learning_rust_in_2024/)
 
 
 ## Further reading
