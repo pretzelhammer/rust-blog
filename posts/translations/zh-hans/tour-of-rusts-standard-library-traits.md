@@ -5891,8 +5891,8 @@ _该漫画的创作者: [The Jenkins Comic](https://thejenkinscomic.wordpress.co
 ## 更多资料 Further Reading
 
 - [Sizedness in Rust](../../sizedness-in-rust.md)
-- [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
-- [Learning Rust in 2020](../../learning-rust-in-2020.md)
+- [Rust 中常见的有关生命周期的误解](./common-rust-lifetime-misconceptions.md)
+- [2020 年的 Rust 学习指南](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](../../too-many-brainfuck-compilers.md)
 
 
