@@ -1873,5 +1873,5 @@ fn parse_socket_addr() -> SocketAddr {
 - [Rust 标准库特性指南](./tour-of-rusts-standard-library-traits.md)
 - [Sizedness in Rust](../../sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](../../restful-api-in-sync-and-async-rust.md)
-- [Rust 大佬给初学者的学习建议](./learning-rust-in-2020.md)
+- [2020 年的 Rust 学习指南](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](../../too-many-brainfuck-compilers.md)

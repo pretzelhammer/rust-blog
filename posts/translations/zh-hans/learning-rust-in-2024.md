@@ -259,7 +259,7 @@ Codecrafters 的最大缺点是费用，每月要 40 美元。他们偶尔会有
 ## 进一步阅读
 
 - [常见的 Rust 生命周期误解](./common-rust-lifetime-misconceptions.md)
-- [导览 Rust 标准库特征](./tour-of-rusts-standard-library-traits.md)
+- [Rust 标准库特性指南](./tour-of-rusts-standard-library-traits.md)
 - [并发编程初学者指南：使用 Tokio 编写多线程聊天服务器](./chat-server.md)
 - [Sizedness in Rust](../../sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](../../restful-api-in-sync-and-async-rust.md)
