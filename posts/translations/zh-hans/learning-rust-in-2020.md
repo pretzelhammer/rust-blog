@@ -5,7 +5,7 @@ _2020年 5月 9日 · #rust · #programming · #exercises_
 **目录**
 - [前言](#前言)
 - [省流](#省流)
-- [Rust 练习平台比较](#practical-rust-resource-reviews)
+- [Rust 练习平台比较](#rust-练习平台比较)
     - [HackerRank](#hackerrank)
     - [Project Euler](#project-euler)
     - [LeetCode](#leetcode)
@@ -13,9 +13,9 @@ _2020年 5月 9日 · #rust · #programming · #exercises_
     - [Advent of Code](#advent-of-code)
     - [Rustlings](#rustlings)
     - [Exercism](#exercism)
-- [结论](#conclusion)
-- [讨论](#discuss)
-- [参阅](#further-reading)
+- [结论](#结论)
+- [讨论](#讨论)
+- [参阅](#参阅)
 
 
 
@@ -80,7 +80,7 @@ _又名：对供 Rust 初学者练习编写简单代码的免费在线资源的�
 支持 Rust，但大部分题目不支持 Rust 题解。
 尝试提交题解，被当场拒绝：
 
-![建 议 改 为： FailRank](../assets/hackerrank-more-like-failrank.png)
+![建 议 改 为： FailRank](../../../assets/hackerrank-more-like-failrank.png)
 
 6。可以看到别人的，但是不能上传自己的。
 Google 了一圈，未能发现有用的信息，建议直接放弃。

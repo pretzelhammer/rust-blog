@@ -1,6 +1,6 @@
 # Learning Rust in 2024
 
-_21 September 2024 · #rust · #programming · #exercises_
+_21 September 2024 · #rust · #coding · #exercises_
 
 **Table of contents**
 - [TL;DR](#tldr)
@@ -28,9 +28,9 @@ This is my opinionated guide on how to go from knowing nothing about Rust to bei
 
 1. Read [A half hour to learn Rust](https://fasterthanli.me/articles/a-half-hour-to-learn-rust) (30 - 60 mins)
 2. Complete [rustlings](https://github.com/rust-lang/rustlings) (2 - 3 hours)
-3. Spend 10 hours programming in Rust (8 - 12 hours)
+3. Spend 10 hours coding in Rust (8 - 12 hours)
 4. Read [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md) (30 - 60 mins)
-5. Spend another 10 hours programming in Rust (8 - 12 hours)
+5. Spend another 10 hours coding in Rust (8 - 12 hours)
 6. Read [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md) (2 - 4 hours)
 
 And that's it, after a short 19 to 30 hours you'll go from being a Rust beginner to a Rust advanced beginner 😎
@@ -287,7 +287,9 @@ This is a great article. I wasn't sure where to put it in the guide because it c
 
 Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions/84)
-
+- [official Rust users forum](https://users.rust-lang.org/t/learning-rust-in-2024)
+- [learnrust subreddit](https://www.reddit.com/r/learnrust/comments/1fnlvd8/learning_rust_in_2024/)
+- [rust subreddit](https://www.reddit.com/r/rust/comments/1fod8u9/learning_rust_in_2024/)
 
 
 ## Further reading

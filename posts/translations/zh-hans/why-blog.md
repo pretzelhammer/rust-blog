@@ -36,7 +36,7 @@ _作者：[stuffman](https://stuffman.tumblr.com/)_
 
 ## 参阅
 
-- [Common Rust Lifetime Misconceptions](./../../common-rust-lifetime-misconceptions.md)
+- [Rust 中常见的有关生命周期的误解](./../../common-rust-lifetime-misconceptions.md)
 - [Rust 标准库特性指南](./tour-of-rusts-standard-library-traits.md)
 - [Sizedness in Rust](./../../sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./../../restful-api-in-sync-and-async-rust.md)

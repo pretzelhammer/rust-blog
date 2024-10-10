@@ -1212,7 +1212,7 @@ error[E0597]: `some_string` does not live long enough
 ## 拓展阅读
 
 - [Sizedness in Rust](./sizedness-in-rust.md)
-- [Learning Rust in 2020](./learning-rust-in-2020.md)
+- [2020 年的 Rust 学习指南](./learning-rust-in-2020.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
 
 ## 译者注
