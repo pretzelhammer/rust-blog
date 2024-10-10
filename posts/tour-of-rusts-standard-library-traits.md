@@ -57,7 +57,9 @@ _31 March 2021 · #rust · #traits_
     - [ToOwned](#toowned)
 - [Iteration Traits](#iteration-traits)
     - [Iterator](#iterator)
+    - [ExactSizeIterator](#exactsizeiterator)
     - [IntoIterator](#intoiterator)
+    - [Extend](#extend)
     - [FromIterator](#fromiterator)
 - [I/O Traits](#io-traits)
     - [Read & Write](#read--write)
@@ -4896,17 +4898,70 @@ for v in (&mut vec).into_iter() {}
 
 
 
+### Extend
+
+Prerequisites
+- [Self](#self)
+- [Methods](#methods)
+- [Generic Parameters](#generic-parameters)
+- [Iterator](#iterator)
+- [IntoIterator](#intoiterator)
+
+
+```rust
+trait Extend<A> {
+    fn extend<T>(&mut self, iter: T)
+       where T: IntoIterator<Item = A>;
+
+    // provided default impls
+    fn extend_one(&mut self, item: A);
+    fn extend_reserve(&mut self, additional: usize);
+}
+```
+
+`Extend` types can be extended from an iterator. They're usually collections. Using `MyType` from before:
+
+```rust
+struct MyType {
+    items: Vec<String>
+}
+
+impl Extend<String> for MyType {
+    // add Strings from iter into MyType
+    fn extend<T: IntoIterator<Item = String>>(&mut self, iter: T) {
+        for i in iter {
+            self.items.push(i);
+        }
+    }
+}
+```
+
+The above example is meant to be illustrative, the idiomatic solution would be to defer to the inner `Vec`'s `extend` impl:
+
+```rust
+impl Extend<String> for MyType {
+    // add Strings from iter into MyType
+    fn extend<T: IntoIterator<Item = String>>(&mut self, iter: T) {
+        self.items.extend(iter)
+    }
+}
+```
+
+
+
 ### FromIterator
 
 Prerequisites
 - [Self](#self)
 - [Functions](#functions)
 - [Generic Parameters](#generic-parameters)
+- [Sized](#sized)
 - [Iterator](#iterator)
 - [IntoIterator](#intoiterator)
+- [Extend](#extend)
 
 ```rust
-trait FromIterator<A> {
+trait FromIterator<A>: Sized {
     fn from_iter<T>(iter: T) -> Self
     where
         T: IntoIterator<Item = A>;
@@ -4950,6 +5005,36 @@ fn entry_list<K, V>(map: HashMap<K, V>) -> LinkedList<(K, V)> {
 }
 
 // and countless more possible examples
+```
+
+If we're going to impl `FromIterator` for our own type its best to reuse an `Extend` impl if one exists:
+
+```rust
+struct MyType {
+    items: Vec<String>,
+}
+
+impl MyType {
+    fn new() -> Self {
+        MyType {
+            items: Vec::new()
+        }
+    }
+}
+
+impl Extend<String> for MyType {
+    fn extend<T: IntoIterator<Item = String>>(&mut self, iter: T) {
+        self.items.extend(iter)
+    }
+}
+
+impl FromIterator<String> for MyType {
+    fn from_iter<T: IntoIterator<Item = String>>(iter: T) -> Self {
+        let mut my_type = MyType::new();
+        my_type.extend(iter);
+        my_type
+    }
+}
 ```
 
 
