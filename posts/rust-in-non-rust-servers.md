@@ -1,7 +1,7 @@
 
 
 # Using Rust in Non-Rust Servers to Improve Performance
-_22 Oct 2024 · #rust · #wasm · #ffi · #performance_
+_22 October 2024 · #rust · #wasm · #ffi · #performance_
 
 
 
@@ -105,7 +105,7 @@ http://localhost:42069/qrcode?text=https://www.reddit.com/r/rustjerk/top/?t=all
 
 Which will correctly produce this QR code PNG:
 
-![QR code for rustjerk subreddit](./rustjerk-subreddit-qr-code.png)
+![QR code for rustjerk subreddit](../assets/rustjerk-subreddit-qr-code.png)
 
 Anyway, let's throw tens of thousands of requests at this server for 30 seconds and see how it performs:
 
@@ -189,7 +189,7 @@ qr-cli https://youtu.be/cE0wfjsybIQ?t=74 > crab-rave.png
 
 Which correctly produces this QR code PNG:
 
-![QR code for crab rave youtube video](./crab-rave-qr-code.png)
+![QR code for crab rave youtube video](../assets/crab-rave-qr-code.png)
 
 Now let's update the hot function in our host server to call this CLI:
 
@@ -317,7 +317,7 @@ Anyway, while `wasm-bindgen` is an excellent JS to Rust Wasm binding generator t
 
 #### Wasm bindings by hand
 
-The funny thing about Wasm is that it only supports four data types: `i32`, `i64`, `f32`, and `f64`. Yet for our use-case we need to pass a string from the host to a Wasm function, and the Wasm function needs to return an array to the host. Wasm doesn't have strings or arrays. So how are we suppose to solve this problem?
+The funny thing about Wasm is that it only supports four data types: `i32`, `i64`, `f32`, and `f64`. Yet for our use-case we need to pass a string from the host to a Wasm function, and the Wasm function needs to return an array to the host. Wasm doesn't have strings or arrays. So how are we supposed to solve this problem?
 
 The answer hinges on having a couple insights:
 - The Wasm module's memory is shared between the Wasm instance and the host, both can read and modify it.
@@ -327,7 +327,7 @@ If we want to pass a string from the host to a Wasm function the host has to dir
 
 And if we want to pass an array from a Wasm function to the host, the host first needs to provide the Wasm function an `i32` pointing to the memory address where the array should be written, and then when the Wasm function completes it returns an `i32` which represents the number of bytes that were written.
 
-However now we have a new problem: when the host writes to the Wasm module's memory, how can it ensure it doesn't overwrite memory that the Wasm module is using? For the host to be able to safely write to memory, it must first ask the Wasm module to allocate space for it.
+However, now we have a new problem: when the host writes to the Wasm module's memory, how can it ensure it doesn't overwrite memory that the Wasm module is using? For the host to be able to safely write to memory, it must first ask the Wasm module to allocate space for it.
 
 Okay, now with all of that context out of the way we can finally look at this code and actually understand it:
 
@@ -487,7 +487,7 @@ pub fn text_to_qr_png(text: String) -> Result<Vec<u8>, Status> {
 }
 ```
 
-I love how easy it is. After writing a Wasm module from scratch in Rust in the preceeding section I have a newfound appreciation and respect for people who implement and maintain binding generator libraries.
+I love how easy it is. After writing a Wasm module from scratch in Rust in the preceding section I have a newfound appreciation and respect for people who implement and maintain binding generator libraries.
 
 After building the code above here's how we'd use it from Node.js:
 
@@ -614,7 +614,7 @@ That's not a typo. The Rust server really only used 13 MB of memory while servin
 
 ## Concluding thoughts
 
-I think all of the strategies are good, but Tier 3 stands out as the best bang for the buck. If you can use an off-the-shelf binding generator library then writing a native function in Rust is super easy and it can have a profound affect on performance.
+I think all of the strategies are good, but Tier 3 stands out as the best bang for the buck. If you can use an off-the-shelf binding generator library then writing a native function in Rust is super easy and it can have a profound effect on performance.
 
 The hardest part of Tier 3 is probably learning Rust if you don't know it already, but if you're in that boat you should read [Learning Rust in 2024](./learning-rust-in-2024.md) which will help you figure out how to begin.
 
@@ -623,7 +623,7 @@ The hardest part of Tier 3 is probably learning Rust if you don't know it alread
 ## Discuss
 
 Discuss this article on
-- links coming soon
+- [Github](https://github.com/pretzelhammer/rust-blog/discussions/87)
 
 
 
