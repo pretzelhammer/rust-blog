@@ -9,7 +9,7 @@ _22 October 2024 · #rust · #wasm · #ffi · #performance_
 - [Intro](#intro)
 - [The strategies](#the-strategies)
     - [Tier 0: No Rust](#tier-0-no-rust)
-    - [Tier 1: Rust CLI Binary](#tier-1-rust-cli-tool)
+    - [Tier 1: Rust CLI Tool](#tier-1-rust-cli-tool)
     - [Tier 2: Rust Wasm Module](#tier-2-rust-wasm-module)
         - [Wasm bindings by hand](#wasm-bindings-by-hand)
     - [Tier 3: Rust Native Function](#tier-3-rust-native-function)
