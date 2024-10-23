@@ -473,6 +473,7 @@ For this strategy we're going to write the function in Rust, compile it to nativ
 | Java | [jni-rs](https://github.com/jni-rs/jni-rs) | 1.2k+ |
 | Ruby | [rutie](https://github.com/danielpclark/rutie) | 900+ |
 | PHP | [ext-php-rs](https://github.com/davidcole1340/ext-php-rs) | 500+ |
+| Multiple | [diplomat](https://github.com/rust-diplomat/diplomat) | 500+ |
 
 Since our example server is written in JS we're going to use `napi-rs`. Here's the Rust code:
 
@@ -481,8 +482,8 @@ use napi::bindgen_prelude::*;
 use napi_derive::napi;
 
 #[napi]
-pub fn text_to_qr_png(text: String) -> Result<Vec<u8>, Status> {
-    qr_lib::text_to_qr_png(&text)
+pub fn generate_qr_code(text: String) -> Result<Vec<u8>, Status> {
+    qr_lib::generate_qr_code(&text)
         .map_err(|e| Error::from_reason(e.to_string()))
 }
 ```
