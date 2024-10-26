@@ -146,7 +146,7 @@ pub fn generate_qr_code(text: &str) -> Result<Vec<u8>, StdErr> {
         // they offered the best balance
         // between speed and compression
         // during testing
-        CompressionType::Default, 
+        CompressionType::Default,
         FilterType::NoFilter,
     );
     img_buf.write_with_encoder(encoder)?;
@@ -392,7 +392,7 @@ const fs = require('fs');
 const qrWasmPath = path.resolve(__dirname, './qr_wasm.wasm');
 const qrWasmBinary = fs.readFileSync(qrWasmPath);
 
-// instantiate Wasm module 
+// instantiate Wasm module
 const qrWasmModule = new WebAssembly.Module(qrWasmBinary);
 const qrWasmInstance = new WebAssembly.Instance(
     qrWasmModule,
@@ -615,7 +615,7 @@ That's not a typo. The Rust server really only used 13 MB of memory while servin
 
 ## Concluding thoughts
 
-I think all of the strategies are good, but Tier 3 stands out as the best bang for the buck. If you can use an off-the-shelf binding generator library then writing a native function in Rust is super easy and it can have a profound effect on performance.
+I think all of the strategies are good, but Tier 3 stands out as being the best bang for the buck. If you can use an off-the-shelf binding generator library then writing a native function in Rust is super easy and it can have a profound effect on performance.
 
 The hardest part of Tier 3 is probably learning Rust if you don't know it already, but if you're in that boat you should read [Learning Rust in 2024](./learning-rust-in-2024.md) which will help you figure out how to begin.
 
