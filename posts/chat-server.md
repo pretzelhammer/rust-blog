@@ -984,6 +984,9 @@ async fn handle_user(
                 // notify everyone that user
                 // changed their name
                 tx.send(format!("{name} is now {new_name}"))?;
+                // remove previous name
+                names.remove(&name);
+                // set new name
                 name = new_name;
             } else {
                 // tell user that name is
