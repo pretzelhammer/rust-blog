@@ -626,6 +626,8 @@ The hardest part of Tier 3 is probably learning Rust if you don't know it alread
 Discuss this article on
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions/87)
 - [official Rust users forum](https://users.rust-lang.org/t/using-rust-in-non-rust-servers-to-improve-performance/120121)
+- [rust subreddit](https://www.reddit.com/r/rust/comments/1gabrdh/using_rust_in_nonrust_servers_to_improve/)
+- [Hackernews](https://news.ycombinator.com/item?id=41941451)
 
 
 
