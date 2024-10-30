@@ -248,18 +248,39 @@ Wow, I was not expecting throughput to increase by 76%! This is a very caveman-b
 
 ### Tier 2: Rust Wasm Module
 
-For this strategy we'll compile the Rust function into a Wasm module, and then load and run it from the host server using a Wasm runtime. Some links to Wasm runtimes across different languages:
+For this strategy we'll compile the Rust function into a Wasm module, and then load and run it from the host server using a Wasm runtime. Some links to Wasm runtime:
+
+Web platform runtimes:
+
+| Language | Wasm runtime |
+|-|-|
+| JavaScript | [V8](https://v8.dev/) |
+| JavaScript | [SpiderMonkey](https://spidermonkey.dev/) |
+| JavaScript | [WebKit](https://webkit.org/) |
+
+Rust runtimes bindings:
 
 | Language | Wasm runtime | Github stars |
 |-|-|-|
-| JavaScript| built-in | - |
-| Java | [GraalWasm](https://github.com/oracle/graal/tree/master/wasm) | 20.3k+ |
-| Multiple | [wasm3](https://github.com/wasm3/wasm3) | 7.3k+ |
-| Go | [Wazero](https://github.com/tetratelabs/wazero) | 4.9k+ |
+| Rust, C, Python, .NET, Go, Bash, Ruby, Elixir - [source](https://docs.wasmtime.dev/lang.html) | [Wasmtime](https://docs.wasmtime.dev/lang.html) | 15.3K+ |
+| Rust, Python, Go, Ruby, JS, PHP, OCaml, Java - [source](https://github.com/wasmerio) | [Wasmer](https://github.com/wasmerio/wasmer) | 18.8K+ |
+| Rust, Java - [source](https://github.com/WasmEdge/WasmEdge/tree/master/bindings) | [WasmEdge](https://github.com/WasmEdge/WasmEdge) | 8.5K+ |
+
+Language native wasm runtimes:
+
+| Language | Wasm runtime | Github stars |
+|-|-|-|
+| Go | [wazero](https://github.com/tetratelabs/wazero) | 4.9K+ |
+| C | [WAMR](https://github.com/bytecodealliance/wasm-micro-runtime) | 4.9K+ |
+| C | [wasm3](https://github.com/wasm3/wasm3) | 7.3K+ |
+| Java | [GraalWasm](https://github.com/oracle/graal/tree/master/wasm) | 20.3k+* refers to the entire JDK distribution |
+| Java | [Chicory](https://github.com/dylibso/chicory) | 480+ |
+
+Integrations:
+
+| Language | Wasm runtime | Github stars |
+|-|-|-|
 | Multiple | [extism](https://github.com/extism/extism) | 4.2k+ |
-| Python | [wasmer-python](https://github.com/wasmerio/wasmer-python) | 2k+ |
-| PHP | [wasmer-php](https://github.com/wasmerio/wasmer-php) | 1k+ |
-| Ruby | [wasmer-ruby](https://github.com/wasmerio/wasmer-ruby) | 500+ |
 
 Since we're integrating into a Node.js server let's use `wasm-bindgen` to generate the glue code that our Rust Wasm code and our JS code will use to interact with each other.
 
