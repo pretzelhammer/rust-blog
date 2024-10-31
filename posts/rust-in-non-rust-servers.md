@@ -248,9 +248,7 @@ Wow, I was not expecting throughput to increase by 76%! This is a very caveman-b
 
 ### Tier 2: Rust Wasm Module
 
-For this strategy we'll compile the Rust function into a Wasm module, and then load and run it from the host server using a Wasm runtime. Some links to Wasm runtimes:
-
-Web platform runtimes:
+For this strategy we'll compile the Rust function into a Wasm module, and then load and run it from the host server using a Wasm runtime. Some links to Wasm runtimes across different languages:
 
 | Language | Wasm runtime | Written in | Github stars |
 |-|-|-|-|
