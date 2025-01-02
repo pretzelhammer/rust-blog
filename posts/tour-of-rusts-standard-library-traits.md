@@ -71,7 +71,7 @@ _31 March 2021 · #rust · #traits_
 
 ## Intro
 
-Have you ever wondered what's the difference between:
+Have you ever wondered what the difference is between:
 - `Deref<Target = T>`, `AsRef<T>`, and `Borrow<T>`?
 - `Clone`, `Copy`, and `ToOwned`?
 - `From<T>` and `Into<T>`?
@@ -86,13 +86,13 @@ Or ever asked yourself the questions:
 
 Well then this is the article for you! It answers all of the above questions and much much more. Together we'll do a quick flyby tour of all of the most popular and commonly used traits from the Rust standard library!
 
-You can read this article in order section by section or jump around to whichever traits interest you the most because each trait section begins with a list of links to **Prerequisite** sections that you should read to have adequate context to understand the current section's explanations.
+You can read this article in order, section by section, or jump around to whichever traits interest you the most, because each trait section begins with a list of links to **Prerequisite** sections that you should read to have adequate context to understand the current section's explanations.
 
 
 
 ## Trait Basics
 
-We'll cover just enough of the basics so that the rest of the article can be streamlined without having to repeat the same explanations of the same concepts over and over as they reappear in different traits.
+We'll cover just enough of the basics so that the rest of the article can be streamlined without having to repeat the same explanations of the same concepts over and over, as they reappear in different traits.
 
 
 
@@ -154,7 +154,7 @@ trait Default {
 }
 ```
 
-Trait functions can be called namespaced by the trait or implementing type:
+Trait functions can be called via the namespace of the trait or of the implementing type:
 
 ```rust
 fn main() {
@@ -209,7 +209,7 @@ fn main() {
 
 #### Associated Types
 
-A trait can have associated types. This is useful when we need to use some type other than `Self` within function signatures but would still like the type to be chosen by the implementer rather than being hardcoded in the trait declaration:
+A trait can have associated types. This is useful when we need to use some type other than `Self` within function signatures, but we would still like the type to be chosen by the implementer rather than being hardcoded in the trait declaration:
 
 ```rust
 trait Trait {
@@ -243,7 +243,7 @@ fn main() {
 
 #### Generic Parameters
 
-_"Generic parameters"_ broadly refers to generic type parameters, generic lifetime parameters, and generic const parameters. Since all of those are a mouthful to say people commonly abbreviate them to _"generic types"_, _"lifetimes"_, and _"generic consts"_. Since generic consts are not used in any of the standard library traits we'll be covering they're outside the scope of this article.
+The term _"generic parameters"_ broadly refers to generic type parameters, generic lifetime parameters, and generic const parameters. Since all of those are a mouthful to say, people commonly abbreviate them to _"generic types"_, _"lifetimes"_, and _"generic consts"_. Since generic consts are not used in any of the standard library traits we'll be covering, they're outside the scope of this article.
 
 We can generalize a trait declaration using parameters:
 
@@ -275,7 +275,7 @@ impl<'b> Trait<'b, u8> for SomeType {
 }
 ```
 
-It's possible to provide default values for generic types. The most commonly used default value is `Self` but any type works:
+It's possible to provide default values for generic types. The most commonly used default value is `Self`, but any type works:
 
 ```rust
 // make T = Self by default
@@ -313,7 +313,7 @@ impl Trait2<String> for SomeType {
 }
 ```
 
-Aside from parameterizing the trait it's also possible to parameterize individual functions and methods:
+Aside from parameterizing the trait, it's also possible to parameterize individual functions and methods:
 
 ```rust
 trait Trait {
@@ -330,7 +330,7 @@ The general rule-of-thumb is:
 - Use associated types when there should only be a single impl of the trait per type.
 - Use generic types when there can be many possible impls of the trait per type.
 
-Let's say we want to define a trait called `Add` which allows us to add values together. Here's an initial design and impl that only uses associated types:
+Let's say we want to define a trait called `Add` that allows us to add values together. Here's an initial design and impl that only uses associated types:
 
 ```rust
 trait Add {
@@ -364,7 +364,7 @@ fn main() {
 }
 ```
 
-Let's say we wanted to add the ability to add `i32`s to `Point`s where the `i32` would be added to both the `x` and `y` members:
+Let's say we wanted to introduce the ability to add `i32`s to `Point`s, where the `i32` would be added to both the `x` and `y` members:
 
 ```rust
 trait Add {
@@ -428,7 +428,7 @@ error[E0119]: conflicting implementations of trait `Add` for type `Point`:
    | ^^^^^^^^^^^^^^^^^^ conflicting implementation for `Point`
 ```
 
-Since the `Add` trait is not parameterized by any generic types we can only impl it once per type, which means we can only pick the types for both `Rhs` and `Output` once! To allow adding both `Points`s and `i32`s to `Point` we have to refactor `Rhs` from an associated type to a generic type, which would allow us to impl the trait multiple times for `Point` with different type arguments for `Rhs`:
+Since the `Add` trait is not parameterized by any generic types, we can only impl it once per type, which means we can only pick the types for both `Rhs` and `Output` once! To allow adding both `Points`s and `i32`s to `Point` we have to refactor `Rhs` from an associated type to a generic type, which would allow us to impl the trait multiple times for `Point` with different type arguments for `Rhs`:
 
 ```rust
 trait Add<Rhs> {
@@ -476,7 +476,7 @@ fn main() {
 }
 ```
 
-Let's say we add a new type called `Line` which contains two `Point`s, and now there are contexts within our program where adding two `Point`s should produce a `Line` instead of a `Point`. This is not possible given the current design of the `Add` trait where `Output` is an associated type but we can satisfy these new requirements by refactoring `Output` from an associated type into a generic type:
+Let's say we add a new type called `Line` that contains two `Point`s, and now there are contexts within our program where adding two `Point`s should produce a `Line` instead of a `Point`. This is not possible given the current design of the `Add` trait where `Output` is still an associated type, but we can satisfy these new requirements by also refactoring `Output` from an associated type into a generic type:
 
 ```rust
 trait Add<Rhs, Output> {
@@ -544,7 +544,7 @@ So which `Add` trait above is the best? It really depends on the requirements of
 
 ### Scope
 
-Trait items cannot be used unless the trait is in scope. Most Rustaceans learn this the hard way the first time they try to write a program that does anything with I/O because the `Read` and `Write` traits are not in the standard library prelude:
+Trait items cannot be used unless the trait is in scope. Most Rustaceans learn this the hard way the first time they try to write a program that does anything with I/O, because the `Read` and `Write` traits are not in the standard library prelude:
 
 ```rust
 use std::fs::File;
@@ -558,7 +558,7 @@ fn main() -> Result<(), io::Error> {
 }
 ```
 
-`read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and implemented by the `std::fs::File` struct but in order to call it `std::io::Read` must be in scope:
+`read_to_string(buf: &mut String)` is declared by the `std::io::Read` trait and implemented by the `std::fs::File` struct, but in order to call it, `std::io::Read` must be in scope:
 
 ```rust
 use std::fs::File;
@@ -573,7 +573,7 @@ fn main() -> Result<(), io::Error> {
 }
 ```
 
-The standard library prelude is a module in the standard library, i.e. `std::prelude::v1`, that gets auto imported at the top of every other module, i.e. `use std::prelude::v1::*`. Thus the following traits are always in scope and we never have to explicitly import them ourselves because they're part of the prelude:
+The standard library prelude is a module in the standard library, i.e. `std::prelude::v1`, that gets auto-imported at the top of every other module, i.e. `use std::prelude::v1::*`. Thus the following traits are always in scope and we never have to explicitly import them ourselves, because they're part of the prelude:
 - [AsMut](#asref--asmut)
 - [AsRef](#asref--asmut)
 - [Clone](#clone)
@@ -601,7 +601,7 @@ The standard library prelude is a module in the standard library, i.e. `std::pre
 
 ### Derive Macros
 
-The standard library exports a handful of derive macros which we can use to quickly and conveniently impl a trait on a type if all of its members also impl the trait. The derive macros are named after the traits they impl:
+The standard library exports a handful of derive macros, which we can use to quickly and conveniently impl a trait on a type if all of its members also impl the trait. The derive macros are named after the traits they impl:
 - [Clone](#clone)
 - [Copy](#copy)
 - [Debug](#debug)
@@ -620,7 +620,7 @@ Example usage:
 struct SomeType;
 ```
 
-Note: derive macros are just procedural macros and can do anything, there's no hard rule that they must impl a trait or that they can only work if all the members of the type impl a trait, these are just the conventions followed by the derive macros in the standard library.
+Note: derive macros are just procedural macros and can do anything. There's no hard rule that they must impl a trait, or that they can only work if all the members of the type impl a trait. These are just the conventions followed by the derive macros in the standard library.
 
 
 
@@ -700,7 +700,7 @@ Many traits in the standard library provide default impls for many of their meth
 
 ### Generic Blanket Impls
 
-A generic blanket impl is an impl on a generic type instead of a concrete type. To explain why and how we'd use one let's start by writing an `is_even` method for number types:
+A generic blanket impl is an impl on a generic type instead of a concrete type. To explain why and how we'd use one, let's start by writing an `is_even` method for number types:
 
 ```rust
 trait Even {
@@ -736,7 +736,7 @@ fn test_is_even() {
 }
 ```
 
-Obviously, this is very verbose. Also, all of our impls are almost identical. Furthermore, in the unlikely but still possible event that Rust decides to add more number types in the future we have to remember to come back to this code and update it with the new number types. We can solve all these problems using a generic blanket impl:
+Obviously, this is very verbose. Also, all of our impls are almost identical. Furthermore, in the unlikely but still possible event that Rust decides to add more number types in the future, we have to remember to come back to this code and update it with the new number types. We can solve all these problems using a generic blanket impl:
 
 ```rust
 use std::fmt::Debug;
@@ -949,7 +949,7 @@ fn main() {
 }
 ```
 
-Hopefully the examples above show that the relationship between subtraits and supertraits can be complex. Before introducing a mental model that neatly encapsulates all of that complexity let's quickly review and establish the mental model we use for understanding trait bounds on generic types:
+Hopefully, the examples above show that the relationship between subtraits and supertraits can be complex. Before introducing a mental model that neatly encapsulates all of that complexity, let's quickly review and establish the mental model we use for understanding trait bounds on generic types:
 
 ```rust
 fn function<T: Clone>(t: T) {
@@ -957,7 +957,7 @@ fn function<T: Clone>(t: T) {
 }
 ```
 
-Without knowing anything about the impl of this function we could reasonably guess that `t.clone()` gets called at some point because when a generic type is bounded by a trait that strongly implies it has a dependency on the trait. The mental model for understanding the relationship between generic types and their trait bounds is a simple and intuitive one: generic types _depend on_ their trait bounds.
+Without knowing anything about the impl of this function we could reasonably guess that `t.clone()` gets called at some point, because when a generic type is bounded by a trait, that strongly implies it has a dependency on the trait. The mental model for understanding the relationship between generic types and their trait bounds is a simple and intuitive one: generic types _depend on_ their trait bounds.
 
 Now let's look the trait declaration for `Copy`:
 
@@ -967,8 +967,8 @@ trait Copy: Clone {}
 
 The syntax above looks very similar to the syntax for applying a trait bound on a generic type and yet `Copy` doesn't depend on `Clone` at all. The mental model we developed earlier doesn't help us here. In my opinion, the most simple and elegant mental model for understanding the relationship between subtraits and supertraits is: subtraits _refine_ their supertraits.
 
-"Refinement" is intentionally kept somewhat vague because it can mean different things in different contexts:
-- a subtrait might make its supertrait's methods' impls more specialized, faster, use less memory, e.g. `Copy: Clone`
+"Refinement" is intentionally kept somewhat vague, because it can mean different things in different contexts:
+- a subtrait might make its supertrait's methods' impls more specialized, faster, or use less memory, e.g. `Copy: Clone`
 - a subtrait might make additional guarantees about the supertrait's methods' impls, e.g. `Eq: PartialEq`, `Ord: PartialOrd`, `ExactSizeIterator: Iterator`
 - a subtrait might make the supertrait's methods more flexible or easier to call, e.g. `FnMut: FnOnce`, `Fn: FnMut`
 - a subtrait might extend a supertrait and add new methods, e.g. `DoubleEndedIterator: Iterator`, `ExactSizeIterator: Iterator`
@@ -977,7 +977,7 @@ The syntax above looks very similar to the syntax for applying a trait bound on 
 
 ### Trait Objects
 
-Generics give us compile-time polymorphism where trait objects give us run-time polymorphism. We can use trait objects to allow functions to dynamically return different types at run-time:
+Generics give us compile-time polymorphism, while trait objects give us run-time polymorphism. We can use trait objects to allow functions to dynamically return different types at run-time:
 
 ```rust
 fn example(condition: bool, vec: Vec<i32>) -> Box<dyn Iterator<Item = i32>> {
@@ -1040,7 +1040,7 @@ fn example() {
 }
 ```
 
-Trait objects are unsized so they must always be behind a pointer. We can tell the difference between a concrete type and a trait object at the type level based on the presence of the `dyn` keyword within the type:
+Trait objects are unsized, so they must always be behind a pointer. We can tell the difference between a concrete type and a trait object at the type level, based on the presence of the `dyn` keyword within the type:
 
 ```rust
 struct Struct;
@@ -1067,7 +1067,7 @@ A trait method is object-safe if it meets these requirements:
 - method requires `Self: Sized` or
 - method only uses a `Self` type in receiver position
 
-Understanding why the requirements are what they are is not relevant to the rest of this article, but if you're still curious it's covered in [Sizedness in Rust](./sizedness-in-rust.md).
+Understanding why these requirements are what they are is not relevant to the rest of this article, but if you're still curious, it's covered in [Sizedness in Rust](./sizedness-in-rust.md).
 
 
 
@@ -1118,7 +1118,7 @@ unsafe auto trait Sync {}
 
 ### Unsafe Traits
 
-Traits can be marked unsafe to indicate that impling the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe` because if they aren't automatically implemented for a type that means it must contains some non-`Send` or non-`Sync` member and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
+Traits can be marked unsafe to indicate that impling the trait might require unsafe code. Both `Send` and `Sync` are marked `unsafe`, because if they aren't automatically implemented for a type, that means it must contains some non-`Send` or non-`Sync` member, and we have to take extra care as the implementers to make sure there are no data races if we want to manually mark the type as `Send` and `Sync`.
 
 ```rust
 // SomeType is not Send or Sync
@@ -1126,8 +1126,8 @@ struct SomeType {
     not_send_or_sync: *const (),
 }
 
-// but if we're confident that our impl doesn't have any data
-// races we can explicitly mark it as Send and Sync using unsafe
+// but if we're confident that our impl doesn't have any data races,
+// we can explicitly mark it as Send and Sync using unsafe
 unsafe impl Send for SomeType {}
 unsafe impl Sync for SomeType {}
 ```
@@ -1150,13 +1150,13 @@ unsafe auto trait Send {}
 unsafe auto trait Sync {}
 ```
 
-If a type is `Send` that means it's safe to send between threads. If a type is `Sync` that means it's safe to share references of it between threads. In more precise terms some type `T` is `Sync` if and only if `&T` is `Send`.
+If a type is `Send`, that means it's safe to send between threads. If a type is `Sync`, that means it's safe to share references of it between threads. In more precise terms, some type `T` is `Sync` if and only if `&T` is `Send`.
 
-Almost all types are `Send` and `Sync`. The only notable `Send` exception is `Rc` and the only notable `Sync` exceptions are `Rc`, `Cell`, `RefCell`. If we need a `Send` version of `Rc` we can use `Arc`. If we need a `Sync` version of `Cell` or `RefCell` we can `Mutex` or `RwLock`. Although if we're using the `Mutex` or `RwLock` to just wrap a primitive type it's often better to use the atomic primitive types provided by the standard library such as `AtomicBool`, `AtomicI32`, `AtomicUsize`, and so on.
+Almost all types are `Send` and `Sync`. The only notable `Send` exception is `Rc` and the only notable `Sync` exceptions are `Rc`, `Cell`, and `RefCell`. If we need a `Send` version of `Rc`, we can use `Arc`. If we need a `Sync` version of `Cell` or `RefCell`, we can `Mutex` or `RwLock`. Although, if we're using the `Mutex` or `RwLock` to just wrap a primitive type, it's often better to use the atomic primitive types provided by the standard library, such as `AtomicBool`, `AtomicI32`, `AtomicUsize`, and so on.
 
 That almost all types are `Sync` might be a surprise to some people, but yup, it's true even for types without any internal synchronization. This is possible thanks to Rust's strict borrowing rules.
 
-We can pass many immutable references to the same data to many threads and we're guaranteed there are no data races because as long as any immutable references exist Rust statically guarantees the underlying data cannot be mutated:
+We can pass many immutable references to the same data to many threads, and we're guaranteed that there are no data races, because as long as any immutable references exist, Rust statically guarantees that the underlying data cannot be mutated:
 
 ```rust
 use crossbeam::thread;
@@ -1184,7 +1184,7 @@ fn main() {
 }
 ```
 
-Likewise we can pass a single mutable reference to some data to a single thread and we're guaranteed there will be no data races because Rust statically guarantees aliased mutable references cannot exist and the underlying data cannot be mutated through anything other than the single existing mutable reference:
+Likewise, we can pass a single mutable reference to some data to a single thread, and we're guaranteed that there will be no data races, because Rust statically guarantees that aliased mutable references cannot exist, and that the underlying data cannot be mutated through anything other than the single existing mutable reference:
 
 ```rust
 use crossbeam::thread;
@@ -1210,7 +1210,7 @@ fn main() {
 }
 ```
 
-This is why most types are `Sync` without requiring any explicit synchronization. In the event we need to simultaneously mutate some data `T` across multiple threads the compiler won't let us until we wrap the data in a `Arc<Mutex<T>>` or `Arc<RwLock<T>>` so the compiler enforces that explicit synchronization is used when it's needed.
+This is why most types are `Sync` without requiring any explicit synchronization. In the event that we need to simultaneously mutate some data `T` across multiple threads, the compiler won't let us, until we wrap the data in a `Arc<Mutex<T>>` or `Arc<RwLock<T>>`, so the compiler enforces that explicit synchronization is used when it's needed.
 
 
 
@@ -1220,9 +1220,9 @@ Prerequisites
 - [Marker Traits](#marker-traits)
 - [Auto Traits](#auto-traits)
 
-If a type is `Sized` that means its size in bytes is known at compile-time and it's possible to put instances of the type on the stack.
+If a type is `Sized`, that means its size in bytes is known at compile-time, and it's possible to put instances of the type on the stack.
 
-Sizedness of types and its implications is a subtle yet huge topic that affects a lot of different aspects of the language. It's so important that I wrote an entire article on it called [Sizedness in Rust](./sizedness-in-rust.md) which I highly recommend reading for anyone who would like to understand sizedness in-depth. I'll summarize a few key things which are relevant to this article.
+Sizedness of types, and its implications, is a subtle, yet huge, topic that affects a lot of different aspects of the language. It's so important that I wrote an entire article on it called [Sizedness in Rust](./sizedness-in-rust.md), which I highly recommend reading for anyone who would like to understand sizedness in-depth. I'll summarize a few key things which are relevant to this article.
 
 1. All generic types get an implicit `Sized` bound.
 
@@ -1233,7 +1233,7 @@ fn func<T>(t: &T) {}
 fn func<T: Sized>(t: &T) {}
 ```
 
-2. Since there's an implicit `Sized` bound on all generic types, if we want to opt-out of this implicit bound we need to use the special _"relaxed bound"_ syntax `?Sized` which currently only exists for the `Sized` trait:
+2. Since there's an implicit `Sized` bound on all generic types, if we want to opt-out of this implicit bound, we need to use the special _"relaxed bound"_ syntax `?Sized`, which currently only exists for the `Sized` trait:
 
 ```rust
 // now T can be unsized
@@ -1291,7 +1291,7 @@ impl Default for Color {
 }
 ```
 
-This is useful for quick prototyping but also in any instance where we just need an instance of a type and aren't picky about what it is:
+This is useful for quick prototyping, but also in any instance where we just need an instance of a type, and we aren't picky about what it is:
 
 ```rust
 fn main() {
@@ -1300,7 +1300,7 @@ fn main() {
 }
 ```
 
-This is also an option we may want to explicitly expose to the users of our functions:
+This is also useful when providing an optional parameter to functions:
 
 ```rust
 struct Canvas;
@@ -1312,7 +1312,7 @@ enum Shape {
 impl Canvas {
     // let user optionally pass a color
     fn paint(&mut self, shape: Shape, color: Option<Color>) {
-        // if no color is passed use the default color
+        // if no color is passed, use the default color
         let color = color.unwrap_or_default();
         // etc
     }
@@ -1330,7 +1330,7 @@ fn guarantee_length<T: Default>(mut vec: Vec<T>, min_len: usize) -> Vec<T> {
 }
 ```
 
-Another way we can take advantage of `Default` types is for partial initialization of structs using Rust's struct update syntax. We may have a `new` constructor for `Color` which takes every member as an argument:
+Another way we can take advantage of `Default` types is for partial initialization of structs using Rust's struct update syntax. We may have a `new` constructor for `Color` that takes every member as an argument:
 
 ```rust
 impl Color {
@@ -1344,7 +1344,7 @@ impl Color {
 }
 ```
 
-However we can also have convenience constructors that only accept a particular struct member each and fall back to the default values for the other struct members:
+However, we can also have convenience constructors that only accept a particular struct member, and fall back to the default values for the other struct members:
 
 ```rust
 impl Color {
@@ -1369,10 +1369,10 @@ impl Color {
 }
 ```
 
-There's also a `Default` derive macro for so we can write `Color` like this:
+There's also a `Default` derive macro, which works when all of a types's members are `Default`, so we can write `Color` like this:
 
 ```rust
-// default color is still black
+// default color is black
 // because u8::default() == 0
 #[derive(Default)]
 struct Color {
@@ -1401,7 +1401,7 @@ trait Clone {
 }
 ```
 
-We can convert immutable references of `Clone` types into owned values, i.e. `&T` -> `T`. `Clone` makes no promises about the efficiency of this conversion so it can be slow and expensive. To quickly impl `Clone` on a type we can use the derive macro:
+We can convert immutable references of `Clone` types into owned values, i.e. `&T` -> `T`. `Clone` makes no promises about the efficiency of this conversion, so it can be slow and expensive. To quickly impl `Clone` on a type, we can use the derive macro:
 
 ```rust
 #[derive(Clone)]
@@ -1423,7 +1423,7 @@ impl Clone for SomeType {
 }
 ```
 
-`Clone` can also be useful in constructing instances of a type within a generic context. Here's a modified example from the previous section except using `Clone` instead of `Default`:
+`Clone` can also be useful when constructing instances of a type within a generic context. Here's a modified example from the previous section, but uses `Clone` instead of `Default`:
 
 ```rust
 fn guarantee_length<T: Clone>(mut vec: Vec<T>, min_len: usize, fill_with: &T) -> Vec<T> {
@@ -1434,7 +1434,7 @@ fn guarantee_length<T: Clone>(mut vec: Vec<T>, min_len: usize, fill_with: &T) ->
 }
 ```
 
-People also commonly use cloning as an escape hatch to avoid dealing with the borrow checker. Managing structs with references can be challenging, but we can turn the references into owned values by cloning them.
+People also commonly use cloning as an escape hatch, to avoid dealing with the borrow checker. Managing structs with references can be challenging, but we can turn the references into owned values by cloning them.
 
 ```rust
 // oof, we gotta worry about lifetimes 😟
@@ -1448,7 +1448,7 @@ struct SomeStruct {
 }
 ```
 
-If we're working on a program where performance is not the utmost concern then we don't need to sweat cloning data. Rust is a low-level language that exposes a lot of low-level details so it's easy to get caught up in premature optimizations instead of actually solving the problem at hand. For many programs the best order of priorities is usually to build for correctness first, elegance second, and performance third, and only focus on performance after the program has been profiled and the performance bottlenecks have been identified. This is good general advice to follow, and if it doesn't apply to your particular program then you would know.
+If we're working on a program where performance is not the utmost concern, then we don't need to sweat cloning data. Rust is a low-level language that exposes a lot of low-level details, so it's easy to get caught up in premature optimizations instead of actually solving the problem at hand. For many programs, the best order of priorities is usually to build for correctness first, elegance second, and performance third, and only focus on performance after the program has been profiled and the performance bottlenecks have been identified. This is good general advice to follow, and if it doesn't apply to your particular program, then you would know.
 
 
 
@@ -1463,14 +1463,14 @@ Prerequisites
 trait Copy: Clone {}
 ```
 
-We copy `Copy` types, e.g. `T` -> `T`. `Copy` promises the copy operation will be a simple bitwise copy so it will be very fast and efficient. We cannot impl `Copy` ourselves, only the compiler can provide an impl, but we can tell it to do so by using the `Copy` derive macro, together with the `Clone` derive macro since `Copy` is a subtrait of `Clone`:
+We copy `Copy` types, e.g. `T` -> `T`. `Copy` promises the copy operation will be a simple bitwise copy, so it will be very fast and efficient. We cannot impl `Copy` ourselves, only the compiler can provide an impl, but we can tell it to do so by using the `Copy` derive macro, together with the `Clone` derive macro since `Copy` is a subtrait of `Clone`:
 
 ```rust
 #[derive(Copy, Clone)]
 struct SomeType;
 ```
 
-`Copy` refines `Clone`. A clone may be slow and expensive but a copy is guaranteed to be fast and cheap, so a copy is just a fast clone. If a type impls `Copy` that makes the `Clone` impl trivial:
+`Copy` refines `Clone`. A clone may be slow and expensive but a copy is guaranteed to be fast and cheap, so a copy is just a fast clone. If a type impls `Copy`, that makes the `Clone` impl trivial:
 
 ```rust
 // this is what the derive macro generates
@@ -1482,7 +1482,7 @@ impl<T: Copy> Clone for T {
 }
 ```
 
-Impling `Copy` for a type changes its behavior when it gets moved. By default all types have _move semantics_ but once a type impls `Copy` it gets _copy semantics_. To explain the difference between the two let's examine these simple scenarios:
+Impling `Copy` for a type changes its behavior when it gets moved. By default, all types have _move semantics_, but once a type impls `Copy`, it gets _copy semantics_. To explain the difference between the two, let's examine these simple scenarios:
 
 ```rust
 // a "move", src: !Copy
@@ -1492,25 +1492,29 @@ let dest = src;
 let dest = src;
 ```
 
-In both cases, `dest = src` performs a simple bitwise copy of `src`'s contents and moves the result into `dest`, the only difference is that in the case of _"a move"_ the borrow checker invalidates the `src` variable and makes sure it's not used anywhere else later and in the case of _"a copy"_ `src` remains valid and usable.
+In both cases, `dest = src` performs a simple bitwise copy of `src`'s contents and moves the result into `dest`. The only difference is that in the case of _"a move"_, the borrow checker invalidates the `src` variable, and makes sure it's not used anywhere else later, and in the case of _"a copy"_, `src` remains valid and usable.
 
 In a nutshell: Copies _are_ moves. Moves _are_ copies. The only difference is how they're treated by the borrow checker.
 
-For a more concrete example of a move, imagine `src` was a `Vec<i32>` and its contents looked something like this:
+#### move example
+For a more concrete example of a move, imagine `src` was a `Vec<i32>`, and its contents looked something like this:
 
 ```rust
 { data: *mut [i32], length: usize, capacity: usize }
 ```
 
-When we write `dest = src` we end up with:
+Note that `Vec` does not implement `Copy`, and has move semantics.
+
+When we write `dest = src`, we end up with:
 
 ```rust
 src = { data: *mut [i32], length: usize, capacity: usize }
 dest = { data: *mut [i32], length: usize, capacity: usize }
 ```
 
-At this point both `src` and `dest` have aliased mutable references to the same data, which is a big no-no, so the borrow checker invalidates the `src` variable so it can't be used again without throwing a compile error.
+At this point, both `src` and `dest` have aliased mutable references to the same data, which is a big no-no, so the borrow checker invalidates the `src` variable, and it can't be used again without throwing a compile error.
 
+#### copy example
 For a more concrete example of a copy, imagine `src` was an `Option<i32>` and its contents looked something like this:
 
 ```rust
@@ -1526,7 +1530,7 @@ dest = { is_valid: bool, data: i32 }
 
 These are both usable simultaneously! Hence `Option<i32>` is `Copy`.
 
-Although `Copy` could be an auto trait the Rust language designers decided it's simpler and safer for types to explicitly opt into copy semantics rather than silently inheriting copy semantics whenever the type is eligible, as the latter can cause surprising confusing behavior which often leads to bugs.
+Although `Copy` could be an auto trait, the Rust language designers decided that it's simpler and safer for types to explicitly opt into copy semantics, rather than silently inheriting copy semantics whenever the type is eligible, as the latter can cause surprising confusing behavior, which often leads to bugs.
 
 
 
@@ -1544,7 +1548,7 @@ trait Any: 'static {
 }
 ```
 
-Rust's style of polymorphism is parametric, but if we're looking to use a more ad-hoc style of polymorphism similar to dynamically-typed languages then we can emulate that using the `Any` trait. We don't have to manually impl this trait for our types because that's already covered by this generic blanket impl:
+Rust's style of polymorphism is parametric, but if we're looking to use a more ad-hoc style of polymorphism, similar to dynamically-typed languages, then we can emulate that using the `Any` trait. We don't have to manually impl this trait for our types, because it's already covered by this generic blanket impl:
 
 ```rust
 impl<T: 'static + ?Sized> Any for T {
@@ -1572,7 +1576,7 @@ impl Point {
     }
 }
 
-fn map_any(mut any: Box<dyn Any>) -> Box<dyn Any> {
+fn inc_any(mut any: Box<dyn Any>) -> Box<dyn Any> {
     if let Some(num) = any.downcast_mut::<i32>() {
         *num += 1;
     } else if let Some(string) = any.downcast_mut::<String>() {
@@ -1590,12 +1594,12 @@ fn main() {
         Box::new(Point::default()),
     ];
     // vec = [0, "a", Point { x: 0, y: 0 }]
-    vec = vec.into_iter().map(map_any).collect();
+    vec = vec.into_iter().map(inc_any).collect();
     // vec = [1, "a!", Point { x: 1, y: 1 }]
 }
 ```
 
-This trait rarely _needs_ to be used because on top of parametric polymorphism being superior to ad-hoc polymorphism in most scenarios the latter can also be emulated using enums which are more type-safe and require less indirection. For example, we could have written the above example like this:
+This trait rarely _needs_ to be used, because on top of parametric polymorphism being superior to ad-hoc polymorphism in most scenarios, the latter can also be emulated using enums, which are more type-safe and require less indirection. For example, we could have written the above example like this:
 
 ```rust
 #[derive(Default)]
@@ -1617,7 +1621,7 @@ enum Stuff {
     Point(Point),
 }
 
-fn map_stuff(mut stuff: Stuff) -> Stuff {
+fn inc_stuff(mut stuff: Stuff) -> Stuff {
     match &mut stuff {
         Stuff::Integer(num) => *num += 1,
         Stuff::String(string) => *string += "!",
@@ -1633,18 +1637,18 @@ fn main() {
         Stuff::Point(Point::default()),
     ];
     // vec = [0, "a", Point { x: 0, y: 0 }]
-    vec = vec.into_iter().map(map_stuff).collect();
+    vec = vec.into_iter().map(inc_stuff).collect();
     // vec = [1, "a!", Point { x: 1, y: 1 }]
 }
 ```
 
-Despite `Any` rarely being _needed_ it can still be convenient to use sometimes, as we'll later see in the **Error Handling** section.
+Despite `Any` rarely being _needed_, it can still be convenient to use sometimes, as we'll later see in the **Error Handling** section.
 
 
 
 ## Formatting Traits
 
-We can serialize types into strings using the formatting macros in `std::fmt`, the most well-known of the bunch being `println!`. We can pass formatting parameters to the `{}` placeholders used within format `str`s which are then used to select which trait impl to use to serialize the placeholder's argument.
+We can serialize types into strings using the formatting macros in `std::fmt`, the most well-known of the bunch being `println!`. We can pass formatting parameters to the `{}` placeholders used within format `str`s, which are then used to select which trait impl to use to serialize the placeholder's argument.
 
 | Trait | Placeholder | Description |
 |-------|-------------|-------------|
@@ -1673,7 +1677,7 @@ trait Display {
 }
 ```
 
-`Display` types can be serialized into `String`s which are friendly to the end users of the program. Example impl for `Point`:
+`Display` types can be serialized into `String`s that are friendly to the end users of the program. Example impl for `Point`:
 
 ```rust
 use std::fmt;
@@ -1700,7 +1704,7 @@ fn main() {
 }
 ```
 
-Aside from using the `format!` macro to get a type's display representation as a `String` we can use the `ToString` trait:
+In addition to using the `format!` macro to get a type's display representation as a `String`, we can use the `ToString` trait:
 
 ```rust
 trait ToString {
@@ -1708,7 +1712,7 @@ trait ToString {
 }
 ```
 
-There's no need for us to impl this ourselves. In fact we can't, because of this generic blanket impl that automatically impls `ToString` for any type which impls `Display`:
+There's no need for us to impl this ourselves. In fact, we can't, because of this generic blanket impl that already automatically impls `ToString` for any type which impls `Display`:
 
 ```rust
 impl<T: Display + ?Sized> ToString for T;
@@ -1752,7 +1756,11 @@ trait Debug {
 }
 ```
 
-`Debug` has an identical signature to `Display`. The only difference is that the `Debug` impl is called when we use the `{:?}` formatting specifier. `Debug` can be derived:
+`Debug` has an identical signature to `Display`. The only difference is that the `Debug` impl is called when we use the `{:?}` formatting specifier.
+
+While the result of `Display` is intended to be seen by end users of a program, the `Debug` result is intended to only be shown to developers. The standard library implements `Display` for many built-in types, such as numbers, but does not implement `Display` for most types.  However, the standard library does implement `Debug` for a variety of common types such as tuples, `Vec`, `HashMap`, and other collections, as a way to easily print out values while debugging and developing.
+
+`Debug` can be derived on a type if all of its members are `Debug`:
 
 ```rust
 use std::fmt;
@@ -1774,7 +1782,7 @@ impl fmt::Debug for Point {
 }
 ```
 
-Impling `Debug` for a type also allows it to be used within the `dbg!` macro which is superior to `println!` for quick and dirty print logging. Some of its advantages:
+Impling `Debug` for a type also allows it to be used within the `dbg!` macro, which is superior to `println!` for quick and dirty print logging. Some of its advantages:
 
 1. `dbg!` prints to stderr instead of stdout so the debug logs are easy to separate from the actual stdout output of our program.
 2. `dbg!` prints the expression passed to it as well as the value the expression evaluated to.
@@ -1811,13 +1819,13 @@ fn example_dbg() {
 }
 ```
 
-The only downside is that `dbg!` isn't automatically stripped in release builds so we have to manually remove it from our code if we don't want to ship it in the final executable.
+The only downside is that `dbg!` isn't automatically stripped in release builds, so we have to manually remove it from our code if we don't want to ship it in the final executable.
 
 
 
 ## Operator Traits
 
-All operators in Rust are associated with traits. If we'd like to impl operators for our types we have to impl the associated traits.
+All operators in Rust are associated with traits. If we'd like to impl operators for our types, we have to impl the associated traits.
 
 | Trait(s) | Category | Operator(s) | Description |
 |----------|----------|-------------|-------------|
@@ -1928,7 +1936,7 @@ enum Suit {
 }
 ```
 
-Once we impl `PartialEq` for our type we also get equality comparisons between references of our type for free thanks to these generic blanket impls:
+Once we impl `PartialEq` for our type, we also get equality comparisons between references of our type for free, thanks to these generic blanket impls:
 
 ```rust
 // this impl only gives us: Point == Point
@@ -1958,9 +1966,9 @@ impl<A, B> PartialEq<&'_ mut B> for &'_ mut A
 where A: PartialEq<B> + ?Sized, B: ?Sized;
 ```
 
-Since this trait is generic we can define equality between different types. The standard library leverages this to allow checking equality between the many string-like types such as `String`, `&str`, `PathBuf`, `&Path`, `OsString`, `&OsStr`, and so on.
+Since this trait is generic, we can define equality between different types. The standard library leverages this to allow checking equality between the many string-like types, such as `String`, `&str`, `PathBuf`, `&Path`, `OsString`, `&OsStr`, and so on.
 
-Generally, we should only impl equality between different types _if they contain the same kind of data_ and the only difference between the types is how they represent the data or how they allow interacting with the data.
+Generally, we should only impl equality between different types _if they contain the same kind of data_, and the only difference between the types is how they represent the data or how they allow interacting with the data.
 
 Here's a cute but bad example of how someone might be tempted to impl `PartialEq` to check equality between different types that don't meet the above criteria:
 
@@ -2020,7 +2028,7 @@ fn main() {
 }
 ```
 
-It works and kinda makes sense. A card which is an Ace of Spades is both an Ace and a Spade, and if we're writing a library to handle playing cards it's reasonable that we'd want to make it easy and convenient to individually check the suit and rank of a card. However, something's missing: symmetry! We can `Card == Suit` and `Card == Rank` but we cannot `Suit == Card` or `Rank == Card` so let's fix that:
+It works and kinda makes sense. A card which is an Ace of Spades is both an Ace and a Spade, and if we're writing a library to handle playing cards, it's reasonable that we'd want to make it easy and convenient to individually check the suit and rank of a card. However, something's missing: symmetry! We can `Card == Suit` and `Card == Rank`, but we cannot `Suit == Card` or `Rank == Card`, so let's fix that:
 
 ```rust
 // check equality of Card's suit
@@ -2052,7 +2060,7 @@ impl PartialEq<Card> for Rank {
 }
 ```
 
-We have symmetry! Great. Adding symmetry just broke transitivity! Oops. This is now possible:
+We have symmetry! Great. But adding symmetry just broke transitivity! Oops. This is now possible:
 
 ```rust
 fn main() {
@@ -2072,7 +2080,7 @@ fn main() {
 }
 ```
 
-A good example of impling `PartialEq` to check equality between different types would be a program that works with distances and uses different types to represent different units of measurement.
+A good example of impling `PartialEq` to check equality between different types would be a program that works with distances, and which uses different types to represent different units of measurement.
 
 ```rust
 #[derive(PartialEq)]
@@ -2142,11 +2150,11 @@ fn main() {
 trait Eq: PartialEq<Self> {}
 ```
 
-If we impl `Eq` for a type, on top of the symmetry & transitivity properties required by `PartialEq`, we're also guaranteeing reflexivity, i.e. `a == a` for all `a`. In this sense `Eq` refines `PartialEq` because it represents a stricter version of equality. If all members of a type impl `Eq` then the `Eq` impl can be derived for the type.
+If we impl `Eq` for a type, on top of the symmetry & transitivity properties required by `PartialEq`, we're also guaranteeing reflexivity, i.e. `a == a` for all `a`. In this sense, `Eq` refines `PartialEq` because it represents a stricter version of equality. If all members of a type impl `Eq`, then the `Eq` impl can be derived for the type.
 
-Floats are `PartialEq` but not `Eq` because `NaN != NaN`. Almost all other `PartialEq` types are trivially `Eq`, unless of course if they contain floats.
+Floats are `PartialEq` but not `Eq`, because `NaN != NaN`. Almost all other `PartialEq` types are trivially `Eq`, unless, of course, they contain floats.
 
-Once a type impls `PartialEq` and `Debug` we can use it in the `assert_eq!` macro. We can also compare collections of `PartialEq` types.
+Once a type impls `PartialEq` and `Debug`, we can use it in the `assert_eq!` macro. We can also compare collections of `PartialEq` types.
 
 ```rust
 #[derive(PartialEq, Debug)]
@@ -2190,7 +2198,7 @@ trait Hash {
 }
 ```
 
-This trait is not associated with any operator, but the best time to talk about it is right after `PartialEq` & `Eq` so here it is. `Hash` types can be hashed using a `Hasher`.
+This trait is not associated with any operator, but the best time to talk about it is right after `PartialEq` & `Eq`, so here it is. `Hash` types can be hashed using a `Hasher`.
 
 ```rust
 use std::hash::Hasher;
@@ -2209,7 +2217,7 @@ impl Hash for Point {
 }
 ```
 
-There's a derive macro which generates the same impl as above:
+There's a derive macro, which generates the same impl as above:
 
 ```rust
 #[derive(Hash)]
@@ -2219,7 +2227,7 @@ struct Point {
 }
 ```
 
-If a type impls both `Hash` and `Eq` those impls must agree with each other such that for all `a` and `b` if `a == b` then `a.hash() == b.hash()`. So we should always use the derive macro to impl both or manually impl both, but not mix the two, otherwise we risk breaking the above invariant.
+If a type impls both `Hash` and `Eq`, those impls must agree with each other, such that for all `a` and `b`, if `a == b` then `a.hash() == b.hash()`. So we should always use the derive macro to impl both or manually impl both, but not mix the two, otherwise we risk breaking the above invariant.
 
 The main benefit of impling `Eq` and `Hash` for a type is that it allows us to store that type as keys in `HashMap`s and `HashSet`s.
 
@@ -2281,7 +2289,7 @@ All `PartialOrd` impls must ensure that comparisons are asymmetric and transitiv
 - `a < b` implies `!(a > b)` (asymmetry)
 - `a < b && b < c` implies `a < c` (transitivity)
 
-`PartialOrd` is a subtrait of `PartialEq` and their impls must always agree with each other.
+`PartialOrd` is a subtrait of `PartialEq`, and their impls must always agree with each other.
 
 ```rust
 fn must_always_agree<T: PartialOrd + PartialEq>(t1: T, t2: T) {
@@ -2289,9 +2297,9 @@ fn must_always_agree<T: PartialOrd + PartialEq>(t1: T, t2: T) {
 }
 ```
 
-`PartialOrd` refines `PartialEq` in the sense that when comparing `PartialEq` types we can check if they are equal or not equal, but when comparing `PartialOrd` types we can check if they are equal or not equal, and if they are not equal we can check if they are unequal because the first item is less than or greater than the second item.
+`PartialOrd` refines `PartialEq` in the sense that when comparing `PartialEq` types we can check if they are equal or not equal, but when comparing `PartialOrd` types, we can not only check if they are equal or not equal, but when they are not equal, we can further check if the first item is less than or greater than the second item.
 
-By default `Rhs = Self` because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
+By default, `Rhs = Self`, because we almost always want to compare instances of a type to each other, and not to instances of different types. This also automatically guarantees our impl is symmetric and transitive.
 
 ```rust
 use std::cmp::Ordering;
@@ -2334,9 +2342,9 @@ enum Stoplight {
 The `PartialOrd` derive macro orders types based on the lexicographical order of their members:
 
 ```rust
-// generates PartialOrd impl which orders
+// generates PartialOrd impl that orders
 // Points based on x member first and
-// y member second because that's the order
+// y member second, because that's the order
 // they appear in the source code
 #[derive(PartialOrd, PartialEq)]
 struct Point {
@@ -2345,7 +2353,7 @@ struct Point {
 }
 
 // generates DIFFERENT PartialOrd impl
-// which orders Points based on y member
+// that orders Points based on y member
 // first and x member second
 #[derive(PartialOrd, PartialEq)]
 struct Point {
@@ -2367,7 +2375,7 @@ trait Ord: Eq + PartialOrd<Self> {
 }
 ```
 
-If we impl `Ord` for a type, on top of the asymmetry & transitivity properties required by `PartialOrd`, we're also guaranteeing that the asymmetry is total, i.e. exactly one of `a < b`, `a == b` or `a > b` is true for any given `a` and `b`. In this sense `Ord` refines `Eq` and `PartialOrd` because it represents a stricter version of comparisons. If a type impls `Ord` we can use that impl to trivially impl `PartialOrd`, `PartialEq`, and `Eq`:
+If we impl `Ord` for a type, on top of the asymmetry & transitivity properties required by `PartialOrd`, we're also guaranteeing that the asymmetry is total, i.e. exactly one of `a < b`, `a == b` or `a > b` is true for any given `a` and `b`. In this sense `Ord` refines `Eq` and `PartialOrd`, because it represents a stricter version of comparisons. If a type impls `Ord`, we can use that impl to trivially impl `PartialOrd`, `PartialEq`, and `Eq`:
 
 ```rust
 use std::cmp::Ordering;
@@ -2405,9 +2413,9 @@ impl PartialEq for Point {
 impl Eq for Point {}
 ```
 
-Floats impl `PartialOrd` but not `Ord` because both `NaN < 0 == false` and `NaN >= 0 == false` are simultaneously true. Almost all other `PartialOrd` types are trivially `Ord`, unless of course if they contain floats.
+Floats impl `PartialOrd`, but not `Ord`, because both `NaN < 0 == false` and `NaN >= 0 == false` are simultaneously true. Almost all other `PartialOrd` types are trivially `Ord`, unless, of course, they contain floats.
 
-Once a type impls `Ord` we can store it in `BTreeMap`s and `BTreeSet`s as well as easily sort it using the `sort()` method on slices and any types which deref to slices such as arrays, `Vec`s, and `VecDeque`s.
+Once a type impls `Ord`, we can store it in `BTreeMap`s and `BTreeSet`s, as well as easily sort it using the `sort()` method on slices, and any types which deref to slices such as arrays, `Vec`s, and `VecDeque`s.
 
 ```rust
 use std::collections::BTreeSet;
@@ -2460,7 +2468,7 @@ fn example_sort<T: Ord>(mut sortable: Vec<T>) -> Vec<T> {
 | `SubAssign` | arithmetic | `-=` | subtraction assignment |
 
 
-Going over all of these would be very redundant. Most of these only apply to number types anyway. We'll only go over `Add` and `AddAssign` since the `+` operator is commonly overloaded to do other stuff like adding items to collections or concatenating things together, that way we cover the most interesting ground and don't repeat ourselves.
+Going over all of these would be very redundant. Most of these only apply to number types anyway. We'll only go over `Add` and `AddAssign`, since the `+` operator is commonly overloaded to do other stuff like adding items to collections or concatenating things together.  That way, we cover the most interesting ground and don't repeat ourselves.
 
 
 #### Add & AddAssign
@@ -2534,7 +2542,7 @@ error[E0369]: cannot add `&Point` to `&Point`
    = note: an implementation of `std::ops::Add` might be missing for `&Point`
 ```
 
-Within Rust's type system, for some type `T`, the types `T`, `&T`, and `&mut T` are all treated as unique distinct types which means we have to provide trait impls for each of them separately. Let's define an `Add` impl for `&Point`:
+Within Rust's type system, for some type `T`, the types `T`, `&T`, and `&mut T` are all treated as unique distinct types, which means we have to provide trait impls for each of them separately. Let's define an `Add` impl for `&Point`:
 
 ```rust
 impl Add for &Point {
@@ -2556,7 +2564,7 @@ fn main() {
 }
 ```
 
-However, something still doesn't feel quite right. We have two separate impls of `Add` for `Point` and `&Point` and they _happen_ to do the same thing currently but there's no guarantee that they will in the future! For example, let's say we decide that when we add two `Point`s together we want to create a `Line` containing those two `Point`s instead of creating a new `Point`, we'd update our `Add` impl like this:
+However, something still doesn't feel quite right. We have two separate impls of `Add` for `Point` and `&Point` and they _happen_ to do the same thing currently, but there's no guarantee that they will in the future! For example, let's say we decide that when we add two `Point`s together we want to create a `Line` containing those two `Point`s instead of creating a new `Point`.  We'd update our `Add` impl like this:
 
 ```rust
 use std::ops::Add;
@@ -2606,7 +2614,7 @@ fn main() {
 }
 ```
 
-Our current impl of `Add` for `&Point` creates an unnecessary maintenance burden, we want the impl to match `Point`'s impl without having to manually update it every time we change `Point`'s impl. We'd like to keep our code as DRY (Don't Repeat Yourself) as possible. Luckily this is achievable:
+Our current impl of `Add` for `&Point` creates an unnecessary maintenance burden. We want the `&Point` impl to match `Point`'s impl without having to manually update it every time we change `Point`'s impl. We'd like to keep our code as DRY (Don't Repeat Yourself) as possible. Luckily this is achievable:
 
 ```rust
 // updated, DRY impl
@@ -2628,7 +2636,9 @@ fn main() {
 }
 ```
 
-`AddAssign<Rhs>` types allow us to add + assign `Rhs` types to them. The trait declaration:
+The `AddAssign<Rhs>` trait allows us to modify a type, by adding a `Rhs` type to it, which is what the `+=` operator does.
+
+Note that there is no `Output` associated type.  Instead, it mutates `Self` in-place. Here's the trait declaration:
 
 ```rust
 trait AddAssign<Rhs = Self> {
@@ -2706,9 +2716,9 @@ trait Fn<Args>: FnMut<Args> {
 }
 ```
 
-Although these traits exist it's not possible to impl them for our own types in stable Rust. The only types we can create which impl these traits are closures. Depending on what the closure captures from its environment determines whether it impls `FnOnce`, `FnMut`, or `Fn`.
+Although these traits exist, it's not possible to impl them for our own types in stable Rust. The only types we can create which impl these traits are closures. Depending on what the closure captures from its environment determines whether it impls `FnOnce`, `FnMut`, or `Fn`.
 
-An `FnOnce` closure can only be called once because it consumes some value as part of its execution:
+An `FnOnce` closure can only be called once, because it consumes some value as part of its execution:
 
 ```rust
 fn main() {
@@ -2719,7 +2729,7 @@ fn main() {
 }
 ```
 
-The `.count()` method on iterators consumes the iterator so it can only be called once. Hence our closure can only be called once. Which is why when we try to call it a second time we get this error:
+The `.count()` method on iterators consumes the iterator so it can only be called once. Hence our closure can only be called once. This is why when we try to call it a second time we get this error:
 
 ```none
 error[E0382]: use of moved value: `get_range_count`
@@ -2762,7 +2772,7 @@ fn main() {
 
 `FnMut` refines `FnOnce` in the sense that `FnOnce` requires taking ownership of its arguments and can only be called once, but `FnMut` requires only taking mutable references and can be called multiple times. `FnMut` can be used anywhere `FnOnce` can be used.
 
-An `Fn` closure can be called multiple times and does not mutate any variables it has captured from its environment. We might say `Fn` closures have no side-effects or are stateless. Here's an example closure that filters out all values less than some stack variable it captures from its environment from an iterator:
+An `Fn` closure can be called multiple times and does not mutate any variables it has captured from its environment. We might say `Fn` closures have no side-effects or are stateless. Here's an example closure used with an iterator, which filters out all values less than some stack variable that the closure captures from its environment:
 
 ```rust
 fn main() {
@@ -2775,7 +2785,7 @@ fn main() {
 
 `Fn` refines `FnMut` in the sense that `FnMut` requires mutable references and can be called multiple times, but `Fn` only requires immutable references and can be called multiple times. `Fn` can be used anywhere `FnMut` can be used, which includes anywhere `FnOnce` can be used.
 
-If a closure doesn't capture anything from its environment it's technically not a closure, but just an anonymously declared inline function, and can be casted to, used, and passed around as a regular function pointer, i.e. `fn`. Function pointers can be used anywhere `Fn` can be used, which includes anywhere `FnMut` and `FnOnce` can be used.
+If a closure doesn't capture anything from its environment, it's technically not a closure, but just an anonymously declared inline function, which can be casted to, used, and passed around as a regular function pointer, i.e. `fn`. Function pointers can be used anywhere `Fn` can be used, which includes anywhere `FnMut` and `FnOnce` can be used.
 
 ```rust
 fn add_one(x: i32) -> i32 {
@@ -2839,7 +2849,7 @@ trait DerefMut: Deref {
 
 `Deref<Target = T>` types can be dereferenced to `T` types using the dereference operator `*`. This has obvious use-cases for smart pointer types like `Box` and `Rc`. However, we rarely see the dereference operator explicitly used in Rust code, and that's because of a Rust feature called _deref coercion_.
 
-Rust automatically dereferences types when they're being passed as function arguments, returned from a function, or used as part of a method call. This is the reason why we can pass `&String` and `&Vec<T>` to functions expecting `&str` and `&[T]` because `String` impls `Deref<Target = str>` and `Vec<T>` impls `Deref<Target = [T]>`.
+Rust automatically dereferences types when they're being passed as function arguments, returned from a function, or used as part of a method call. This explains why we can pass `&String` and `&Vec<T>` to functions expecting `&str` and `&[T]`, because `String` impls `Deref<Target = str>` and `Vec<T>` impls `Deref<Target = [T]>`.
 
 `Deref` and `DerefMut` should only be implemented for smart pointer types. The most common way people attempt to misuse and abuse these traits is to try to shoehorn some kind of OOP-style data inheritance into Rust. This does not work. Rust is not OOP. Let's examine a few different situations where, how, and why it does not work. Let's start with this example:
 
@@ -2951,7 +2961,7 @@ fn example(human: Human, soldier: Soldier, knight: Knight, mage: Mage, wizard: W
 }
 ```
 
-So at first glance the above looks pretty good! However it quickly breaks down to scrutiny. First of all, deref coercion only works on references, so it doesn't work when we actually want to pass ownership:
+At first glance the above looks pretty good! However, it quickly breaks down upon further scrutiny. First of all, deref coercion only works on references, so it doesn't work when we actually want to pass ownership:
 
 ```rust
 fn takes_human(human: Human) {}
@@ -2991,7 +3001,7 @@ fn example(human: Human, soldier: Soldier, knight: Knight, mage: Mage, wizard: W
 }
 ```
 
-Also, although deref coercion works in a lot of places it doesn't work everywhere. It doesn't work on operands, even though operators are just syntax sugar for method calls. Let's say, to be cute, we wanted `Mage`s to learn `Spell`s using the `+=` operator:
+Also, although deref coercion works in a lot of places, it doesn't work everywhere. It doesn't work on operands, even though operators are just syntax sugar for method calls. Let's say, to be cute, we wanted `Mage`s to learn `Spell`s using the `+=` operator:
 
 ```rust
 impl DerefMut for Wizard {
@@ -3013,7 +3023,7 @@ fn example(mut mage: Mage, mut wizard: Wizard, spell: Spell) {
 }
 ```
 
-In languages with OOP-style data inheritance the value of `self` within a method is always equal to the type which called the method but in the case of Rust the value of `self` is always equal to the type which implemented the method:
+In languages with OOP-style data inheritance, the value of `self` within a method is always equal to the type that called the method, but in the case of Rust, the value of `self` is always equal to the type that implemented the method:
 
 ```rust
 struct Human {
@@ -3042,7 +3052,7 @@ fn example(soldier: &Soldier) {
 }
 ```
 
-The above gotcha is especially damning when impling `Deref` or `DerefMut` on a newtype. Let's say we want to create a `SortedVec` type which is just a `Vec` but it's always in sorted order. Here's how we might do that:
+The above gotcha is especially damning when impling `Deref` or `DerefMut` on a newtype. Let's say we want to create a `SortedVec` type, which is just a `Vec` but it's always in sorted order. Here's how we might do that:
 
 ```rust
 struct SortedVec<T: Ord>(Vec<T>);
@@ -3105,9 +3115,9 @@ fn main() {
 }
 ```
 
-Anyway, none of the above limitations, constraints, or gotchas are faults of Rust because Rust was never designed to be an OO language or to support any OOP patterns in the first place.
+Anyway, none of the above limitations, constraints, or gotchas are faults of Rust, because Rust was never designed to be an OO language or to support any OOP patterns in the first place.
 
-The main takeaway from this section is do not try to be cute or clever with `Deref` and `DerefMut` impls. They're really only appropriate for smart pointer types, which can only be implemented within the standard library for now as smart pointer types currently require unstable features and compiler magic to work. If we want functionality and behavior similar to `Deref` and `DerefMut` then what we're actually probably looking for is `AsRef` and `AsMut` which we'll get to later.
+The main takeaway from this section is: do not try to be cute or clever with `Deref` and `DerefMut` impls. They're really only appropriate for smart pointer types, which can only be implemented within the standard library for now, as smart pointer types currently require unstable features and compiler magic to work. If we want functionality and behavior similar to `Deref` and `DerefMut`, then what we're actually probably looking for is `AsRef` and `AsMut`, which we'll get to later.
 
 
 
@@ -3133,7 +3143,7 @@ trait IndexMut<Idx>: Index<Idx> where Idx: ?Sized {
 }
 ```
 
-We can index `[]` into `Index<T, Output = U>` types with `T` values and the index operation will return `&U` values. For syntax sugar, the compiler auto inserts a deref operator `*` in front of any value returned from an index operation:
+We can index `[]` into `Index<T, Output = U>` types with `T` values, and the index operation will return `&U` values. For syntax sugar, the compiler auto inserts a deref operator `*` in front of any value returned from an index operation:
 
 ```rust
 fn main() {
@@ -3153,7 +3163,7 @@ fn main() {
 
 It's kinda confusing at first, because it seems like the `Index` trait does not follow its own method signature, but really it's just questionable syntax sugar.
 
-Since `Idx` is a generic type the `Index` trait can be implemented many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize` but we can also index into it using `Range<usize>`s to get slices.
+Since `Idx` is a generic type, the `Index` trait can be implemented many times for a given type, and in the case of `Vec<T>` not only can we index into it using `usize`, but we can also index into it using `Range<usize>`s to get slices.
 
 ```rust
 fn main() {
@@ -3165,7 +3175,7 @@ fn main() {
 }
 ```
 
-To show off how we might impl `Index` ourselves here's a fun example which shows how we can use a newtype and the `Index` trait to impl wrapping indexes and negative indexes on a `Vec`:
+To show off how we might impl `Index` ourselves, here's a fun example, which shows how we can use a newtype and the `Index` trait to impl wrapping indexes and negative indexes on a `Vec`:
 
 ```rust
 use std::ops::Index;
@@ -3275,9 +3285,9 @@ trait Drop {
 }
 ```
 
-If a type impls `Drop` then `drop` will be called on the type when it goes out of scope but before it's destroyed. We will rarely need to impl this for our types but a good example of where it's useful is if a type holds on to some external resources which needs to be cleaned up when the type is destroyed.
+If a type impls `Drop`, then `drop` will be called on the type when it goes out of scope but before it's destroyed. We will rarely need to impl this for our types, but a good example of where it's useful is if a type holds on to some external resources that need to be cleaned up when the type is destroyed.
 
-There's a `BufWriter` type in the standard library that allows us to buffer writes to `Write` types. However, what if the `BufWriter` gets destroyed before the content in its buffer has been flushed to the underlying `Write` type? Thankfully that's not possible! The `BufWriter` impls the `Drop` trait so that `flush` is always called on it whenever it goes out of scope!
+There's a `BufWriter` type in the standard library that allows us to buffer writes to `Write` types. However, what if the `BufWriter` gets destroyed before the content in its buffer has been flushed to the underlying `Write` type? Thankfully, that's not possible! The `BufWriter` impls the `Drop` trait so that `flush` is always called on it whenever it goes out of scope!
 
 ```rust
 impl<W: Write> Drop for BufWriter<W> {
@@ -3287,7 +3297,7 @@ impl<W: Write> Drop for BufWriter<W> {
 }
 ```
 
-Also, `Mutex`s in Rust don't have `unlock()` methods because they don't need them! Calling `lock()` on a `Mutex` returns a `MutexGuard` which automatically unlocks the `Mutex` when it goes out of scope thanks to its `Drop` impl:
+Also, `Mutex`s in Rust don't have `unlock()` methods because they don't need them! Calling `lock()` on a `Mutex` returns a `MutexGuard`, which automatically unlocks the `Mutex` when it goes out of scope, thanks to its `Drop` impl:
 
 ```rust
 impl<T: ?Sized> Drop for MutexGuard<'_, T> {
@@ -3299,7 +3309,7 @@ impl<T: ?Sized> Drop for MutexGuard<'_, T> {
 }
 ```
 
-In general, if you're impling an abstraction over some resource that needs to be cleaned up after use then that's a great reason to make use of the `Drop` trait.
+In general, if you're impling an abstraction over some resource that needs to be cleaned up after use, then that's a great reason to make use of the `Drop` trait.
 
 
 
@@ -3334,7 +3344,7 @@ trait Into<T>: Sized {
 
 `Into<T>` types allow us to convert `Self` into `T`.
 
-These traits are two different sides of the same coin. We can only impl `From<T>` for our types because the `Into<T>` impl is automatically provided by this generic blanket impl:
+These traits are two different sides of the same coin. We should only impl `From<T>` for our types, because the `Into<T>` impl is automatically provided by this generic blanket impl:
 
 ```rust
 impl<T, U: From<T>> Into<U> for T {
@@ -3344,7 +3354,7 @@ impl<T, U: From<T>> Into<U> for T {
 }
 ```
 
-The reason both traits exist is because it allows us to write trait bounds on generic types slightly differently:
+The reason both traits exist is to allow writing trait bounds on generic types in a slightly different way:
 
 ```rust
 fn function<T>(t: T)
@@ -3359,7 +3369,9 @@ where
 }
 ```
 
-There are no hard rules about when to use one or the other, so go with whatever makes the most sense for each situation. Now let's look at some example impls on `Point`:
+There are no hard rules about when to use one or the other, so go with whatever makes the most sense for each situation.
+
+Now let's look at some example impls on `Point`:
 
 ```rust
 struct Point {
@@ -3390,7 +3402,7 @@ fn example() {
 }
 ```
 
-The impl is not symmetric, so if we'd like to convert `Point`s into tuples and arrays we have to explicitly add those as well:
+The impl is not symmetric, so if we'd like to convert `Point`s into tuples and arrays, we have to explicitly add those as well:
 
 ```rust
 struct Point {
@@ -3441,7 +3453,7 @@ fn example() {
 }
 ```
 
-A popular use of `From<T>` is to trim down boilerplate code. Let's say we add a `Triangle` type to our program which contains three `Point`s, here's some of the many ways we can construct it:
+A popular use of `From<T>` is to trim down boilerplate code. Let's say we add a `Triangle` type to our program, which contains three `Point`s. Here are some of the many ways we can construct it:
 
 ```rust
 struct Point {
@@ -3533,9 +3545,9 @@ fn example() {
 }
 ```
 
-There are no rules for when, how, or why we should impl `From<T>` for our types so it's up to us to use our best judgement for every situation.
+There are no rules for when, how, or why we should impl `From<T>` for our types, so it's up to us to use our best judgement for every situation.
 
-One popular use of `Into<T>` is to make functions which need owned values generic over whether they take owned or borrowed values:
+One popular use of `Into<T>` is to make functions that need owned values generic over whether they take owned or borrowed values:
 
 ```rust
 struct Person {
@@ -3567,7 +3579,7 @@ impl Person {
 
 ## Error Handling
 
-The best time to talk about error handling and the `Error` trait is after going over `Display`, `Debug`, `Any`, and `From` but before getting to `TryFrom` hence why the **Error Handling** section awkwardly bisects the **Conversion Traits** section.
+The best time to talk about error handling and the `Error` trait is after going over `Display`, `Debug`, `Any`, and `From`, but before getting to `TryFrom`, explaining why the **Error Handling** section awkwardly bisects the **Conversion Traits** section.
 
 
 
@@ -3595,9 +3607,9 @@ trait Error: Debug + Display {
 }
 ```
 
-In Rust errors are returned, not thrown. Let's look at some examples.
+In Rust, errors are returned, not thrown. Let's look at some examples.
 
-Since dividing integer types by zero panics if we wanted to make our program safer and more explicit we could impl a `safe_div` function which returns a `Result` instead like this:
+Since dividing integer types by zero panics, if we wanted to make our program safer and more explicit, we could impl a `safe_div` function that returns a `Result` instead, like this:
 
 ```rust
 use std::fmt;
@@ -3628,7 +3640,7 @@ fn test_safe_div() {
 }
 ```
 
-Since errors are returned and not thrown they must be explicitly handled, and if the current function cannot handle an error it should propagate it up to the caller. The most idiomatic way to propagate errors is to use the `?` operator, which is just syntax sugar for the now deprecated `try!` macro which simply does this:
+Since errors are returned and not thrown, they must be explicitly handled, and if the current function cannot handle an error, it should propagate it up to the caller. The most idiomatic way to propagate errors is to use the `?` operator, which is just syntax sugar for the now deprecated `try!` macro, which simply does this:
 
 ```rust
 macro_rules! try {
@@ -3645,7 +3657,7 @@ macro_rules! try {
 }
 ```
 
-If we wanted to write a function which reads a file into a `String` we could write it like this, propagating the `io::Error`s using `?` everywhere they can appear:
+If we wanted to write a function that reads a file into a `String`, we could write it like this, propagating the `io::Error`s using `?` everywhere they can appear:
 
 ```rust
 use std::io::Read;
@@ -3661,7 +3673,7 @@ fn read_file_to_string(path: &Path) -> Result<String, io::Error> {
 }
 ```
 
-But let's say the file we're reading is actually a list of numbers and we want to sum them together, we'd update our function like this:
+But let's say the file we're reading is actually a list of numbers, and we want to sum them together. Then we'd update our function like this:
 
 ```rust
 use std::io::Read;
@@ -3681,9 +3693,10 @@ fn sum_file(path: &Path) -> Result<i32, /* What to put here? */> {
 }
 ```
 
-But what's the error type of our `Result` now? It can return either an `io::Error` or a `ParseIntError`. We're going to look at three approaches for solving this problem, starting with the most quick & dirty way and finishing with the most robust way.
+But what's the error type of our `Result` now? It can return either an `io::Error` or a `ParseIntError`. We're going to look at three approaches for solving this problem, starting with the most quick & dirty way, and finishing with the most robust way.
 
-The first approach is recognizing that all types which impl `Error` also impl `Display` so we can map all the errors to `String`s and use `String` as our error type:
+#### `String` - dirty approach
+The first approach is to recognize that all types which impl `Error` also impl `Display`, so we can map all the errors to `String`s and use `String` as our error type:
 
 ```rust
 use std::fs::File;
@@ -3706,22 +3719,23 @@ fn sum_file(path: &Path) -> Result<i32, String> {
 }
 ```
 
-The obvious downside of stringifying every error is that we throw away type information which makes it harder for the caller to handle the errors.
+The obvious downside of stringifying every error is that we throw away type information, which makes it harder for the caller to handle the errors.
 
-One nonobvious upside to the above approach is we can customize the strings to provide more context-specific information. For example, `ParseIntError` usually stringifies to `"invalid digit found in string"` which is very vague and doesn't mention what the invalid string is or what integer type it was trying to parse into. If we were debugging this problem that error message would almost be useless. However we can make it significantly better by providing all the context relevant information ourselves:
+One nonobvious upside to the above approach is that we can customize the strings, to provide more context-specific information. For example, `ParseIntError` usually stringifies to `"invalid digit found in string"`, which is very vague and doesn't mention what the invalid string is, or what integer type it was trying to parse into. If we were debugging this problem, that error message would be almost useless. However, we can make it significantly better by providing some context-relevant information ourselves:
 
 ```rust
 sum += line.parse::<i32>()
     .map_err(|_| format!("failed to parse {} into i32", line))?;
 ```
 
+#### `Box<dyn Error>` - intermediate approach
 The second approach takes advantage of this generic blanket impl from the standard library:
 
 ```rust
 impl<E: error::Error> From<E> for Box<dyn error::Error>;
 ```
 
-Which means that any `Error` type can be implicitly converted into a `Box<dyn error::Error>` by the `?` operator, so we can set to error type to `Box<dyn error::Error>` in the `Result` return type of any function which produces errors and the `?` operator will do the rest of the work for us:
+This means that any `Error` type can be implicitly converted into a `Box<dyn error::Error>` by the `?` operator, so we can use `Box<dyn error::Error>` as the error type of the `Result` return type of any fallible function we write, and the `?` operator will do the rest of the work for us:
 
 ```rust
 use std::fs::File;
@@ -3741,7 +3755,7 @@ fn sum_file(path: &Path) -> Result<i32, Box<dyn error::Error>> {
 }
 ```
 
-While being more concise, this seems to suffer from the same downside of the previous approach by throwing away type information. This is mostly true, but if the caller is aware of the impl details of our function they can still handle the different errors types using the `downcast_ref()` method on `error::Error` which works the same as it does on `dyn Any` types:
+While being more concise, this seems to suffer from the same downside of the previous approach, by throwing away type information. This is mostly true, but if the caller is aware of the impl details of our function, they can still handle the different errors types using the `downcast_ref()` method on `error::Error`, which works the same as it does on `dyn Any` types:
 
 ```rust
 fn handle_sum_file_errors(path: &Path) {
@@ -3762,7 +3776,8 @@ fn handle_sum_file_errors(path: &Path) {
 }
 ```
 
-The third approach, which is the most robust and type-safe way to aggregate these different errors would be to build our own custom error type using an enum:
+#### Custom `enum` - robust approach
+The third approach, which is the most robust and type-safe way to aggregate these different errors, would be to build our own custom error type using an enum:
 
 ```rust
 use std::num::ParseIntError;
@@ -3868,7 +3883,7 @@ trait TryInto<T>: Sized {
 }
 ```
 
-Similarly to `Into` we cannot impl `TryInto` because its impl is provided by this generic blanket impl:
+Similarly to `Into`, we should not impl `TryInto`, because its impl is provided by this generic blanket impl:
 
 ```rust
 impl<T, U: TryFrom<T>> TryInto<U> for T {
@@ -3880,7 +3895,7 @@ impl<T, U: TryFrom<T>> TryInto<U> for T {
 }
 ```
 
-Furthermore, we cannot impl `TryFrom` for a type if it already has a `From` impl, as an infallible `TryForm` impl is automatically provided by this generic blanket impl:
+Furthermore, we cannot impl `TryFrom` for a type if it already has a `From` impl, as an infallible `TryFrom` impl is automatically provided by this generic blanket impl:
 
 ```rust
 enum Inflallible {}
@@ -3894,7 +3909,7 @@ impl<T, U: Into<T>> TryFrom<U> for T {
 }
 ```
 
-So let's say that in the context of our earlier program it doesn't make sense for `Point`s to have `x` and `y` values that are less than `-1000` or greater than `1000`. This is how we'd rewrite our earlier `From` impls using `TryFrom` to signal to the users of our type that this conversion can now fail:
+So let's say that in the context of our earlier program, it doesn't make sense for `Point`s to have `x` and `y` values that are less than `-1000` or greater than `1000`. This is how we'd rewrite our earlier `From` impls using `TryFrom` to signal to the users of our type that this conversion can now fail:
 
 ```rust
 use std::convert::TryFrom;
@@ -4115,7 +4130,7 @@ fn not_a_point() {
 }
 ```
 
-`FromStr` has the same signature as `TryFrom<&str>`. It doesn't matter which one we impl for a type first as long as we forward the impl to the other one. Here's a `TryFrom<&str>` impl for `Point` assuming it already has a `FromStr` impl:
+`FromStr` has the same signature as `TryFrom<&str>`. It doesn't matter which one we impl for a type first, as long as we forward the impl to the other one. Here's a `TryFrom<&str>` impl for `Point`, assuming it already has a `FromStr` impl:
 
 ```rust
 impl TryFrom<&str> for Point {
@@ -4175,7 +4190,7 @@ fn example(slice: &str, borrow: &String, owned: String) {
 }
 ```
 
-The other most common use-case is returning a reference to inner private data wrapped by a type which protects some invariant. A good example from the standard library is `String` which is just a wrapper around `Vec<u8>`:
+The other most common use-case is returning a reference to inner private data, wrapped by a type that protects some invariant. A good example from the standard library is `String`, which is just a wrapper around `Vec<u8>`:
 
 ```rust
 struct String {
@@ -4183,13 +4198,13 @@ struct String {
 }
 ```
 
-This inner `Vec` cannot be made public because if it was people could mutate any byte and break the `String`'s valid UTF-8 encoding. However, it's safe to expose an immutable read-only reference to the inner byte array, hence this impl:
+This inner `Vec` cannot be made public, because if it was, people could mutate any byte and break the `String`'s valid UTF-8 encoding. However, it's safe to expose an immutable read-only reference to the inner byte array, hence this impl:
 
 ```rust
 impl AsRef<[u8]> for String;
 ```
 
-Generally, it often only makes sense to impl `AsRef` for a type if it wraps some other type to either provide additional functionality around the inner type or protect some invariant on the inner type.
+Generally, it often only makes sense to impl `AsRef` for a type if it wraps some other type, to either provide additional functionality around the inner type, or to protect some invariant on the inner type.
 
 Let's examine a example of bad `AsRef` impls:
 
@@ -4235,7 +4250,7 @@ impl AsRef<u32> for User {
 }
 ```
 
-A `User` is composed of `String`s and `u32`s but it's not really the same thing as a `String` or a `u32`. Even if we had much more specific types:
+A `User` is composed of `String`s and `u32`s, but it's not really the same thing as a `String` or a `u32`. Even if we had much more specific types:
 
 ```rust
 struct User {
@@ -4246,9 +4261,9 @@ struct User {
 }
 ```
 
-It wouldn't make much sense to impl `AsRef` for any of those because `AsRef` is for cheap reference to reference conversions between semantically equivalent things, and `Name`, `Email`, `Age`, and `Height` by themselves are not the same thing as a `User`.
+It still wouldn't make much sense to impl `AsRef` for any of those because `AsRef` is for cheap reference to reference conversions between semantically equivalent things, and `Name`, `Email`, `Age`, and `Height` by themselves are not the same thing as a `User`.
 
-A good example where we would impl `AsRef` would be if we introduced a new type `Moderator` that just wrapped a `User` and added some moderation specific privileges:
+A good example where we would impl `AsRef` would be if we introduced a new type `Moderator`, which just wrapped a `User` and added some moderation specific privileges:
 
 ```rust
 struct User {
@@ -4256,7 +4271,7 @@ struct User {
     age: u32,
 }
 
-// unfortunately the standard library cannot provide
+// unfortunately, the standard library cannot provide
 // a generic blanket impl to save us from this boilerplate
 impl AsRef<User> for User {
     fn as_ref(&self) -> &User {
@@ -4271,7 +4286,7 @@ enum Privilege {
 }
 
 // although Moderators have some special
-// privileges they are still regular Users
+// privileges, they are still regular Users
 // and should be able to do all the same stuff
 struct Moderator {
     user: User,
@@ -4303,7 +4318,7 @@ fn example(user: User, moderator: Moderator) {
 }
 ```
 
-This works because `Moderator`s are just `User`s. Here's the example from the `Deref` section except using `AsRef` instead:
+This works because `Moderator`s are just `User`s. Here's the example from the `Deref` section, but uses `AsRef` instead:
 
 ```rust
 use std::convert::AsRef;
@@ -4451,7 +4466,7 @@ fn example(human: Human, soldier: Soldier, knight: Knight, mage: Mage, wizard: W
 }
 ```
 
-`Deref` didn't work in the prior version of the example above because deref coercion is an implicit conversion between types which leaves room for people to mistakenly formulate the wrong ideas and expectations for how it will behave. `AsRef` works above because it makes the conversion between types explicit and there's no room leftover to develop any wrong ideas or expectations.
+`Deref` didn't work in the prior version of the example above, because deref coercion is an implicit conversion between types, which leaves room for people to mistakenly formulate the wrong ideas and expectations for how it will behave. `AsRef` works above, because it makes the conversion between types explicit, and there's no room left over to develop any wrong ideas or expectations.
 
 
 
@@ -4547,7 +4562,7 @@ where
 }
 ```
 
-It's good to be aware of these traits and understand why they exist since it helps demystify some of the methods on `HashSet`, `HashMap`, `BTreeSet`, and `BTreeMap` but it's very rare that we would ever need to impl these traits for any of our types because it's very rare that we would ever need create a pair of types where one is the "borrowed" version of the other in the first place. If we have some `T` then `&T` will get the job done 99.99% of the time, and `T: Borrow<T>` is already implemented for all `T` because of a generic blanket impl, so we don't need to manually impl it and we don't need to create some `U` such that `T: Borrow<U>`.
+It's good to be aware of these traits and understand why they exist, since it helps demystify some of the methods on `HashSet`, `HashMap`, `BTreeSet`, and `BTreeMap`, but it's very rare that we would ever need to impl these traits for any of our types, because it's very rare that we would ever need create a pair of types where one is the "borrowed" version of the other in the first place. If we have some `T` then `&T` will get the job done 99.99% of the time, and `T: Borrow<T>` is already implemented for all `T` because of a generic blanket impl, so we don't need to manually impl it, and we don't need to create some `U` such that `T: Borrow<U>`.
 
 
 
@@ -4570,11 +4585,11 @@ trait ToOwned {
 }
 ```
 
-`ToOwned` is a more generic version of `Clone`. `Clone` allows us to take a `&T` and turn it into an `T` but `ToOwned` allows us to take a `&Borrowed` and turn it into a `Owned` where `Owned: Borrow<Borrowed>`.
+`ToOwned` is a more generic version of `Clone`. `Clone` allows us to take a `&T` and turn it into a `T`, but `ToOwned` allows us to take a `&Borrowed` and turn it into an `Owned` where `Owned: Borrow<Borrowed>`.
 
 In other words, we can't "clone" a `&str` into a `String`, or a `&Path` into a `PathBuf`, or an `&OsStr` into an `OsString`, since the `clone` method signature doesn't support this kind of cross-type cloning, and that's what `ToOwned` was made for.
 
-For similar reasons as `Borrow` and `BorrowMut`, it's good to be aware of this trait and understand why it exists but it's very rare we'll ever need to impl it for any of our types.
+For similar reasons as `Borrow` and `BorrowMut`, it's good to be aware of this trait and understand why it exists, but it's very rare that we'll ever need to impl it for any of our types.
 
 
 
@@ -4608,7 +4623,7 @@ trait Iterator {
 | `.iter_mut()` | `Iterator<Item = &mut T>` |
 | `.into_iter()` | `Iterator<Item = T>` |
 
-Something that is not immediately obvious to beginner Rustaceans but that intermediate Rustaceans take for granted is that most types are not their own iterators. If a type is iterable we almost always impl some custom iterator type which iterates over it rather than trying to make it iterate over itself:
+Something that is not immediately obvious to beginner Rustaceans, but that intermediate Rustaceans take for granted, is that most types are not their own iterators. If a type is iterable, we almost always impl some other custom iterator type to iterate over it, rather than trying to make it iterate over itself:
 
 ```rust
 struct MyType {
@@ -4657,15 +4672,15 @@ impl MyType {
 }
 ```
 
-Also this is a good generic blanket impl to be aware of:
+Also, this is a good generic blanket impl to be aware of:
 
 ```rust
 impl<I: Iterator + ?Sized> Iterator for &mut I;
 ```
 
-It says that any mutable reference to an iterator is also an iterator. This is useful to know because it allows us to use iterator methods with `self` receivers as if they had `&mut self` receivers.
+It says that any mutable reference to an iterator is also an iterator. This is useful to know, because it allows us to use iterator methods with `self` receivers as if they had `&mut self` receivers.
 
-As an example, imagine we have a function which processes an iterator of more than three items, but the first step of the function is to take out the first three items of the iterator and process them separately before iterating over the remaining items, here's how a beginner may attempt to write this function:
+As an example, imagine we have a function that processes an iterator of more than three items, but the first step of the function is to take out the first three items of the iterator and process them separately, before iterating over the remaining items. Here's how a beginner might attempt to write this function:
 
 ```rust
 fn example<I: Iterator<Item = i32>>(mut iter: I) {
@@ -4753,7 +4768,7 @@ trait ExactSizeIterator: Iterator {
 
 The default impls provided by the `Iterator` trait for the methods `size_hint`, `count`,  `last`, and `nth` are suboptimal if we know the exact size of the data we're iterating over and have have fast random access into it.
 
-To illustrate this point let's start by defining a type called `Range` which impls `Iterator` that we can calculate the exact size of:
+To illustrate this point, let's start by defining a type called `Range`, which impls an `Iterator` that we can calculate the exact size of:
 
 ```rust
 struct Range {
@@ -4783,7 +4798,7 @@ fn size_hint(&self) -> (usize, Option<usize>) {
 }
 ```
 
-It's not useful at all! The lower bound is hardcoded to `0` and the upper bound is hardcoded to `None`, which is the same as saying _"I have no clue how big this iterator is, it can have anywhere from zero to infinity remaining items in it."_
+It's not useful at all! The lower bound is hardcoded to `0` and the upper bound is hardcoded to `None`, which is the same as saying _"I have no clue how big this iterator is. It can have anywhere from zero to infinity remaining items in it."_
 
 Yet we can precisely calculate how many items are remaining in `Range` and provide an actually useful `size_hint` impl:
 
@@ -4797,13 +4812,13 @@ impl Iterator for Range {
 }
 ```
 
-We can also now impl `ExactSizeIterator` for `Range` because it's a marker trait that marks the type as having an accurate `size_hint` impl:
+We can also now impl `ExactSizeIterator` for `Range`, because it's a marker trait that marks the type as having an accurate `size_hint` impl:
 
 ```rust
 impl ExactSizeIterator for Range {}
 ```
 
-We should also provide our own impls for `count`, `last`, and `nth` as their default impls assume the size of the iterator is unknown and rely on repeatedly calling `next`. Here's a simplified version of the default `count` impl as an example:
+We should also provide our own impls for `count`, `last`, and `nth`, as their default impls assume the size of the iterator is unknown and rely on repeatedly calling `next`. Here's a simplified version of the default `count` impl as an example:
 
 ```rust
 fn count(self) -> usize {
@@ -4815,7 +4830,7 @@ fn count(self) -> usize {
 }
 ```
 
-If we had a `Range` of size one million that's one million times the `next` function would have to be called to `count` it! We can do much better:
+If we had a `Range` of size one million, that's one million times the `next` function would have to be called to `count` it! We can do much better:
 
 ```rust
 impl Iterator for Range {
@@ -4880,7 +4895,7 @@ for v in vec {} // v = T
 for v in vec.into_iter() {}
 ```
 
-Not only does `Vec` impl `IntoIterator` but so does `&Vec` and `&mut Vec` if we'd like to iterate over immutable or mutable references instead of owned values, respectively.
+Not only does `Vec` impl `IntoIterator`, but so does `&Vec` and `&mut Vec`, which iterate over immutable or mutable references to items in the vec, respectively, instead of iterating over owned values and consuming the container.
 
 ```rust
 // vec = Vec<T>
@@ -4984,7 +4999,7 @@ fn filter_letters(string: &str) -> String {
 }
 ```
 
-All the collections in the standard library impl `IntoIterator` and `FromIterator` so that makes it easier to convert between them:
+All the collections in the standard library impl `IntoIterator` and `FromIterator`, so that makes it easier to convert between them:
 
 ```rust
 use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
@@ -5007,7 +5022,7 @@ fn entry_list<K, V>(map: HashMap<K, V>) -> LinkedList<(K, V)> {
 // and countless more possible examples
 ```
 
-If we're going to impl `FromIterator` for our own type its best to reuse an `Extend` impl if one exists:
+If we're going to impl `FromIterator` for our own type, it's best to reuse an `Extend` impl if one exists:
 
 ```rust
 struct MyType {
@@ -5099,9 +5114,9 @@ impl<R: Read + ?Sized> Read for &mut R;
 impl<W: Write + ?Sized> Write for &mut W;
 ```
 
-These say that any mutable reference to a `Read` type is also `Read`, and same with `Write`. This is useful to know because it allows us to use any method with a `self` receiver as if it had a `&mut self` receiver. We already went over how to do this and why it's useful in the `Iterator` trait section so I'm not going to repeat it again here.
+These say that any mutable reference to a `Read` type is also `Read`, and same with `Write`. This is useful to know because it allows us to use any method with a `self` receiver as if it had a `&mut self` receiver. We already went over how to do this and why it's useful in the `Iterator` trait section, so I'm not going to repeat it again here.
 
-I'd like to point out that `&[u8]` impls `Read` and that `Vec<u8>` impls `Write` so we can easily unit test our file handling functions using `String`s which are trivial to convert to `&[u8]` and from `Vec<u8>`:
+I'd like to point out that `&[u8]` impls `Read`, and that `Vec<u8>` impls `Write`, so we can easily unit test our file handling functions using `String`s, which are trivial to convert to `&[u8]` and from `Vec<u8>`:
 
 ```rust
 use std::path::Path;
@@ -5126,7 +5141,6 @@ fn example(in_path: &Path, out_path: &Path) -> Result<(), io::Error> {
     let out_file = File::open(out_path)?;
     uppercase(in_file, out_file)
 }
-
 
 // however in unit tests we can use Strings!
 #[test] // ✅
