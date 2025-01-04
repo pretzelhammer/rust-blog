@@ -1152,7 +1152,7 @@ unsafe auto trait Sync {}
 
 If a type is `Send`, that means it's safe to send between threads. If a type is `Sync`, that means it's safe to share references of it between threads. In more precise terms, some type `T` is `Sync` if and only if `&T` is `Send`.
 
-Almost all types are `Send` and `Sync`. The only notable `Send` exception is `Rc` and the only notable `Sync` exceptions are `Rc`, `Cell`, and `RefCell`. If we need a `Send` version of `Rc`, we can use `Arc`. If we need a `Sync` version of `Cell` or `RefCell`, we can `Mutex` or `RwLock`. Although, if we're using the `Mutex` or `RwLock` to just wrap a primitive type, it's often better to use the atomic primitive types provided by the standard library, such as `AtomicBool`, `AtomicI32`, `AtomicUsize`, and so on.
+Almost all types are `Send` and `Sync`. The only notable `Send` exception is `Rc` and the only notable `Sync` exceptions are `Rc`, `Cell`, and `RefCell`. If we need a `Send` version of `Rc`, we can use `Arc`. If we need a `Sync` version of `Cell` or `RefCell`, we can use `Mutex` or `RwLock`. Although, if we're using the `Mutex` or `RwLock` to just wrap a primitive type, it's often better to use the atomic primitive types provided by the standard library, such as `AtomicBool`, `AtomicI32`, `AtomicUsize`, and so on.
 
 That almost all types are `Sync` might be a surprise to some people, but yup, it's true even for types without any internal synchronization. This is possible thanks to Rust's strict borrowing rules.
 
@@ -1496,7 +1496,8 @@ In both cases, `dest = src` performs a simple bitwise copy of `src`'s contents a
 
 In a nutshell: Copies _are_ moves. Moves _are_ copies. The only difference is how they're treated by the borrow checker.
 
-#### move example
+#### Move example
+
 For a more concrete example of a move, imagine `src` was a `Vec<i32>`, and its contents looked something like this:
 
 ```rust
@@ -1514,7 +1515,8 @@ dest = { data: *mut [i32], length: usize, capacity: usize }
 
 At this point, both `src` and `dest` have aliased mutable references to the same data, which is a big no-no, so the borrow checker invalidates the `src` variable, and it can't be used again without throwing a compile error.
 
-#### copy example
+#### Copy example
+
 For a more concrete example of a copy, imagine `src` was an `Option<i32>` and its contents looked something like this:
 
 ```rust
@@ -3695,7 +3697,8 @@ fn sum_file(path: &Path) -> Result<i32, /* What to put here? */> {
 
 But what's the error type of our `Result` now? It can return either an `io::Error` or a `ParseIntError`. We're going to look at three approaches for solving this problem, starting with the most quick & dirty way, and finishing with the most robust way.
 
-#### `String` - dirty approach
+#### String - dirty approach
+
 The first approach is to recognize that all types which impl `Error` also impl `Display`, so we can map all the errors to `String`s and use `String` as our error type:
 
 ```rust
@@ -3728,7 +3731,8 @@ sum += line.parse::<i32>()
     .map_err(|_| format!("failed to parse {} into i32", line))?;
 ```
 
-#### `Box<dyn Error>` - intermediate approach
+#### Box<dyn Error> - intermediate approach
+
 The second approach takes advantage of this generic blanket impl from the standard library:
 
 ```rust
@@ -3776,7 +3780,8 @@ fn handle_sum_file_errors(path: &Path) {
 }
 ```
 
-#### Custom `enum` - robust approach
+#### Custom enum - robust approach
+
 The third approach, which is the most robust and type-safe way to aggregate these different errors, would be to build our own custom error type using an enum:
 
 ```rust
