@@ -121,8 +121,6 @@ Anyway, as for the medium exercises, these are the best ones in my opinion (in n
 - [PaaS I/O](https://exercism.org/tracks/rust/exercises/paasio)
 - [Simple Linked List](https://exercism.org/tracks/rust/exercises/simple-linked-list)
 - [Fizzy](https://exercism.org/tracks/rust/exercises/fizzy)
-- [Parallel Letter Frequency](https://exercism.org/tracks/rust/exercises/parallel-letter-frequency)
-- [Macros](https://exercism.org/tracks/rust/exercises/macros)
 - [Robot Name](https://exercism.org/tracks/rust/exercises/robot-name)
 - [Triangle](https://exercism.org/tracks/rust/exercises/triangle)
 - [Robot Simulator](https://exercism.org/tracks/rust/exercises/robot-simulator)
@@ -145,6 +143,8 @@ Anyway, as for the medium exercises, these are the best ones in my opinion (in n
 Depending on which ones you do they can take you anywhere from 10 to 45 minutes.
 
 Once you're ready to bump up the difficulty again, these are the best hard exercises in my opinion (in no particular order):
+- [Macros](https://exercism.org/tracks/rust/exercises/macros)
+- [Parallel Letter Frequency](https://exercism.org/tracks/rust/exercises/parallel-letter-frequency)
 - [Xorcism](https://exercism.org/tracks/rust/exercises/xorcism)
 - [React](https://exercism.org/tracks/rust/exercises/react)
 - [Circular Buffer](https://exercism.org/tracks/rust/exercises/circular-buffer)
@@ -247,7 +247,7 @@ Also since you now have some Rust experience under your belt feel free to try co
 
 Disclaimer: I wrote this.
 
-Traits are the main way to write polymorphic code in Rust, so they're used everywhere, especially the ones from the standard library. This article gives a guided tour of the most popular standard library traits, their methods, how to use them, and when to implement them for your own types. It's pretty thorough, and shares a ton of useful tips. And although the article is lengthy you don't have to read the entire thing to get value out of it, so don't let its size daunt you.
+Traits are the main way to write polymorphic code in Rust, so they're used everywhere, especially the ones from the standard library. [Tour of Rust's Standard Library Traits](./tour-of-rusts-standard-library-traits.md) gives a guided tour of the most popular standard library traits, their methods, how to use them, and when to implement them for your own types. It's pretty thorough, and shares a ton of useful tips. And although the article is lengthy you don't have to read the entire thing to get value out of it, so don't let its size daunt you.
 
 
 
