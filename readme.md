@@ -19,6 +19,12 @@ Here are my posts in reverse chronological order.
 
 Note: translations are community-maintained.
 
+## Notifications
+
+Get notified when a new blog post gets published by
+- Subscribing to this repo's [releases RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
+- Watching this repo's releases (click `Watch` → click `Custom` → select `Releases` → click `Apply`)
+
 ## Feedback
 
 If you have any feedback please feel welcome to [open an issue](https://github.com/pretzelhammer/rust-blog/issues/new) on this repo. I accept pull requests for minor fixes like typos and grammar.

@@ -18,6 +18,7 @@ _19 May 2020 · #rust · #lifetimes_
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
 - [Further Reading](#further-reading)
+- [Notifications](#notifications)
 
 
 
@@ -1125,3 +1126,11 @@ Discuss this article on
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
+
+
+
+## Notifications
+
+Get notified when a new blog post gets published by
+- Subscribing to this repo's [releases RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
+- Watching this repo's releases (click `Watch` → click `Custom` → select `Releases` → click `Apply`)

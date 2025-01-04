@@ -19,6 +19,7 @@ _21 September 2024 · #rust · #coding · #exercises_
 - [Honorable mentions](#honorable-mentions)
 - [Discuss](#discuss)
 - [Further Reading](#further-reading)
+- [Notifications](#notifications)
 
 This is my opinionated guide on how to go from knowing nothing about Rust to being kinda okay at Rust quickly as possible. This is what I would tell myself if I was starting today.
 
@@ -301,3 +302,11 @@ Discuss this article on
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
+
+
+
+## Notifications
+
+Get notified when a new blog post gets published by
+- Subscribing to this repo's [releases RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
+- Watching this repo's releases (click `Watch` → click `Custom` → select `Releases` → click `Apply`)

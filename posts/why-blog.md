@@ -18,6 +18,8 @@ I was almost about to give up on my blog idea but that's when I ran across [Fran
 
 One small final note: I plan to focus this blog entirely around Rust. Aside from this initial post I don't intend to use this blog to post about personal things.
 
+
+
 ## Further Reading
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
@@ -28,3 +30,11 @@ One small final note: I plan to focus this blog entirely around Rust. Aside from
 - [Sizedness in Rust](./sizedness-in-rust.md)
 - [RESTful API in Sync & Async Rust](./restful-api-in-sync-and-async-rust.md)
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
+
+
+
+## Notifications
+
+Get notified when a new blog post gets published by
+- Subscribing to this repo's [releases RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
+- Watching this repo's releases (click `Watch` → click `Custom` → select `Releases` → click `Apply`)

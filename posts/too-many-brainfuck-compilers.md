@@ -19,6 +19,7 @@ _01 November 2020 · #assembly · #compilers_
 - [Concluding thoughts](#concluding-thoughts)
 - [Discuss](#discuss)
 - [Further Reading](#further-reading)
+- [Notifications](#notifications)
 
 
 
@@ -2215,6 +2216,7 @@ The documentation online for LLVM IR is by far the best. The [LLVM IR Language R
 If I had to write a compiler in the future I think I'll definitely stick with LLVM IR. It has the best documentation, it has a kick-ass optimizer, and it can compile down to x86_64, aarch64, or WebAssembly (plus a whole bunch of other targets)!
 
 
+
 ## Discuss
 
 Discuss this article on
@@ -2227,6 +2229,8 @@ Discuss this article on
 - [rust subreddit](https://www.reddit.com/r/rust/comments/jsvdsy/learn_assembly_by_writing_entirely_too_many/)
 - [Hackernews](https://news.ycombinator.com/item?id=25069243)
 - [Github](https://github.com/pretzelhammer/rust-blog/discussions)
+
+
 
 ## Further Reading
 
@@ -2267,3 +2271,11 @@ LLVM IR
 - [LLVM Language Reference Manual](https://llvm.org/docs/LangRef.html)
 - [Mapping High Level Constructs to LLVM IR](https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/README.html)
 - [My First Language Frontend with LLVM Tutorial](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html)
+
+
+
+## Notifications
+
+Get notified when a new blog post gets published by
+- Subscribing to this repo's [releases RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
+- Watching this repo's releases (click `Watch` → click `Custom` → select `Releases` → click `Apply`)

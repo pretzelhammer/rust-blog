@@ -66,6 +66,7 @@ _31 March 2021 · #rust · #traits_
 - [Conclusion](#conclusion)
 - [Discuss](#discuss)
 - [Further Reading](#further-reading)
+- [Notifications](#notifications)
 
 
 
@@ -5179,6 +5180,8 @@ Discuss this article on
 - [lobste.rs](https://lobste.rs/s/g27ezp/tour_rust_s_standard_library_traits)
 - [rust subreddit](https://www.reddit.com/r/rust/comments/mmrao0/tour_of_rusts_standard_library_traits/)
 
+
+
 ## Further Reading
 
 - [Common Rust Lifetime Misconceptions](./common-rust-lifetime-misconceptions.md)
@@ -5190,3 +5193,9 @@ Discuss this article on
 - [Learn Assembly with Entirely Too Many Brainfuck Compilers](./too-many-brainfuck-compilers.md)
 
 
+
+## Notifications
+
+Get notified when a new blog post gets published by
+- Subscribing to this repo's [releases RSS feed](https://github.com/pretzelhammer/rust-blog/releases.atom) or
+- Watching this repo's releases (click `Watch` → click `Custom` → select `Releases` → click `Apply`)
