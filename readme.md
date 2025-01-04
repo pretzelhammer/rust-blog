@@ -6,14 +6,14 @@ Here are my posts in reverse chronological order.
 
 | Year | Title | Popularity | Translations |
 |-|-|-|-|
-| 2024 | [Using Rust in Non-Rust Servers to Improve Performance](./posts/rust-in-non-rust-servers.md) | ⏳ | - |
-| 2024 | [Learning Rust in 2024](./posts/learning-rust-in-2024.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/learning-rust-in-2024.md) |
+| 2024 | [Using Rust in Non-Rust Servers to Improve Performance](./posts/rust-in-non-rust-servers.md) | 🔥🔥 | - |
+| 2024 | [Learning Rust in 2024](./posts/learning-rust-in-2024.md) | 🔥🔥🔥 | [中文](./posts/translations/zh-hans/learning-rust-in-2024.md) |
 | 2024 | [Beginner's Guide to Concurrent Programming: Coding a Multithreaded Chat Server using Tokio](./posts/chat-server.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/chat-server.md) |
 | 2021 | [RESTful API in Sync & Async Rust](./posts/restful-api-in-sync-and-async-rust.md) | 🔥 | - |
 | 2021 | [Tour of Rust's Standard Library Traits](./posts/tour-of-rusts-standard-library-traits.md) | 🔥🔥🔥 |[中文](./posts/translations/zh-hans/tour-of-rusts-standard-library-traits.md) |
 | 2020 | [Learn Assembly with Entirely Too Many Brainfuck Compilers](./posts/too-many-brainfuck-compilers.md) | 🔥 | - |
 | 2020 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | 🔥🔥 | - |
-| 2020 | [Common Rust Lifetime Misconceptions](./posts/common-rust-lifetime-misconceptions.md) | 🔥🔥🔥 | [中文](./posts/translations/zh-hans/common-rust-lifetime-misconceptions.md) · [日本語](./posts/translations/jp/common-rust-lifetime-misconceptions.md) · [русский](./posts/translations/rus/common-rust-lifetime-misconceptions.md) |
+| 2020 | [Common Rust Lifetime Misconceptions](./posts/common-rust-lifetime-misconceptions.md) | 🔥🔥🔥🔥 | [中文](./posts/translations/zh-hans/common-rust-lifetime-misconceptions.md) · [日本語](./posts/translations/jp/common-rust-lifetime-misconceptions.md) · [русский](./posts/translations/rus/common-rust-lifetime-misconceptions.md) |
 | 2020 | [Learning Rust in 2020](./posts/learning-rust-in-2020.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/learning-rust-in-2020.md) |
 | 2020 | [Why blog?](./posts/why-blog.md) | - | [中文](./posts/translations/zh-hans/why-blog.md) · [Türkçe](./posts/translations/tr/why-blog.md)  |
 
