@@ -252,14 +252,14 @@ For this strategy we'll compile the Rust function into a Wasm module, and then l
 
 | Language | Wasm runtime | Github stars |
 |-|-|-|
-| JavaScript| built-in | - |
-| Java | [GraalWasm](https://github.com/oracle/graal/tree/master/wasm) | 20.3k+ |
-| Multiple | [wasm3](https://github.com/wasm3/wasm3) | 7.3k+ |
-| Go | [Wazero](https://github.com/tetratelabs/wazero) | 4.9k+ |
-| Multiple | [extism](https://github.com/extism/extism) | 4.2k+ |
-| Python | [wasmer-python](https://github.com/wasmerio/wasmer-python) | 2k+ |
-| PHP | [wasmer-php](https://github.com/wasmerio/wasmer-php) | 1k+ |
-| Ruby | [wasmer-ruby](https://github.com/wasmerio/wasmer-ruby) | 500+ |
+| JavaScript | built-in | - |
+| Multiple | [Wasmer](https://github.com/wasmerio/wasmer) | 19.2K+ |
+| Multiple | [Wasmtime](https://github.com/bytecodealliance/wasmtime) | 15.7K+ |
+| Multiple | [WasmEdge](https://github.com/WasmEdge/WasmEdge) | 8.7K+ |
+| Multiple | [wasm3](https://github.com/wasm3/wasm3) | 7.4k+ |
+| Go | [Wazero](https://github.com/tetratelabs/wazero) | 5.1k+ |
+| Multiple | [Extism](https://github.com/extism/extism) | 4.6k+ |
+| Java | [Chicory](https://github.com/dylibso/chicory) | 560+ |
 
 Since we're integrating into a Node.js server let's use `wasm-bindgen` to generate the glue code that our Rust Wasm code and our JS code will use to interact with each other.
 
@@ -466,14 +466,14 @@ For this strategy we're going to write the function in Rust, compile it to nativ
 
 | Language | Rust bindgen | Github stars |
 |-|-|-|
-| Python | [pyo3](https://github.com/pyo3/pyo3) | 12.2k+ |
-| JavaScript | [napi-rs](https://github.com/napi-rs/napi-rs) | 6k+ |
-| Erlang | [rustler](https://github.com/rusterlium/rustler) | 4.3k+ |
-| Multiple | [uniffi-rs](https://github.com/mozilla/uniffi-rs) | 2.8k+ |
-| Java | [jni-rs](https://github.com/jni-rs/jni-rs) | 1.2k+ |
-| Ruby | [rutie](https://github.com/danielpclark/rutie) | 900+ |
-| PHP | [ext-php-rs](https://github.com/davidcole1340/ext-php-rs) | 500+ |
-| Multiple | [diplomat](https://github.com/rust-diplomat/diplomat) | 500+ |
+| Python | [pyo3](https://github.com/pyo3/pyo3) | 12.7k+ |
+| JavaScript | [napi-rs](https://github.com/napi-rs/napi-rs) | 6.3k+ |
+| Erlang | [rustler](https://github.com/rusterlium/rustler) | 4.4k+ |
+| Multiple | [uniffi-rs](https://github.com/mozilla/uniffi-rs) | 3k+ |
+| Java | [jni-rs](https://github.com/jni-rs/jni-rs) | 1.3k+ |
+| Ruby | [rutie](https://github.com/danielpclark/rutie) | 970+ |
+| PHP | [ext-php-rs](https://github.com/davidcole1340/ext-php-rs) | 610+ |
+| Multiple | [diplomat](https://github.com/rust-diplomat/diplomat) | 560+ |
 
 Since our example server is written in JS we're going to use `napi-rs`. Here's the Rust code:
 
@@ -530,7 +530,7 @@ It turns out native code is pretty fast! We've almost quadrupled our throughput 
 
 ### Tier 4: Rust Rewrite
 
-In this strategy we're going to rewrite the host server in Rust. Admittedly, this is impractical for most real-world cases, where it's not unusual to see 100k+ line server codebases. In those situations we could instead only rewrite a subset of the host server. Nowadays most people run everything on their backend behind a reverse proxy anyway, so deploying a new Rust server and modifying the reverse proxy config to route some requests to the Rust server doesn't introduce that much additional operational overhead to many people's backend setups.
+In this strategy we're going to rewrite the host server in Rust. Admittedly, this is impractical for most real-world cases, where it's not unusual to see server codebases with 100k+ lines of code. In those situations we could instead only rewrite a subset of the host server. Nowadays most people run everything on their backend behind a reverse proxy anyway, so deploying a new Rust server and modifying the reverse proxy config to route some requests to the Rust server doesn't introduce that much additional operational overhead to many people's backend setups.
 
 So here's the server rewritten in Rust:
 
