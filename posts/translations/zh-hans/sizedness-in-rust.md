@@ -31,7 +31,7 @@ _22 July 2020 · #rust · #sizedness_
 
 ## 介绍
 
-大小确定性(Sizedness)在Rust的众多重要概念中是相对不引人注目的一个。它以隐晦的方式与众多其它语言特性互相作用，并且往往只以错误提示的形式让我们了解到它的存在，这个错误我们Rustacean大概常遇到，就是"_x doesn't have size known at compile time_"(_x没有确定的编译时大小_).本文将介绍与Sizeness相关的各种语言特性，包括: 确定大小类型(sized types)，不定大小类型(unsized types)，以及0大小类型(zero-sized types)，我们将探讨它们的使用场景，它的用处，痛点，以及在必要的时候如何绕过它带来的困扰。
+大小确定性(Sizedness)在Rust的众多重要概念中是相对不引人注目的一个。它以隐晦的方式与众多其它语言特性互相作用，并且往往只以错误提示的形式让我们了解到它的存在，这个错误我们Rustacean大概常遇到，就是"_x doesn't have size known at compile time_"(_x没有确定的编译时大小_)。本文将介绍与Sizeness相关的各种语言特性，包括: 确定大小类型(sized types)，不定大小类型(unsized types)，以及0大小类型(zero-sized types)，我们将探讨它们的使用场景，应用，痛点，以及在必要的时候如何绕过Sizeness带来的困扰。
 
 名词解释:
 
@@ -53,7 +53,7 @@ _22 July 2020 · #rust · #sizedness_
 
 ## Sizedness(大小确定性)
 
-在Rust中，所谓的Sizedness是指一个类型的具体大小是否可以在编译时确定。确定类型大小之所以重要，是因为这样一来，才有可能为类型的实例在栈上分配相应的空间。Sized types(确定大小类型)可以使用传值或传引用的方式到处传递。同样的，如果一个类型的大小不能在编译时确定，我们就称它为不定大小类型(unsized type)或者DST，又或者叫它动态大小类型。因为不定大小类型不能放到栈上，所以它们只能以引用的形式传递. 下面是一部分 _确定大小类型_ 和 _不定大小类型_ 的例子:
+在Rust中，所谓的Sizedness是指一个类型的具体大小是否可以在编译时确定。确定类型大小之所以重要，是因为这样一来，才有可能为类型的实例在栈上分配相应的空间。确定大小类型(Sized types)可以使用传值或传引用的方式到处传递。同样的，如果一个类型的大小不能在编译时确定，我们就称它为不定大小类型(unsized type)或者DST，又或者叫它动态大小类型。因为不定大小类型不能放到栈上，所以它们只能以引用的形式传递。 下面是一部分 _确定大小类型_ 和 _不定大小类型_ 的例子：
 
 ```rust
 use std::mem::size_of;
@@ -114,7 +114,7 @@ fn main() {
 }
 ```
 
-我们怎么知道某个类型是否为确定大小的呢? 很简单: 所有原始类型和指针都有确定的大小，同时所有的结构、元组、枚举和数组，它们或者直接由原始类型和指针构成，或者由它们嵌套得到，所以只要把这些组成元素的大小加起来也可以确定地计算出它们的大小(当然计算过程要考虑padding和对齐)。同样道理，我们也可以知道一个类型为 _不定大小类型_：切片可以有任意数量的成员，所以在运行时可能会有任意的大小，而trait object可能是任意实现了该特性的结构/枚举，因此其运行时大小也不确定。
+我们怎么知道某个类型是否为 _确定大小类型_ 呢? 很简单: 所有原始类型和指针都有确定的大小，同时所有的结构、元组、枚举和数组，它们或者直接由原始类型和指针构成，或者由它们嵌套得到，所以，只要把这些组成元素的大小加起来，那也能确定地计算出它们的大小（当然计算过程要考虑padding和对齐）。同样道理，我们也可以知道一个类型为 _不定大小类型_：切片可以有任意数量的成员，所以在运行时可能会有任意的大小，而trait object可能是任意实现了该特性的结构/枚举，因此其运行时大小也不确定。
 
 **要点**
 - 指向数组动态视图的指针在Rust中被称为slice(切片)，例如`&str`是 _"string slice"_，而`&[i32]`是 _"i32 slice"_
@@ -252,13 +252,13 @@ fn main() {
 
 ## `Sized` Trait
 
-Rust中的`Sized`是auto trait(自动特性)，同时也是marker trait(标记特性).
+Rust中的`Sized`是auto trait(自动特性)，同时也是marker trait(标记特性)。
 
-所谓的auto trait是指在满足一定条件的情况下，该特性会自动实现，而无需手动impl。而marker trait是指那些用于标记类型具备特定属性的特性。marker trait不需要有方法/关联函数/关联常量/关联类型之类的特性item。所有的auto traits都是marker traits，但不是所有的marker traits都是auto traits. 之所以auto traits必须是marker traits，是因为只有这样，编译器才能为它们提供默认的实现，否则，如果特性有任何item，编译器不可能知道怎么自动实现它们。
+所谓的auto trait是指在满足一定条件的情况下，该特性会自动实现，而无需手动impl。而marker trait是指那些用于标记类型具备特定属性的特性。marker trait不需要有方法/关联函数/关联常量/关联类型之类的特性item。所有的auto traits都是marker traits，但不是所有的marker traits都是auto traits。之所以auto traits必须是marker traits，是因为只有这样，编译器才能为它们提供默认的实现，否则，如果特性有任何item，那编译器就无法知道怎么自动实现它们了。
 
 对于特定类型来说，如果其所有成员都是`Sized`，那该类型也自动为`Sized`。这里的'成员'具体含义取决于该type的类别，比如：结构的成员字段，枚举的变量，数组的元素，元组的成员，等等。如果一个类型为`Sized`，那就意味着其大小在编译时是确定的。
 
-还有一些其它的auto marker traits，比如`Send` 和 `Sync`。如果一个类型(的实例)可以安全地在线程间转移的话，则该类型为`Send`的，同样，如果一个类型可以安全地在多个线程间共享引用，则该类型为`Sync`的。如果一个类型的所有成员都是`Send` && `Sync`，则该型自身也为`Send` && `Sync`。对于特性`Sized`，有一点特殊的是，开发者不能自行改变或取消(opt-out)掉该特性，这和其它auto marker trait不同.
+还有一些其它的auto marker traits，比如`Send` 和 `Sync`。如果一个类型(的实例)可以安全地在线程间转移的话，则该类型为`Send`的，同样，如果一个类型可以安全地在多个线程间共享引用，则该类型为`Sync`的。如果一个类型的所有成员都是`Send` && `Sync`，则该型自身也为`Send` && `Sync`。对于特性`Sized`，有一点特殊的是，开发者不能自行改变或取消(opt-out)掉该特性，这和其它auto marker trait不同。
 
 ```rust
 #![feature(negative_impls)]
@@ -276,9 +276,9 @@ impl !Sync for Struct {} // ✅
 impl !Sized for Struct {} // ❌
 ```
 
-关于不能取消`Sized`这一点，也容易理解。因为可能有时我们不想某个类型在线程间传递，或者在不同线程中共享该类型，但很难想像在哪个场景下，我们会需要编译器"忘记"某个类型的确定大小性质，并把它当成不定大小类型来使用，这样做不会带来任何好处，只会使这个类型变得更难使用.
+关于不能取消`Sized`这一点，也容易理解。因为可能有时我们不想某个类型在线程间传递，或者在不同线程中共享该类型，但很难想像在哪个场景下，我们会需要编译器"忘记"某个类型的确定大小性质，并把它当成不定大小类型来使用，这样做不会带来任何好处，只会使这个类型变得更难使用。
 
-另外，如果非要严格地说的话，其实`Sized`不算auto trait，它没使用`auto`关键字，只不过编译器对它作了特殊处理，使得其表现上与其它auto traits一样，总之，在开发中把它当成auto trait没有任何问题.
+另外，如果非要严格地说的话，其实`Sized`不算auto trait，它没使用`auto`关键字，只不过编译器对它作了特殊处理，使得其表现上与其它auto traits一样，总之，在开发中把它当成auto trait没有任何问题。
 
 **要点**
 - `Sized`是auto marker trait —— 自动标记特性
@@ -400,7 +400,7 @@ fn main() {
 
 最常见的切片是字符串切片 `&str` 和数组切片 `&[T]`。切片有一个优点：很多其它类型可以强转为切片，利用这一点，以及Rust的自动类型强转，我们可以构造更加灵活的API。
 
-类型强转可以在好些个不同的场景下发生，最常见的是在函数传参以及方法调用。这里，我们感兴趣的是deref（解引用）强转和不定大小强转（unsized coercions）。解引用强转是指`T`通过deref操作强转为`U`，也就是`T: Deref<Target = U>`，比如`String.deref() -> str`. 而不定大小强转则是指将`T`强转为`U`，这里的`T`是一个确定大小类型，而`U`为不定大小类型，也就是`T: Unsize<U>`，比如`[i32; 3] -> [i32]`。
+类型强转可以在好些个不同的场景下发生，最常见的是在函数传参以及方法调用。这里，我们感兴趣的是deref（解引用）强转和不定大小强转（unsized coercions）。解引用强转是指`T`通过deref操作强转为`U`，也就是`T: Deref<Target = U>`，比如`String.deref() -> str`。 而不定大小强转则是指将`T`强转为`U`，这里的`T`是一个确定大小类型，而`U`为不定大小类型，也就是`T: Unsize<U>`，比如`[i32; 3] -> [i32]`。
 
 ```rust
 trait Trait {
@@ -599,7 +599,7 @@ trait Trait {
 impl Trait for str {} // ✅
 
 fn main() {
-    // we never call "method" so no errors
+    // 我们永远不调用method，所以也就不会有报错
     "str".method2(); // ✅
 }
 ```
@@ -632,7 +632,7 @@ error[E0371]: the object type `(dyn Trait + 'static)` automatically implements t
   | ^^^^^^^^^^^^^^^^^^^^^^^^ `(dyn Trait + 'static)` automatically implements trait `Trait`
 ```
 
-这是编译器在告诉我们，它已经自动地为`dyn Trait`实现了`Trait`，所以我们不需要再手动显式这样做。再一次地，因为`dyn Trait`是不定大小的，所以编译器只能提供针对`Trait: ?Sized`的实现. 反之，如果我们给`Trait`绑定`Sized`，那么`Trait`就会成为 _"object unsafe"_， 这是一个专有名词，它意味着我们不能将实现该trait的类型强转为`dyn Trait`的trait object。所以，下面的这段代码是编不过的：
+这是编译器在告诉我们，它已经自动地为`dyn Trait`实现了`Trait`，所以我们不需要再手动显式这样做。再一次地，因为`dyn Trait`是不定大小的，所以编译器只能提供针对`Trait: ?Sized`的实现。反之，如果我们给`Trait`绑定`Sized`，那么`Trait`就会成为 _"object unsafe"_， 这是一个专有名词，它意味着我们不能将实现该trait的类型强转为`dyn Trait`的trait object。所以，下面的这段代码是编不过的：
 
 ```rust
 trait Trait: Sized {}
@@ -669,7 +669,7 @@ fn function(arg: &dyn Trait) { // ✅
 }
 ```
 
-就像我们前面已经看到的那样，不调用这个`Sized`方法那一切都没有问题，反之则会报错.
+就像我们前面已经看到的那样，不调用这个`Sized`方法那一切都没有问题，反之则会报错。
 
 **要点**
 - 所有特性默认都是`?Sized`的
@@ -707,13 +707,13 @@ error[E0277]: the size for values of type `str` cannot be known at compilation t
   |                  ^^^^^ doesn't have a size known at compile-time
   |
   = help: the trait `std::marker::Sized` is not implemented for `str`
-  = note: to learn more，visit <https://doc.rust-lang.org/book/ch19-04-advanced-types.html#dynamically-sized-types-and-the-sized-trait>
+  = note: to learn more, visit <https://doc.rust-lang.org/book/ch19-04-advanced-types.html#dynamically-sized-types-and-the-sized-trait>
   = note: required for the cast to the object type `dyn std::string::ToString`
 ```
 
-之所以可以将`String`强转为`&dyn ToString`，是因为`String`的确实现了`ToString`特性，而我们可以将一个确定大小类型(`String`)转为一个不定大小类型(`dyn ToString`)，Rust中是支持这种强转的，前文提到过，这种强转叫做不定大小强转. 另一方面，`str`也实现了`ToString`特性，如果要将`str`转为`dyn ToString`，那也需要执行一次不定大小强转(译者注:因为dyn ToString是不定大小的)，但是这里的问题在于：`str`已经是不定大小的了，我们怎么样才能将一个不定大小的类型转为另一个不定大小类型呢？(译者注：答案是不支持，接下来是原因解释)
+之所以可以将`String`强转为`&dyn ToString`，是因为`String`的确实现了`ToString`特性，并且，我们可以将一个确定大小类型(`String`)转为一个不定大小类型(`dyn ToString`)，Rust中支持这种强转，前文提到过，这种强转叫做不定大小强转。另一方面，`str`也实现了`ToString`特性，如果要将`str`转为`dyn ToString`，那也需要执行一次不定大小强转(译者注:因为dyn ToString是不定大小的)，但是这里的问题在于：`str`已经是不定大小的了，我们怎么样才能将一个不定大小的类型转为另一个不定大小类型呢？(译者注：答案是不支持，接下来是原因解释)
 
-前文提到过，`&str`指针是双width的，它存储了指向数据的指针以及数据的长度。`&dyn ToString`指针也是双width的，保存了指向数据的指针以及指向虚表的指针. 因此如果要将`&str`强转为`&dyn toString`，那就需要一个3倍width的指针，以同时保存指向数据的指针、数据长度以及指向虚表的指针。Rust不支持3倍width的指针，这就是我们不能将一个不定长度类型强转为trait object的原因。
+前文提到过，`&str`指针是双width的，它存储了指向数据的指针以及数据的长度。`&dyn ToString`指针也是双width的，保存了指向数据的指针以及指向虚表的指针。因此如果要将`&str`强转为`&dyn toString`，那就需要一个3倍width的指针，以同时保存指向数据的指针、数据长度以及指向虚表的指针。Rust不支持3倍width的指针，这就是我们不能将一个不定长度类型强转为trait object的原因。
 
 将上面两段话总结成表格的话，就是下面这样:
 
@@ -750,7 +750,7 @@ error[E0225]: only auto traits can be used as additional traits in a trait objec
   |                      trait alias used in trait object type (first use)
 ```
 
-让我们回想下：trait object的指针是双width的，它保存了一个指向数据的指针和一个指向虚表的指针，但上面的代码有两个trait，所以这里就有两个虚表，也就是说`&(dyn Trait + Trait2)`得是3倍width才行。（译者补充: 但我们经常在代码里看到不同trait相加是怎么回事？）自动特性之所以可以相加，是因为像`Sync`和`Send`这种自动特性它们没有方法，因此也就没有虚表，所以它们没有这个限制。
+让我们回想下：trait object的指针是双width的，它保存了一个指向数据的指针和一个指向虚表的指针，但上面的代码有两个trait，所以这里就有两个虚表，也就是说`&(dyn Trait + Trait2)`得是3倍width才行。（译者补充: 但我们经常在代码里看到`dyn Object + Send + Sync`这类写法是怎么回事？）自动特性之所以可以相加，是因为像`Sync`和`Send`这种自动特性它们没有方法，因此也就没有虚表，所以它们没有这个限制。
 
 绕过这一限制的方法是，通过将不同trait组合成另一个trait来把虚表组合到一起：
 
@@ -775,7 +775,7 @@ fn function(t: &dyn Trait3) {
 }
 ```
 
-这种方法的缺点在于，Rust不支持到supertrait的向上强转. 也就是我们不能将`dyn Trait3`用于需要`dyn Trait`或`dyn Trait2`的地方. 下面这样的代码编不过:
+这种方法的缺点在于，Rust不支持到supertrait的向上强转。也就是我们不能将`dyn Trait3`用于需要`dyn Trait`或`dyn Trait2`的地方。下面这样的代码编不过：
 
 ```rust
 trait Trait {
@@ -811,7 +811,7 @@ error[E0308]: mismatched types
   --> src/main.rs:22:17
    |
 22 |     takes_trait(t);
-   |                 ^ expected trait `Trait`，found trait `Trait3`
+   |                 ^ expected trait `Trait`, found trait `Trait3`
    |
    = note: expected reference `&dyn Trait`
               found reference `&dyn Trait3`
@@ -820,7 +820,7 @@ error[E0308]: mismatched types
   --> src/main.rs:23:18
    |
 23 |     takes_trait2(t);
-   |                  ^ expected trait `Trait2`，found trait `Trait3`
+   |                  ^ expected trait `Trait2`, found trait `Trait3`
    |
    = note: expected reference `&dyn Trait2`
               found reference `&dyn Trait3`
@@ -865,7 +865,7 @@ fn main() {
 **要点**
 - Rust不支持超过2倍宽度的指针，所以：
     - 我们不能将不定大小类型转为trait objects
-    - 我们不能同时为泛型指定多个trait，但是我们可以通过将多个trait组合为单个trait来应对这一限制
+    - 我们不能同时trait object定多个trait，但是我们可以通过将多个trait组合为单个trait来应对这一限制
 
 
 ### 用户定义的不定大小类型
@@ -971,7 +971,7 @@ fn main() {
 }
 ```
 
-上面这个例子没有什么实际用处，还有没有更实际有用的场景可以利用上面这一点的？回答是yes，我们可以通过 `HashMap<Key，Value>` 来得到高效的 `HashSet<Key>` 实现， 方法是将`Value`设为`()`，实际上这正是Rust标准库的做法：
+上面这个例子没有什么实际用处，还有没有更实际有用的场景可以利用上面这一点的？回答是yes，我们可以通过 `HashMap<Key, Value>` 来得到高效的 `HashSet<Key>` 实现， 方法是将`Value`设为`()`，实际上这正是Rust标准库的做法：
 
 ```rust
 // std::collections::HashSet
@@ -1001,7 +1001,7 @@ struct Struct;
 
 ### 不可能类型（Never Type）
 
-第二个常见的ZST是不可能类型: `!`. 它之所以叫不可能类型，是因为它表示不可能计算为任何值的操作结果。
+第二个常见的ZST是不可能类型: `!`。它之所以叫不可能类型，是因为它表示不可能计算为任何值的操作结果。
 
 `!`不同于`()`的一些有趣特性:
 - `!` 可以强转成任意其它类型(译者注: 编译器语法解析时)
@@ -1066,13 +1066,13 @@ fn example2(nums: &[i32]) -> Vec<i32> {
 fn function() -> Result<Success, Error>;
 ```
 
-我们知道，如果函数成功返回，则`Result`会包含类型`Success`的某个实例，如果函数失败，则`Result`会包含类型`Error`的某个实例. 现在看下面这个函数签名：
+我们知道，如果函数成功返回，则`Result`会包含类型`Success`的某个实例，如果函数失败，则`Result`会包含类型`Error`的某个实例。现在看下面这个函数签名：
 
 ```rust
 fn function() -> Result<Success, !>;
 ```
 
-同样的，如果函数成功返回，则`Result`会包含类型`Success`的某个实例，如果函数失败，嗯...， 但是等一下，它永远不能失败，因为根据上述第二个特性，我们不可能构造一个`!`的实例. 所以，通过上面这个函数签名，我们知道这个函数永远不会失败. 那下面这个函数呢：
+同样的，如果函数成功返回，则`Result`会包含类型`Success`的某个实例，如果函数失败，嗯...， 但是等一下，它永远不能失败，因为根据上述第二个特性，我们不可能构造一个`!`的实例。所以，通过上面这个函数签名，我们知道这个函数永远不会失败。那下面这个函数呢：
 
 ```rust
 fn function() -> Result<!, Error>;
@@ -1119,7 +1119,7 @@ fn run_server() -> Result<!, ConnectionError> {
 
 ### 用户定义的伪不可能类型
 
-虽然我们不能定义一个可以转成任何其它类型的自定义类型，但我们可以定义一个不能创建任何实际实例的类型()，比如一个不包含任何成员的`enum`：
+虽然我们不能定义一个可以转成任何其它类型的自定义类型，但我们可以定义一个不能创建任何实际实例的类型，比如一个不包含任何成员的`enum`：
 
 ```rust
 enum Void {}
@@ -1158,7 +1158,7 @@ pub enum Infallible {}
 
 ### PhantomData(伪数据)
 
-第3种常见ZST大概是`PhantomData`. `PhantomData`是一个0大小标记结构，它可以用于标记所在的结构具有特定的属性。它有点像自动标记trait，比如`Sized`，`Send`，以及`Sync`，但使用方式上有一点区别。完整的`PhantomData`解释以及它的各种应用超出了本文的范围，所以我们只简单看一个例子。前文提到过这样一段代码：
+第3种常见ZST大概是`PhantomData`。`PhantomData`是一个0大小标记结构，它可以用于标记所在的结构具有特定的属性。它有点像自动标记trait，比如`Sized`，`Send`，以及`Sync`，但使用方式上有一点区别。完整的`PhantomData`解释以及它的各种应用超出了本文的范围，所以我们只简单看一个例子。前文提到过这样一段代码：
 
 ```rust
 #![feature(negative_impls)]
@@ -1173,7 +1173,7 @@ impl !Send for Struct {}
 impl !Sync for Struct {}
 ```
 
-在上面代码中，我们得使用feature flag。那能不能只使用稳定Rust达到同样目的呢? 我们已经知道，当一个结构的所有成员都是`Send`/`Sync`时，该结构自动为`Send`/`Sync`，所以如果我们给`Struct`加一个`!Send`/`!Sync`成员，比如`Rc<()>`的话：
+在上面代码中，我们得使用feature flag。那能不能只使用稳定Rust达到同样目的呢? 我们已经知道，当一个结构的所有成员都是`Send`/`Sync`时，该结构自动为`Send`/`Sync`，所以如果我们给`Struct`加一个`!Send`/`!Sync`成员，比如`Rc<()>`的话，那也可以达到取消自动特性的目的：
 
 ```rust
 use std::rc::Rc;
@@ -1185,7 +1185,7 @@ struct Struct {
 }
 ```
 
-这种方式不够理想，因为它增加了`Struct`具体实例的大小，每次我们构造`Struct`时，都得凭空多造一个`Rc<()>`。不过，利用`PhantomData`为ZST这一特点，它可以用于解决此问题:
+但这种方式不够理想，因为它增加了`Struct`具体实例的大小，每次我们构造`Struct`时，都得凭空多造一个`Rc<()>`。不过，由于`PhantomData`为ZST，它可以在这里帮助我们解决此问题:
 
 ```rust
 use std::rc::Rc;
@@ -1201,7 +1201,7 @@ struct Struct {
 ```
 
 **要点**
-- `PhantomData`是0大小标记结构，它可以用于标记其所在结构具体特定属性
+- `PhantomData`是0大小标记结构，它可以用于标记其所在结构的某些特定属性
 
 
 
@@ -1209,7 +1209,7 @@ struct Struct {
 
 - 只有确定大小类型可以放在栈上，也就是说，只有它们可以通过值的方式传递
 - 不定大小类型不能放在栈上，且只能以引用方式传递
-- 指定不定大小类型的指针是双width的，因为除了指向数据的指针之外，它们还需要额外的比特来记录数据的大小 _或者_ 指向虚表的指针
+- 指向不定大小类型的指针是双width的，因为除了指向数据的指针之外，它们还需要额外的比特来记录数据的大小 _或者_ 指向虚表的指针
 - `Sized` 是一个"自动的"特性标记
 - 所有泛型参数默认自动绑定`Sized`
 - 如果我们有一个泛型函数，它的参数为某种指向`T`的指针，比如：`&T`，`Box<T>`，`Rc<T>`，等等，那么我们基本上都要取消默认的`Sized`绑定：`T: ?Sized`
@@ -1220,7 +1220,7 @@ struct Struct {
 - 绑定`Sized`的特性不能用作trait object
 - Rust不支持大于2widths的指针，所以: 
     - 我们不能将不定大小类型强转为trait object
-    - 我们不能定义多特性对象，但可以通过组合多个特性至单个特性来绕过这一点
+    - 我们不能定义多特性trait object，但可以通过组合多个特性至单个特性来绕过这一点
 - 用户定义的不定大小类型目前是半成品，它们的限制大于它们可能有的任何好处
 - 一个ZST的所有实例都彼此相等
 - Rust编译器会优化掉与ZST的交互
