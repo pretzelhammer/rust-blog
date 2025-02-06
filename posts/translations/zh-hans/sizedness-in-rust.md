@@ -2,8 +2,6 @@
 
 _22 July 2020 · #rust · #sizedness_
 
-译者：[mecury-2025](https://github.com/mercury-2025/rust-blog)
-
 **目录**
 - [Rust中的Sizedness](#rust中的sizedness)
   - [介绍](#介绍)

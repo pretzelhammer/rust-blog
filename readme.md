@@ -12,7 +12,7 @@ Here are my posts in reverse chronological order.
 | 2021 | [RESTful API in Sync & Async Rust](./posts/restful-api-in-sync-and-async-rust.md) | 🔥 | - |
 | 2021 | [Tour of Rust's Standard Library Traits](./posts/tour-of-rusts-standard-library-traits.md) | 🔥🔥🔥 |[中文](./posts/translations/zh-hans/tour-of-rusts-standard-library-traits.md) |
 | 2020 | [Learn Assembly with Entirely Too Many Brainfuck Compilers](./posts/too-many-brainfuck-compilers.md) | 🔥 | - |
-| 2020 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | 🔥🔥 | - |
+| 2020 | [Sizedness in Rust](./posts/sizedness-in-rust.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/sizedness-in-rust.md) |
 | 2020 | [Common Rust Lifetime Misconceptions](./posts/common-rust-lifetime-misconceptions.md) | 🔥🔥🔥🔥 | [中文](./posts/translations/zh-hans/common-rust-lifetime-misconceptions.md) · [日本語](./posts/translations/jp/common-rust-lifetime-misconceptions.md) · [русский](./posts/translations/rus/common-rust-lifetime-misconceptions.md) |
 | 2020 | [Learning Rust in 2020](./posts/learning-rust-in-2020.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/learning-rust-in-2020.md) |
 | 2020 | [Why blog?](./posts/why-blog.md) | - | [中文](./posts/translations/zh-hans/why-blog.md) · [Türkçe](./posts/translations/tr/why-blog.md)  |
