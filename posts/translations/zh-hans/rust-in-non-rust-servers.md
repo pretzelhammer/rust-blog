@@ -6,16 +6,16 @@ _2024 年 10 月 22 日 · #rust · #wasm · #ffi · #performance_
 
 - [介绍](#介绍)
 - [策略](#策略)
-  - [第 0 层：不使用 Rust](#第-0-层-不使用-Rust)
-  - [第 1 层：Rust CLI 工具](#tier-1-rust-cli-tool)
-  - [第 2 层：Rust Wasm 模块](#tier-2-rust-wasm-module)
-    - [手动编写 Wasm 绑定](#wasm-bindings-by-hand)
-  - [第 3 层：Rust 原生函数](#tier-3-rust-native-function)
-  - [第 4 层：Rust 重写](#tier-4-rust-rewrite)
-- [总结](#concluding-thoughts)
-- [讨论](#discuss)
-- [延伸阅读](#further-reading)
-- [通知](#notifications)
+  - [第 0 层：不使用 Rust](#第-0-层不使用-Rust)
+  - [第 1 层：Rust CLI 工具](#第-1-层Rust-CLI-工具)
+  - [第 2 层：Rust Wasm 模块](#第-2-层Rust-Wasm-模块)
+    - [手动编写 Wasm 绑定](#手动编写-Wasm-绑定)
+  - [第 3 层：Rust 原生函数](#第-3-层Rust-原生函数)
+  - [第 4 层：Rust 重写](#第-4-层Rust-重写)
+- [总结](#总结)
+- [讨论](#讨论)
+- [延伸阅读](#延伸阅读)
+- [通知](#通知)
 
 ## 介绍
 
