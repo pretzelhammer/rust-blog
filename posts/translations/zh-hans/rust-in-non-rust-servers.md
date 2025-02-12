@@ -26,7 +26,7 @@ _2024 年 10 月 22 日 · #rust · #wasm · #ffi · #performance_
 我们将在一个用 JS 编写的 Node.js 示例服务器上应用和基准测试这些策略。不过，这些策略可以推广到任何其他语言或运行时。
 
 > [!NOTE]
-> 本文中所有示例的完整源代码可以在 [此仓库](https://github.com/pretzelhammer/using-rust-in-non-rust-servers)中找到。
+> 本文中所有示例的完整源代码可以在 [此仓库](https://github.com/pretzelhammer/using-rust-in-non-rust-servers) 中找到。
 
 ## 策略
 
