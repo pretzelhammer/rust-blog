@@ -6,7 +6,7 @@ Here are my posts in reverse chronological order.
 
 | Year | Title | Popularity | Translations |
 |-|-|-|-|
-| 2024 | [Using Rust in Non-Rust Servers to Improve Performance](./posts/rust-in-non-rust-servers.md) | 🔥🔥 | - |
+| 2024 | [Using Rust in Non-Rust Servers to Improve Performance](./posts/rust-in-non-rust-servers.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/rust-in-non-rust-servers.md) |
 | 2024 | [Learning Rust in 2024](./posts/learning-rust-in-2024.md) | 🔥🔥🔥 | [中文](./posts/translations/zh-hans/learning-rust-in-2024.md) |
 | 2024 | [Beginner's Guide to Concurrent Programming: Coding a Multithreaded Chat Server using Tokio](./posts/chat-server.md) | 🔥🔥 | [中文](./posts/translations/zh-hans/chat-server.md) |
 | 2021 | [RESTful API in Sync & Async Rust](./posts/restful-api-in-sync-and-async-rust.md) | 🔥 | - |
