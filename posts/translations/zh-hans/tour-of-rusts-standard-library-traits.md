@@ -299,7 +299,7 @@ fn main() {
 > _"Generic parameters"_ broadly refers to generic type parameters, generic lifetime parameters, and generic const parameters. Since all of those are a mouthful to say people commonly abbreviate them to _"generic types"_, _"lifetimes"_, and _"generic consts"_. Since generic consts are not used in any of the standard library traits we'll be covering they're outside the scope of this article.
 >
 
-“泛型参数” 是泛型类型参数、泛型寿命参数以及泛型常量参数的统称。由于这些术语过于佶屈聱牙，我们通常将他们缩略为“泛型类型”，“泛型寿命”和“泛型常量”。鉴于标准库中的特性无一采用泛型常量，本文也略过不讲。
+“泛型参数” 是泛型类型参数、生命周期参数以及泛型常量参数的统称。由于这些术语过于佶屈聱牙，我们通常将他们缩略为“泛型类型”，“生命周期”和“泛型常量”。鉴于标准库中的特性无一采用泛型常量，本文也略过不讲。
 
 > We can generalize a trait declaration using parameters:
 
@@ -307,18 +307,18 @@ fn main() {
 
 ```rust
 // trait declaration generalized with lifetime & type parameters
-// 使用泛型寿命与泛型类型声明特性
+// 使用生命周期与泛型类型声明特性
 trait Trait<'a, T> {
     // signature uses generic type
     // 在签名中使用泛型类型
     fn func1(arg: T);
     
     // signature uses lifetime
-    // 在签名中使用泛型寿命
+    // 在签名中使用生命周期
     fn func2(arg: &'a i32);
     
     // signature uses generic type & lifetime
-    // 在签名中同时使用泛型类型与泛型寿命
+    // 在签名中同时使用泛型类型与生命周期
     fn func3(arg: &'a T);
 }
 
