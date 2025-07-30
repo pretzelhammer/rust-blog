@@ -778,7 +778,7 @@ fn function(t: &dyn Trait3) {
 }
 ```
 
-One downside of this workaround is that Rust does not support supertrait upcasting. What this means is that if we have a `dyn Trait3` we can't use it where we need a `dyn Trait` or a `dyn Trait2`. This program does not compile:
+One downside of this workaround is that Rust did not support supertrait upcasting until 1.86. What this means is that if we have a `dyn Trait3` we can't use it where we need a `dyn Trait` or a `dyn Trait2` in version prior to 1.86. This program does not compile:
 
 ```rust
 trait Trait {
