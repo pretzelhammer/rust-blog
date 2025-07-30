@@ -485,7 +485,7 @@ We'll get into why traits are `?Sized` by default soon but first let's ask ourse
 trait Trait where Self: ?Sized {}
 ```
 
-Okay, so by default traits allow `self` to possibly be an unsized type. As we learned earlier we can't pass unsized types around by value, so that limits us in the kind of methods we can define in the trait. It should be impossible to write a method the takes or returns `self` by value and yet this surprisingly compiles:
+Okay, so by default traits allow `self` to possibly be an unsized type. As we learned earlier we can't pass unsized types around by value, so that limits us in the kind of methods we can define in the trait. It should be impossible to write a method that takes or returns `self` by value and yet this surprisingly compiles:
 
 ```rust
 trait Trait {
