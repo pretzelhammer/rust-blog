@@ -485,7 +485,7 @@ We'll get into why traits are `?Sized` by default soon but first let's ask ourse
 trait Trait where Self: ?Sized {}
 ```
 
-Okay, so by default traits allow `self` to possibly be an unsized type. As we learned earlier we can't pass unsized types around by value, so that limits us in the kind of methods we can define in the trait. It should be impossible to write a method the takes or returns `self` by value and yet this surprisingly compiles:
+Okay, so by default traits allow `self` to possibly be an unsized type. As we learned earlier we can't pass unsized types around by value, so that limits us in the kind of methods we can define in the trait. It should be impossible to write a method that takes or returns `self` by value and yet this surprisingly compiles:
 
 ```rust
 trait Trait {
@@ -778,7 +778,7 @@ fn function(t: &dyn Trait3) {
 }
 ```
 
-One downside of this workaround is that Rust does not support supertrait upcasting. What this means is that if we have a `dyn Trait3` we can't use it where we need a `dyn Trait` or a `dyn Trait2`. This program does not compile:
+One downside of this workaround is that Rust did not support supertrait upcasting until 1.86. What this means is that if we have a `dyn Trait3` we can't use it where we need a `dyn Trait` or a `dyn Trait2` in version prior to 1.86. This program does not compile:
 
 ```rust
 trait Trait {
