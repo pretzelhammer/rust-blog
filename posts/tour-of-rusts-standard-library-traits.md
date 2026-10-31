@@ -2545,7 +2545,7 @@ error[E0369]: cannot add `&Point` to `&Point`
    = note: an implementation of `std::ops::Add` might be missing for `&Point`
 ```
 
-Within Rust's type system, for some type `T`, the types `T`, `&T`, and `&mut T` are all treated as unique distinct types, which means we have to provide trait impls for each of them separately. Let's define an `Add` impl for `&Point`:
+Within Rust's type system, for some concrete type `T`, the types `T`, `&T`, and `&mut T` are all treated as unique distinct types, which means we have to provide trait impls for each of them separately. Let's define an `Add` impl for `&Point`:
 
 ```rust
 impl Add for &Point {
